@@ -610,6 +610,71 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 <div id="toastRoot"></div>
 
 <script>
+/* ===== Connexion Google Sheets (Apps Script) : remplace le stockage claude.ai ===== */
+(function(){
+  const LS="indiv-gas";
+  let conf=null; try{ conf=JSON.parse(localStorage.getItem(LS)||"null"); }catch(e){}
+  window.GAS={ get conf(){ return conf; }, save(c){ conf=c; try{ localStorage.setItem(LS,JSON.stringify(c)); }catch(e){} }, clear(){ conf=null; try{ localStorage.removeItem(LS); }catch(e){} } };
+  if(!conf||!conf.url) return;
+  const store={}, docL={}, colL={}, errL=[]; let loaded=false, queue=[], waiters=[], flushT=null, busy=false;
+  const clone=o=>o==null?o:JSON.parse(JSON.stringify(o));
+  const snapCol=c=>{ const m=store[c]||{}; const docs=Object.keys(m).map(id=>({id,exists:true,data:()=>clone(m[id])})); return {docs,size:docs.length,empty:!docs.length,metadata:{fromCache:false}}; };
+  const snapDoc=(c,id)=>{ const d=(store[c]||{})[id]; return {id,exists:!!d,data:()=>clone(d),metadata:{fromCache:false}}; };
+  const emitCol=c=>(colL[c]||[]).forEach(f=>{ try{ f(snapCol(c)); }catch(e){ console.warn(e); } });
+  const emitDoc=(c,id)=>(docL[c+"/"+id]||[]).forEach(f=>{ try{ f(snapDoc(c,id)); }catch(e){ console.warn(e); } });
+  const emitAll=c=>{ emitCol(c); Object.keys(docL).forEach(k=>{ if(k.startsWith(c+"/")) emitDoc(c,k.slice(c.length+1)); }); };
+  function applyLocal(op){ const m=store[op.col]||(store[op.col]={}); if(op.op==="set") m[op.id]=clone(op.data); else if(op.op==="update") m[op.id]=Object.assign(m[op.id]||{},clone(op.data)); else delete m[op.id]; }
+  async function post(body){
+    let r; try{ r=await fetch(conf.url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({key:conf.key,...body})}); }
+    catch(e){ throw Object.assign(new Error("Réseau indisponible"),{code:"unavailable"}); }
+    let j; try{ j=await r.json(); }catch(e){ throw Object.assign(new Error("Réponse illisible du script"),{code:"server"}); }
+    if(!j.ok) throw Object.assign(new Error(j.error||"Erreur"),{code:j.code==="denied"?"permission-denied":"server"}); return j;
+  }
+  async function load(){
+    let r; try{ r=await fetch(conf.url+"?key="+encodeURIComponent(conf.key)+"&t="+Date.now()); }catch(e){ throw Object.assign(new Error("Réseau indisponible"),{code:"unavailable"}); }
+    const j=await r.json(); if(!j.ok) throw Object.assign(new Error(j.error||"Erreur"),{code:j.code==="denied"?"permission-denied":"server"}); return j.data||{};
+  }
+  function write(op){ applyLocal(op); emitCol(op.col); emitDoc(op.col,op.id);
+    return new Promise((res,rej)=>{ queue.push(op); waiters.push({res,rej}); clearTimeout(flushT); flushT=setTimeout(flush,queue.length>50?50:300); }); }
+  async function flush(){
+    if(busy){ clearTimeout(flushT); flushT=setTimeout(flush,300); return; } if(!queue.length) return;
+    const ops=queue.splice(0,400), ws=waiters.splice(0,ops.length); busy=true; window.GAS.pending=true;
+    try{ await post({action:"write",ops}); ws.forEach(w=>w.res()); }catch(e){ ws.forEach(w=>w.rej(e)); }
+    finally{ busy=false; window.GAS.pending=!!queue.length; if(queue.length) flush(); }
+  }
+  async function refresh(){
+    if(queue.length||busy) return;
+    try{ const d=await load(); if(queue.length||busy) return;
+      const cols=new Set([...Object.keys(store),...Object.keys(d),...Object.keys(colL),...Object.keys(docL).map(k=>k.split("/")[0])]);
+      for(const c of cols){ const nv=d[c]||{}; const ch=JSON.stringify(store[c]||{})!==JSON.stringify(nv); store[c]=nv; if(ch||!loaded) emitAll(c); }
+      loaded=true;
+    }catch(e){ errL.forEach(f=>{ try{ f(e); }catch(x){} }); }
+  }
+  const docRef=(c,id)=>({ id,
+    set:d=>write({op:"set",col:c,id,data:d}), update:d=>write({op:"update",col:c,id,data:d}), delete:()=>write({op:"delete",col:c,id}),
+    get:async()=>snapDoc(c,id),
+    onSnapshot(cb,err){ (docL[c+"/"+id]=docL[c+"/"+id]||[]).push(cb); if(err) errL.push(err); if(loaded) cb(snapDoc(c,id)); return ()=>{}; } });
+  const db={
+    collection:c=>({ doc:id=>docRef(c,id),
+      add:d=>{ const id="a"+Date.now().toString(36)+Math.random().toString(36).slice(2,7); return write({op:"set",col:c,id,data:d}).then(()=>({id})); },
+      onSnapshot(cb,err){ (colL[c]=colL[c]||[]).push(cb); if(err) errL.push(err); if(loaded) cb(snapCol(c)); return ()=>{}; } }),
+    doc:p=>{ const [c,id]=p.split("/"); return docRef(c,id); }
+  };
+  const toB64=blob=>new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(",")[1]); r.onerror=rej; r.readAsDataURL(blob); });
+  const assets={
+    async upload(blob){ const j=await post({action:"upload",name:blob.name||"photo.jpg",mime:blob.type||"image/jpeg",b64:await toB64(blob)}); return {id:j.id,url:"https://drive.google.com/thumbnail?id="+j.id+"&sz=w2000"}; },
+    async delete(id){ await post({action:"deletefile",id}); }
+  };
+  const user={ can:async()=>true };
+  window.GAS.bulk=ops=>{ const cols=new Set(); const ps=ops.map(op=>{ applyLocal(op); cols.add(op.col); return new Promise((res,rej)=>{ queue.push(op); waiters.push({res,rej}); }); }); cols.forEach(emitAll); clearTimeout(flushT); flushT=setTimeout(flush,50); return Promise.all(ps); };
+  window.GAS.refresh=refresh;
+  window.claude={ use:async n=>n==="db"?db:n==="user"?user:n==="assets"?assets:null };
+  refresh(); setInterval(()=>{ if(document.visibilityState==="visible") refresh(); },30000);
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") refresh(); });
+  window.addEventListener("beforeunload",e=>{ if(queue.length||busy){ e.preventDefault(); e.returnValue=""; } });
+})();
+</script>
+<script>
 "use strict";
 /* ---------- Constantes ---------- */
 const CATS = {
@@ -1402,7 +1467,7 @@ function alertesAll(){
   for(const x of alertesMaison()) a.push(x);
   const order={bad:0,warn:1,info:2}; return a.sort((p,q)=>order[p.k]-order[q.k]);
 }
-const photoUrl=id=>"/_blob/"+encodeURIComponent(id);
+const photoUrl=id=>"https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w2000";
 function ficheMaison(){
   const M=cfg().biens.secondaire, ph=M.photos||[], canUp=!!S.assets&&S.canWrite;
   const map=M.adresse?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(String(M.adresse).replace(/\n/g,", "))}`:"";
@@ -1553,6 +1618,40 @@ function regulForm(r={}){
     setTimeout(async()=>{ const n=await applyReguls(); if(n) toast(`${n} appel${n>1?"s":""} de charges ajusté${n>1?"s":""}`); },400);
   }});
 }
+/* ---------- Connexion Google Sheets & sauvegardes ---------- */
+function openSetup(msg){
+  const c=window.GAS?.conf||{};
+  openForm({title:"Connexion à la base Google Sheets",intro:(msg?msg+" ":"")+"Collez l'URL de l'application Web Apps Script (elle se termine par /exec) et la clé secrète enregistrée dans les propriétés du script. Ces informations restent sur cet appareil.",
+    values:{url:c.url||"",key:c.key||""},fields:[
+    {id:"url",label:"URL de l'application Web",type:"url",required:true,placeholder:"https://script.google.com/macros/s/…/exec"},
+    {id:"key",label:"Clé secrète",type:"text",required:true}
+  ],submitLabel:"Se connecter",onSubmit:async v=>{
+    const url=v.url.trim(), key=v.key.trim();
+    if(!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url)) return "L'URL doit être celle de l'application Web Apps Script (script.google.com…/exec).";
+    try{ const r=await fetch(url+"?action=ping&key="+encodeURIComponent(key)); const j=await r.json(); if(!j.ok) return j.code==="denied"?"Clé refusée par le script. Vérifiez la propriété KEY.":(j.error||"Le script a répondu une erreur."); }
+    catch(e){ return "Impossible de joindre le script. Vérifiez l'URL et que le déploiement est accessible à « Tout le monde »."; }
+    window.GAS.save({url,key}); location.reload(); return true;
+  }});
+}
+function backupData(){
+  const m=a=>Object.fromEntries((a||[]).map(({id,...d})=>[id,d]));
+  return {app:"indivision",version:1,exportedAt:new Date().toISOString(),collections:{config:S.config?{main:S.config}:{},operations:m(S.ops),travaux:m(S.travaux),entretiens:m(S.entretiens),notices:m(S.notices),sorties:m(S.sorties)}};
+}
+function exportJSON(){
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify(backupData(),null,1)],{type:"application/json"})); a.download=`indivision-sauvegarde-${todayStr()}.json`; document.body.appendChild(a); a.click(); a.remove(); toast("Sauvegarde téléchargée");
+}
+async function importJSON(file){
+  let d; try{ d=JSON.parse(await file.text()); }catch(e){ return toast("Fichier illisible : choisissez une sauvegarde .json de l'app."); }
+  const C=d&&d.collections; if(!C||d.app!=="indivision") return toast("Ce fichier n'est pas une sauvegarde de l'app Indivision.");
+  const ops=[]; for(const [col,docs] of Object.entries(C)) for(const [id,data] of Object.entries(docs||{})) ops.push({op:"set",col,id,data});
+  const n=(C.operations?Object.keys(C.operations).length:0);
+  openConfirm(`Charger ${ops.length} éléments (dont ${n} opérations) depuis la sauvegarde du ${fmtD((d.exportedAt||"").slice(0,10))} ? Les éléments portant le même identifiant seront remplacés ; rien n'est supprimé.`,"Charger",async()=>{
+    const z=$("#bkMsg"); if(z) z.textContent="Envoi en cours…";
+    try{ for(let i=0;i<ops.length;i+=400){ await window.GAS.bulk(ops.slice(i,i+400)); if(z) z.textContent=`Envoi en cours… ${Math.min(i+400,ops.length)} / ${ops.length}`; } toast("Sauvegarde chargée"); if(z) z.textContent="Sauvegarde chargée."; }
+    catch(e){ toast("Échec de l'envoi : "+(e.message||e)); if(z) z.textContent="Échec : "+(e.message||e); }
+  });
+}
+document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.files[0]) importJSON(ev.target.files[0]); });
 function regulRow(){
   const P=regulPlan(), M=d=>MOIS_L[+d.slice(5,7)-1]+" "+d.slice(0,4);
   const items=P.regs.map(r=>{ const pl=P.plan[r.id]||[];
@@ -1597,6 +1696,10 @@ function vParametres(){
       </div>
     </div>
     <div id="importZone" style="grid-column:1/-1;display:none"></div>
+    <div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Base Google Sheets et sauvegardes</h3><span class="chip good">${esc((window.GAS?.conf?.url||"").replace(/^https:\/\/script\.google\.com\/macros\/s\/(.{6}).*$/,"script …$1"))}</span></div>
+      <p style="margin:0 0 10px" class="muted">Les données sont enregistrées dans votre Google Sheet. Pour reprendre les données de la version claude.ai, exportez-y une sauvegarde (.json) puis chargez-la ici.</p>
+      <div class="row w"><button type="button" class="primary" data-a="bk-pick">Charger une sauvegarde (.json)</button><input type="file" id="bkIn" accept="application/json,.json" hidden><button type="button" data-a="export-json">Exporter une sauvegarde</button><button type="button" class="ghost" data-a="gas-setup">Changer la connexion</button></div>
+      <small id="bkMsg"></small></div>
     <div class="card" style="grid-column:1/-1"><div class="row" style="justify-content:space-between">
       <small style="max-width:70ch">Les données sont partagées entre toutes les personnes qui ont accès à cette page. Pour que vos co-indivisaires puissent saisir, partagez-la avec eux au niveau Contributeur. N'y mettez ni identifiants bancaires ni codes d'accès.</small>
       <span class="form-err" id="paramErr"></span><button type="submit" class="primary w">Enregistrer les paramètres</button></div></div>
@@ -1759,6 +1862,9 @@ document.addEventListener("click",async ev=>{
     case "add-not": return openNotice();
     case "add-sortie": return sortieForm();
     case "add-regul": return regulForm();
+    case "export-json": return exportJSON();
+    case "gas-setup": return openSetup();
+    case "bk-pick": { const i=$("#bkIn"); if(i){ i.value=""; i.click(); } return; }
     case "recur-amount": return recurAmountForm(el.dataset.key);
     case "edit-regul": return regulForm((cfg().regulsCopro||[]).find(x=>x.id===id)||{});
     case "del-regul": return openConfirm("Supprimer cette régularisation ? Les appels de charges prévus reviennent à leur montant d'origine.","Supprimer",async()=>{ if(await saveConfig({regulsCopro:(cfg().regulsCopro||[]).filter(x=>x.id!==id)})) setTimeout(async()=>{ const n=await applyReguls(); if(n) toast(`${n} appel${n>1?"s":""} de charges rétabli${n>1?"s":""}`); },400); });
@@ -1876,16 +1982,17 @@ async function copyCsv(){
 render(true);
 (async()=>{
   const C=window.claude;
+  if(!window.GAS||!window.GAS.conf){ setStatus("Non connecté","warn"); S.ready=true; render(true); return openSetup(); }
   if(!C||!C.use){ setStatus("Aperçu hors ligne : les données ne sont pas enregistrées","bad"); S.ready=true; render(true); return; }
   const timer=setTimeout(()=>setStatus("Données injoignables pour l'instant","warn"),10000);
   const [db,user]=await Promise.all([C.use("db"),C.use("user")]);
-  if(!db){ clearTimeout(timer); setStatus("Connectez-vous à claude.ai pour voir les données","bad"); S.ready=true; render(true); return; }
+  if(!db){ clearTimeout(timer); setStatus("Connexion impossible","bad"); S.ready=true; render(true); return; }
   S.db=db;
   C.use("assets").then(a=>{ S.assets=a; if(S.ready) scheduleRender(); }).catch(()=>{});
   if(user){ try{ const w=await user.can("data.write"); if(w===false){ S.canWrite=false; document.body.classList.add("readonly"); } }catch{} }
   const pending=new Set(["config","operations","travaux","entretiens","notices","sorties"]);
-  const arrived=(k,snap)=>{ if(!snap.metadata.fromCache){ pending.delete(k); if(!pending.size){ clearTimeout(timer); S.ready=true; setStatus(S.canWrite?"Synchronisé":"Lecture seule","good"); } } scheduleRender(); };
-  const onErr=e=>{ clearTimeout(timer); S.ready=true; setStatus(e.code==="revoked"?"Accès retiré":"Synchronisation interrompue","bad"); console.warn(e); };
+  const arrived=(k,snap)=>{ if(!snap.metadata.fromCache){ pending.delete(k); if(!pending.size){ clearTimeout(timer); S.ready=true; setStatus("Synchronisé","good"); } } scheduleRender(); };
+  const onErr=e=>{ clearTimeout(timer); S.ready=true; setStatus(e.code==="permission-denied"?"Clé refusée":e.code==="unavailable"?"Hors ligne":"Synchronisation interrompue","bad"); console.warn(e); if(e.code==="permission-denied") openSetup("La clé secrète a été refusée par le script."); };
   db.doc("config/main").onSnapshot(s=>{ S.config=s.exists?s.data():null; arrived("config",s); },onErr);
   [["operations","ops"],["travaux","travaux"],["entretiens","entretiens"],["notices","notices"],["sorties","sorties"]].forEach(([coll,key])=>{
     db.collection(coll).onSnapshot(s=>{ S[key]=s.docs.map(d=>({id:d.id,...d.data()})); arrived(coll,s); },onErr);
