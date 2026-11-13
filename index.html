@@ -1612,28 +1612,36 @@ async function recurAmountFromLine(key){
 }
 /* ---------- Générer une nouvelle année d'opérations récurrentes ---------- */
 function genPlan(target){
-  const t=todayStr(), by={};
+  const t=todayStr(), by={}, cy=new Date().getFullYear();
   for(const o of S.ops){ const mm=IMP_RE.exec(o.id||""); if(!mm||isHono(o)||!o.date) continue; (by[mm[3]]=by[mm[3]]||[]).push(o); }
   const act=Object.entries(by).map(([k,L])=>{ L.sort((a,b)=>a.date.localeCompare(b.date)); return {k,L,last:L[L.length-1].date}; }).filter(x=>x.L.some(o=>o.prevision&&o.date>=t));
   if(!act.length) return null;
-  const ends=act.map(x=>x.last.slice(0,7)).sort(), cov=ends[Math.floor(ends.length/2)];
-  const T=target||(+cov.slice(5,7)<12?+cov.slice(0,4):+cov.slice(0,4)+1), end=`${T}-12-31`, partial=+cov.slice(5,7)<12&&+cov.slice(0,4)===T;
+  const nextM=(()=>{ const d=new Date(); return `${d.getMonth()===11?cy+1:cy}-${pad(d.getMonth()===11?1:d.getMonth()+2)}`; })();
+  const lim0=(()=>{ const d=new Date(); d.setMonth(d.getMonth()-11); return ds(d); })();
+  const missFor=(x,endYM)=>{ const lim=lim0; /* mois habituels : ceux des 11 derniers mois réels + toutes les échéances prévues */
+    const fu=new Set(x.L.filter(o=>o.prevision&&o.date>=t).map(o=>+o.date.slice(5,7))), pa=new Set(x.L.filter(o=>o.date>lim&&o.date<t).map(o=>+o.date.slice(5,7)));
+    const months=new Set(fu), nb=m=>[m===1?12:m-1,m,m===12?1:m+1].some(z=>fu.has(z));
+    if(new Set([...fu,...pa]).size>=10) for(let i=1;i<=12;i++) months.add(i); else pa.forEach(m=>{ if(!nb(m)) months.add(m); });
+    const have=new Set(x.L.map(o=>o.date.slice(0,7))), miss=[];
+    let y=+nextM.slice(0,4), m=+nextM.slice(5,7);
+    for(let ym=nextM; ym<=endYM; ){ if(months.has(m)&&!have.has(ym)) miss.push(ym); m++; if(m>12){ m=1; y++; } ym=`${y}-${pad(m)}`; }
+    return {miss,monthly:months.size>=12}; };
+  let T=target;
+  if(!T){ for(let Y=cy;Y<=cy+30&&!T;Y++) if(act.some(x=>missFor(x,`${Y}-12`).miss.some(ym=>ym.startsWith(String(Y))))) T=Y; }
+  if(!T) return null;
   const lines=[]; let n=0;
-  for(const x of act){ const lim=(()=>{ const d=new Date(x.last); d.setMonth(d.getMonth()-12); return ds(d); })();
-    const win=x.L.filter(o=>o.date>lim), months=new Set(win.map(o=>+o.date.slice(5,7))), monthly=months.size>=12, miss=[];
-    let y=+x.last.slice(0,4), m=+x.last.slice(5,7);
-    while(true){ m++; if(m>12){ m=1; y++; } const ym=`${y}-${pad(m)}`; if(ym>end.slice(0,7)) break; if(months.has(m)) miss.push(ym); }
-    if(miss.length){ lines.push({k:x.k,miss,win,monthly,last:x.L[x.L.length-1]}); n+=miss.length; } }
-  return lines.length?{T,lines,n,cov,partial}:null;
+  for(const x of act){ const r=missFor(x,`${T}-12`); if(r.miss.length){ lines.push({k:x.k,miss:r.miss,L:x.L,monthly:r.monthly}); n+=r.miss.length; } }
+  const partial=S.ops.some(o=>IMP_RE.test(o.id||"")&&(o.date||"").startsWith(String(T)));
+  return lines.length?{T,lines,n,partial}:null;
 }
 async function genYear(target,silent){
   const P=genPlan(target); if(!P){ if(!silent) toast("Le prévisionnel est déjà complet"); return 0; }
   const lab=k=>((recurTypes().find(r=>r.key===k)||{}).label)||k, ML=ym=>`${MOIS_L[+ym.slice(5,7)-1]} ${ym.slice(0,4)}`;
-  if(!silent&&!(await askConfirm(P.partial?`Compléter l'année ${P.T} ?`:`Créer l'année ${P.T} ?`,`${P.n} échéances vont être créées pour ${P.lines.length} lignes récurrentes${P.partial?`, pour finir l'année jusqu'en décembre ${P.T}`:`, de janvier à décembre ${P.T}`} : mêmes mois et même jour que d'habitude, dernier montant connu (ou celui du même mois l'année précédente), revalorisation appliquée si elle est réglée.<br><small>${P.lines.map(l=>esc(lab(l.k))).join(" · ")}</small>`,P.partial?`Compléter ${P.T}`:`Créer ${P.T}`))) return 0;
+  if(!silent&&!(await askConfirm(P.partial?`Compléter l'année ${P.T} ?`:`Créer l'année ${P.T} ?`,`${P.n} échéances vont être créées pour ${P.lines.length} lignes récurrentes${P.partial?`, pour compléter tous les mois manquants jusqu'en décembre ${P.T}`:`, de janvier à décembre ${P.T}`} : mêmes mois et même jour que d'habitude, dernier montant connu (ou celui du même mois l'année précédente), revalorisation appliquée si elle est réglée.<br><small>${P.lines.map(l=>esc(lab(l.k))).join(" · ")}</small>`,P.partial?`Compléter ${P.T}`:`Créer ${P.T}`))) return 0;
   const ids=new Set(S.ops.map(o=>o.id)), now=new Date().toISOString(), W=[], months=new Set(), RV=cfg().reval||{};
   for(const l of P.lines){
     for(const ym of l.miss){ const [y,mm]=ym.split("-"), m=+mm, id=`imp-${y}-${mm}-${l.k}`; if(ids.has(id)) continue;
-      const same=[...l.win].reverse().find(o=>+o.date.slice(5,7)===m)||l.last, ref=l.monthly?l.last:same;
+      const prev=l.L.filter(o=>o.date<`${ym}-01`), lastP=prev[prev.length-1]||l.L[0], same=[...prev].reverse().find(o=>+o.date.slice(5,7)===m), ref=l.monthly?lastP:(same||lastP);
       const dd=dayFor(l.k,y,mm)||`${y}-${mm}-${String(Math.min(+ref.date.slice(8,10)||1,new Date(+y,m,0).getDate())).padStart(2,"0")}`;
       const base=ref.regul?+ref.regul.base:(ref.revalBase!=null&&RV[l.k]?+ref.revalBase:+ref.montant), lib=(ref.libelle||"").split(" – ")[0];
       const o={date:dd,categorie:ref.categorie,sens:ref.sens,bien:ref.bien,libelle:`${lib} – ${MOIS_L[m-1]} ${y}`,indivisaire:ref.indivisaire||"",pointe:false,prevision:true,note:"",montant:+ref.montant,createdAt:now,updatedAt:now};
@@ -1647,16 +1655,13 @@ async function genYear(target,silent){
   try{ await applyReguls(); }catch(e){}
   if(!silent) toast(`Année ${P.T} ${P.partial?"complétée":"créée"} : ${W.length} échéances`); render(true); return W.length;
 }
-/* Mise à niveau unique : compléter l'année prochaine jusqu'en décembre et retirer les échéances isolées au-delà */
+/* Mise à niveau unique : compléter tous les mois manquants jusqu'à la dernière année déjà commencée (au moins l'an prochain) */
 async function migrProj(){
-  if(S._mig||!S.config||!S.canWrite||cfg().migrProj1||!S.ops.length) return; S._mig=true;
-  const Y=new Date().getFullYear()+1, imp=y=>S.ops.filter(o=>IMP_RE.test(o.id||"")&&(o.date||"").startsWith(String(y)));
-  const nY=imp(Y).length; let del=0;
-  for(let y=Y+1;y<=Y+10;y++){ const L=imp(y).filter(o=>o.prevision); if(L.length&&L.length<nY*0.25){ await Promise.all(L.map(o=>S.db.collection("operations").doc(o.id).delete().catch(writeErr))); del+=L.length; } }
-  if(del) await new Promise(r=>setTimeout(r,300));
+  if(S._mig||!S.config||!S.canWrite||cfg().migrProj2||!S.ops.length) return; S._mig=true;
+  const Y=Math.max(new Date().getFullYear()+1,...S.ops.filter(o=>o.prevision&&IMP_RE.test(o.id||"")).map(o=>+(o.date||"0").slice(0,4)));
   const n=await genYear(Y,true);
-  await optimistic(S.db.doc("config/main").set({...cfg(),migrProj1:true,updatedAt:new Date().toISOString()}));
-  if(n||del) toast(`Prévisionnel ${Y} complété : ${n} échéances ajoutées`);
+  await optimistic(S.db.doc("config/main").set({...cfg(),migrProj2:true,updatedAt:new Date().toISOString()}));
+  if(n) toast(`Prévisionnel complété jusqu'à fin ${Y} : ${n} échéances ajoutées`);
 }
 function projYear(){ const P=genPlan(); if(P) return P.partial?P.T:P.T-1; const d=S.ops.filter(o=>o.prevision&&IMP_RE.test(o.id||"")).map(o=>o.date||"").sort().pop(); return Math.max(+(d||"0").slice(0,4),new Date().getFullYear()); }
 function lineSet(key){
@@ -2405,8 +2410,12 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.fil
 /* ---------- Historique d'activité ---------- */
 const ACT={create:["＋","Ajout"],update:["✎","Modification"],delete:["✕","Suppression"],bulk:["⇄","Mise à jour groupée"],restore:["↺","Restauration"]};
 /* ---------- Version et nouveautés ---------- */
-const APP_VERSION="1.5.0";
+const APP_VERSION="1.5.1";
 const CHANGELOG=[
+  {v:"1.5.1",d:"2026-11-13",t:"Prévisionnel complet",items:[
+    "Correctif : les mois manquants au milieu d'une année (et pas seulement à la fin) sont maintenant recréés.",
+    "À l'ouverture, toutes les années déjà commencées (2027, 2028…) sont complétées automatiquement, une seule fois.",
+    "Les mois habituels de chaque ligne sont repérés sur les 11 derniers mois réels et les échéances prévues, sans créer de doublon quand une opération a simplement changé de mois."]},
   {v:"1.5.0",d:"2026-11-13",t:"Création des années du prévisionnel",items:[
     "L'année 2027 est complétée automatiquement jusqu'en décembre (une seule fois, à l'ouverture).",
     "Bouton « + Créer l'année 2028 » en haut d'Opérations bancaires (et dans Réglages) : crée toute l'année sur le modèle des années précédentes, puis propose 2029, 2030…",
