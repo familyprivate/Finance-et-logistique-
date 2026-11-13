@@ -702,8 +702,10 @@ html.sk .sortie{border:var(--sk-ow2) solid var(--sk-oc2);border-radius:var(--sk-
   table.ops tr.op td.amt{grid-column:4;grid-row:1;order:0;margin:0;font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
   table.ops tr.op td.pt{grid-column:5;grid-row:1;order:0;margin:0}
   table.ops tr.op td.pt .done-mark{display:none}
-  table.ops tr.op td.pt .ghost{display:none}
-  table.ops tr.op td.pt:has(.done-mark){width:0}
+  table.ops tr.op td.pt .ghost:not(.unv){display:none}
+  table.ops tr.op td.pt .unv{font-size:0!important;width:30px;height:30px;min-height:30px;padding:0!important;border-radius:50%;display:inline-flex!important;align-items:center;justify-content:center;background:var(--good)!important;border:0!important;opacity:1!important}
+  table.ops tr.op td.pt .unv::before{content:"✓";font-size:.95rem;color:#fff;font-style:normal}
+  table.ops tr.op td.pt:has(.done-mark){width:auto}
   table.ops tr.op td.pt button[data-a^="valider"]{font-size:0;width:30px;height:30px;min-height:30px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal}
   table.ops tr.op td.pt button[data-a^="valider"]::before{content:"✓";font-size:.95rem;line-height:1}
   table.ops tr.op.open .dup{display:inline-flex}
@@ -997,6 +999,8 @@ async function saveConfig(p){
 /* ---------- Validation en un clic ---------- */
 async function validerOps(list){
   if(!list.length) return; const ok=[];
+  const fut=list.filter(o=>(o.date||"")>todayStr()); if(fut.length){ const d=fut.map(o=>o.date).sort()[0];
+    if(!(await askConfirm("Valider en avance ?",`Cette opération est prévue le ${fmtD(d)}, dans ${daysBetween(todayStr(),d)} jour${daysBetween(todayStr(),d)>1?"s":""}. La valider maintenant la compte comme déjà passée sur le compte.`,"Valider quand même"))) return; }
   for(const o of list){ if(await patch("operations",o.id,{prevision:false,pointe:true,validee:true,updatedAt:new Date().toISOString()})) ok.push(o); else return; }
   const months=[...new Set(ok.filter(o=>o.bien==="locatif"&&!isHono(o)).map(o=>o.date.slice(0,7)))];
   if(months.length) setTimeout(()=>majHonoraires(months,true),400);
@@ -1782,7 +1786,7 @@ function opRow(o,sub){ return `<tr class="op ${o.prevision?"prev":""} ${sub?"sub
     <td class="lib"><span class="one" title="${esc([o.libelle,o.indivisaire,o.note].filter(Boolean).join(" · "))}">${sub?`<span class="muted" aria-hidden="true">└ </span>`:""}${esc(shortLib(o.libelle))}${(o.indivisaire||"")&&!sub?` <span class="muted">· ${esc(o.indivisaire)}</span>`:""}${o.regul&&o.regul.parts?` <span class="regtag" title="Appel de ${esc(eur(+o.regul.base))}, ajusté par la régularisation de charges">régul ${(()=>{const d=Object.values(o.regul.parts).reduce((a,v)=>a+(+v),0);return (d<0?"−":"+")+eur(Math.abs(d));})()}</span>`:""}</span></td>
     <td class="cat">${sub?"":`<span class="chip">${esc(o.categorie)}</span>`}</td><td class="bien">${sub?"":bienChip(o.bien)}</td>
     <td class="amt ${o.sens==="in"?"pos":"neg"}">${+o.montant===0?"":o.sens==="in"?"+":"−"}${eur(+o.montant).replace("-","")}${regulCovered(o)?`<small class="est-tag">couvert par la régul. · pas de prélèvement</small>`:""}${o.prevision&&o.revalBase!=null&&Math.abs(+o.montant-+o.revalBase)>0.004?`<small class="est-tag" title="Montant estimé avec le taux de revalorisation, à confirmer">estimé</small>`:""}</td>
-    <td class="pt">${sub?"":o.prevision?`<button class="sm w" data-a="valider" data-id="${esc(o.id)}" title="L'opération est passée sur le compte">Valider</button>`:`<span class="done-mark" title="Passée sur le compte">✓ Passée</span>${o.validee?`<button class="ghost sm w" data-a="annuler-valid" data-ids="${esc(o.id)}" title="Annuler la validation : repasser en prévu" aria-label="Annuler la validation">↶</button>`:""}`}</td>
+    <td class="pt">${sub?"":o.prevision?`<button class="sm w" data-a="valider" data-id="${esc(o.id)}" title="L'opération est passée sur le compte">Valider</button>`:`<span class="done-mark" title="Passée sur le compte">✓ Passée</span><button class="ghost sm w unv" data-a="annuler-valid" data-ids="${esc(o.id)}" title="Annuler la validation : repasser en prévu" aria-label="Annuler la validation">↶</button>`}</td>
     <td class="act w">${sub&&o.prevision&&ANNUELS.some(a=>a.re.test(o.libelle||""))?`<button class="ghost sm" data-a="reporter" data-id="${esc(o.id)}" title="Pas arrivée ce mois-ci : reporter au versement du mois suivant">Reporter ›</button>`:""}<button class="ghost sm" data-a="edit-op" data-id="${esc(o.id)}" title="Modifier" aria-label="Modifier">Modifier</button>${sub?"":`<button class="ghost sm dup" data-a="dup-op" data-id="${esc(o.id)}" title="Dupliquer" aria-label="Dupliquer">Dupliquer</button>`}${sub?"":`<button class="ghost sm danger" data-a="del-op" data-id="${esc(o.id)}" title="Supprimer" aria-label="Supprimer">✕</button>`}</td></tr>`; }
 const AGENCE_GRP="Versement de l'agence";
 const agLabel=()=>cfg().agenceLabel||"Versement de l'agence Citya Béziers";
@@ -1803,7 +1807,7 @@ function groupRow(g){
       ${S.ui.pop===g.k?'<div class="pop-bd" aria-hidden="true"></div>'+popHTML(g,it,prev,tot,f):""}`
       :`<button class="ghost sm" data-a="toggle-grp" data-k="${esc(g.k)}" aria-expanded="${open}" style="padding:2px 6px;font-weight:600;color:var(--ink)"><span aria-hidden="true">${open?"▾":"▸"}</span> ${esc(gName(g.name))}</button>`}</td>
     <td class="cat"><span class="chip">${g.name===AGENCE_GRP?"Compte rendu de gestion":esc(f.categorie)}</span></td><td class="bien">${bienChip(f.bien)}</td>
-    <td class="amt ${tot>=0?"pos":"neg"}">${tot>=0?"+":"−"}${eur(Math.abs(tot))}</td><td class="pt">${prev?`<button class="sm w" data-a="valider-grp" data-k="${esc(g.k)}">Valider</button>`:`<span class="done-mark">✓ Passée</span>${it.some(o=>o.validee)?`<button class="ghost sm w" data-a="annuler-valid" data-ids="${esc(it.filter(o=>o.validee).map(o=>o.id).join(","))}" title="Annuler la validation" aria-label="Annuler la validation">↶</button>`:""}`}</td><td class="act w"></td></tr>`;
+    <td class="amt ${tot>=0?"pos":"neg"}">${tot>=0?"+":"−"}${eur(Math.abs(tot))}</td><td class="pt">${prev?`<button class="sm w" data-a="valider-grp" data-k="${esc(g.k)}">Valider</button>`:`<span class="done-mark">✓ Passée</span><button class="ghost sm w unv" data-a="annuler-valid" data-label="${esc(gName(g.name))}" data-ids="${esc(it.filter(o=>!o.prevision).map(o=>o.id).join(","))}" title="Annuler la validation : repasser en prévu" aria-label="Annuler la validation">↶</button>`}</td><td class="act w"></td></tr>`;
   if(GROUP_MODE==="bulle"||!open) return head;
   if(g.name!==AGENCE_GRP) return head+it.map(o=>opRow(o,true)).join("");
   const isAn=o=>ANNUELS.some(x=>x.re.test(o.libelle||"")), isImp=o=>/^impay|^r[ée]gularisation impay/i.test(o.libelle||"");
@@ -2234,8 +2238,12 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.fil
 /* ---------- Historique d'activité ---------- */
 const ACT={create:["＋","Ajout"],update:["✎","Modification"],delete:["✕","Suppression"],bulk:["⇄","Mise à jour groupée"],restore:["↺","Restauration"]};
 /* ---------- Version et nouveautés ---------- */
-const APP_VERSION="1.0.0";
+const APP_VERSION="1.0.1";
 const CHANGELOG=[
+  {v:"1.0.1",d:"2026-11-13",t:"Correctif validation",items:[
+    "Sur téléphone, une opération déjà validée affiche un ✓ vert : le toucher permet de la repasser en prévu (avec confirmation).",
+    "Annulation possible aussi pour le versement de l'agence et pour les opérations importées déjà passées.",
+    "Valider une opération datée dans le futur demande maintenant une confirmation."]},
   {v:"1.0.0",d:"2026-11-13",t:"Première version",items:[
     "Trois espaces : Finances (tableau de bord, opérations bancaires, réglages), Béziers et Soullans.",
     "Données partagées dans Google Sheets, photos dans Google Drive, sauvegarde et import JSON.",
@@ -2660,7 +2668,9 @@ document.addEventListener("click",async ev=>{
     case "pop-edit": S.ui.popEdit=el.dataset.id; rerenderOps(); { const i=$("#popAmt"); if(i){ i.focus(); const L=i.value.length; i.setSelectionRange(L,L); } } return;
     case "pop-save": return popSave(el.dataset.id,el.dataset.kind);
     case "valider-grp": { const k=el.dataset.k; const it=S.ops.filter(o=>groupOf(o)&&(groupOf(o)+"|"+o.date)===k&&o.prevision); await validerOps(it); return; }
-    case "annuler-valid": { const ids=(el.dataset.ids||"").split(",").filter(Boolean); for(const i of ids){ if(!await patch("operations",i,{prevision:true,pointe:false,validee:false})) return; }
+    case "annuler-valid": { const ids=(el.dataset.ids||"").split(",").filter(Boolean);
+      if(el.classList.contains("unv")){ const L=ids.map(i=>byId("ops",i)).filter(Boolean); const tot=L.reduce((a,o)=>a+sg(o),0);
+        if(!(await askConfirm("Annuler la validation ?",`${el.dataset.label?`« ${esc(el.dataset.label)} » (${L.length} lignes)`:L.length>1?`Les ${L.length} lignes de « ${esc((L[0].libelle||"").split(" – ")[0])}… »`:`« ${esc((L[0]?.libelle||"").split(" – ")[0])} »`} repasse${L.length>1?"nt":""} en prévu : ${tot>=0?"+":"−"}${eur(Math.abs(tot))} ne compte${L.length>1?"nt":""} plus dans le solde réel tant qu'${L.length>1?"elles ne sont pas":"elle n'est pas"} revalidée${L.length>1?"s":""}.`,"Repasser en prévu"))) return; } { const R=await Promise.all(ids.map(i=>patch("operations",i,{prevision:true,pointe:false,validee:false}))); if(R.some(x=>!x)) return; }
       const ms=[...new Set(ids.map(i=>byId("ops",i)).filter(o=>o&&o.bien==="locatif"&&!isHono(o)).map(o=>o.date.slice(0,7)))]; if(ms.length) setTimeout(()=>majHonoraires(ms,true),400);
       toast(ids.length>1?"Validation annulée : opérations repassées en prévu":"Validation annulée : opération repassée en prévu"); return; }
     case "import-tableur": return runImport();
