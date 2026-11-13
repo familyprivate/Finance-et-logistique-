@@ -190,6 +190,8 @@ table.ops td.act .ghost{font-size:.74rem;color:var(--muted);opacity:.55;padding:
 table.ops td.act .ghost.danger{color:var(--muted)}
 table.ops tr.op:hover td.act .ghost,table.ops td.act .ghost:focus-visible{opacity:1}
 table.ops td.act .ghost.danger:hover{color:var(--bad)}
+@media (min-width:641px) and (max-width:1000px){ table.ops thead th:nth-child(3),table.ops td.cat{display:none} table.ops td.lib{max-width:240px} table.ops .th-btn{font-size:0;padding:4px 10px} table.ops .th-btn::before{content:"+ Ajouter";font-size:.8rem} table.ops td.act{white-space:nowrap} table.ops td.act .ghost[data-a=edit-op],table.ops td.act .ghost[data-a=dup-op]{font-size:0!important;padding:8px 9px!important} table.ops td.act .ghost[data-a=edit-op]::before{content:"✎";font-size:1rem} table.ops td.act .ghost[data-a=dup-op]::before{content:"⧉";font-size:1rem} table.ops td.date{font-size:.85rem} }
+@media (hover:none){ table.ops td.act .ghost{opacity:.9;padding:8px 9px;min-height:34px} }
 .info-btn{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--muted);background:transparent;color:var(--muted);font:italic 700 11px Georgia,serif;padding:0;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-left:4px;cursor:pointer}
 .info-btn:hover,.info-btn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
 .pop{position:absolute;left:8px;top:calc(100% - 4px);z-index:8;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:10px 12px;min-width:300px;max-width:calc(100vw - 40px);font-style:normal;color:var(--ink);white-space:normal}
@@ -426,6 +428,88 @@ table.ops thead th.th-add{text-align:right;padding-top:6px;padding-bottom:6px}
 html.sk .th-btn{border:var(--sk-ow2) solid var(--sk-oc2);border-radius:var(--sk-rb);background:var(--surface);color:var(--ink)}
 html.sk .fab{border:var(--sk-ow2) solid var(--sk-oc2)}
 #calCard tr.rg-row td{padding-top:0;border-top:0}
+#calCard tr.cal-click{cursor:pointer}
+#calCard tr.cal-click:hover td{background:color-mix(in srgb,var(--accent,#F2B53A) 10%,transparent)}
+#calCard tr.cal-click:focus-visible{outline:2px solid var(--ink,#333);outline-offset:-2px}
+#calCard .cal-x{color:var(--muted);font-size:1.2rem;text-align:right;width:24px}
+#calCard .cal-d{white-space:nowrap}
+#calCard .rv-on{font-weight:600;white-space:nowrap}
+#calCard tr.cal-grp .cal-l{display:flex;align-items:center;gap:6px}
+#calCard tr.cal-grp .cal-l small{display:block;font-weight:400}
+.m-intro{margin:0}
+.pin-who{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;justify-content:center}
+.pin .pin-who button{min-width:130px;text-align:center;justify-content:center;padding:16px 22px;border-radius:999px;border:0!important;background:var(--key)!important;box-shadow:0 3px 0 var(--key-sh)!important;color:var(--key-c)!important;font-family:var(--font-display);font-size:1.35rem;font-weight:600;cursor:pointer}
+.pc-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line)}
+.pin{position:absolute;inset:0;display:flex;flex-direction:column;overflow:auto;background:#FFF4E0;color:#4A2A12;--key:#fff;--key-sh:#E8D6B4;--key-c:#4A2A12;--dot:#7A3A1E;--bld:#7A3A1E;--win:#F7D58A;transition:opacity .25s}
+.pin.pin-ok{opacity:0}
+.pin-c{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:4px;padding:32px 20px 8px;text-align:center;position:relative;z-index:1}
+.pin-logo{position:relative;width:112px;height:112px;margin-bottom:10px}
+.pin-logo img{position:relative;width:112px;height:112px;border-radius:28px;display:block;box-shadow:0 4px 0 #E2CBA0}
+.pin-ray{position:absolute;left:50%;top:50%;width:290px;height:290px;transform:translate(-50%,-50%)}
+.pin-hi{margin:4px 0 0;font-family:var(--font-display);font-weight:600;font-size:1.6rem}
+.pin-sub{margin:0;font-size:.92rem;opacity:.8}
+.pin-dots{display:flex;gap:16px;margin:16px 0 18px}
+.pin-dots i{width:15px;height:15px;border-radius:50%;border:2px solid var(--dot);box-sizing:border-box;transition:background .12s}
+.pin-dots i.f{background:var(--dot)}
+.pin-shake{animation:pinShake .4s}
+@keyframes pinShake{20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(5px)}}
+.pin-pad{display:grid;grid-template-columns:repeat(3,68px);gap:14px 20px}
+.pin .pin-pad button{width:68px;height:68px;min-height:0;border-radius:50%;border:0!important;padding:0;background:var(--key)!important;box-shadow:0 3px 0 var(--key-sh)!important;color:var(--key-c)!important;font-family:var(--font-display);font-size:1.6rem;font-weight:600;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pin .pin-pad button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--key-sh)!important}
+.pin .pin-pad button.pin-del{background:transparent!important;box-shadow:none!important;font-size:1.3rem}
+.pin-sky{flex:none;height:150px;position:relative}
+.pin-city{position:absolute;inset:0;width:100%;height:100%}
+.pin-bld{fill:var(--bld)} .pin-win{fill:var(--win)}
+.pin-sun{fill:#F2B53A;opacity:.45} .pin-sun2{fill:#F2B53A;opacity:.55}
+.pin-ground{flex:none;height:calc(26px + env(safe-area-inset-bottom));background:var(--bld)}
+.pin-eve{--bld:#4A2A12}
+.pin-eve .pin-sky{background:linear-gradient(to bottom,transparent 0 18px,#F7D58A 18px 30px,#FFF4E0 30px 32px,#F2B53A 32px 44px,#FFF4E0 44px 46px,#EB8A3A 46px 58px,#FFF4E0 58px 60px,#E0662D 60px)}
+.pin-eve .pin-sun{fill:#F7D58A;opacity:1;transform:translate(-6px,-36px) scale(.42);transform-origin:128px 128px} .pin-eve .pin-sun2{display:none}
+.pin-night{background:#3A220F radial-gradient(circle at 50% 22%,rgba(242,181,58,.22),transparent 42%);color:#FFF4E0;--key:#4E3018;--key-sh:#22120A;--key-c:#FFF4E0;--dot:#F2B53A;--bld:#2A1608;--win:#F2B53A}
+.pin-night .pin-logo img{box-shadow:0 4px 0 rgba(0,0,0,.35)} .pin-night .pin-sub{color:#D9C3A0;opacity:1}
+.pin-night .pin-sun,.pin-night .pin-sun2{display:none}
+.pin-stars{position:absolute;left:0;top:0;width:100%;height:60%;pointer-events:none}
+.pin-sub.neg{color:#C8452B;opacity:1} .pin-night .pin-sub.neg{color:#FF9A7A}
+@media (max-height:700px){.pin-pad{grid-template-columns:repeat(3,60px);gap:10px 18px}.pin .pin-pad button{width:60px;height:60px}.pin-logo,.pin-logo img{width:92px;height:92px}.pin-sky{height:110px}.pin-c{padding-top:18px}}
+
+.al-s{display:block;font-size:.78rem;font-weight:400;opacity:.85;margin-top:2px}
+.cl{border-top:1px solid var(--line);padding:8px 0}
+.cl summary{cursor:pointer;list-style-position:outside}
+.cl ul,.cl-ul{margin:6px 0 4px;padding-left:20px;line-height:1.45}
+.cl li,.cl-ul li{margin:2px 0}
+.rg-debut{display:block;padding:9px 12px;border-radius:12px;background:color-mix(in srgb,var(--line) 45%,transparent);color:var(--muted);font-weight:600}
+.rg2{display:flex;flex-direction:column;gap:8px;align-items:flex-start;border-top:1.5px solid var(--line);padding-top:12px;width:100%}
+.rg2-item{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px}
+.rg2-h{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.f-html.field:has(.rg2){grid-column:1/-1}
+.f-html .f-lab,.f-radio legend,.f-months legend{font-weight:600;font-size:.85rem;margin-bottom:4px;display:block}
+.f-radio,.f-months{border:0;padding:0;margin:0;min-width:0}
+.seg{display:inline-flex;width:max-content;border:1.5px solid var(--line);border-radius:999px;overflow:hidden}
+.seg label{cursor:pointer}.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:block;padding:7px 22px;font-weight:600}
+.seg input:checked+span{background:var(--ink,#4a2c14);color:#fff}
+.seg input:focus-visible+span{outline:2px solid var(--accent,#F2B53A)}
+.mchips{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.mchips label{cursor:pointer}.mchips input{position:absolute;opacity:0;pointer-events:none}
+.mchips span{display:block;text-align:center;padding:6px 0;border:1.5px solid var(--line);border-radius:10px;font-size:.85rem}
+.mchips input:checked+span{background:var(--ink,#4a2c14);color:#fff;border-color:var(--ink,#4a2c14)}
+.mchips input:focus-visible+span{outline:2px solid var(--accent,#F2B53A)}
+[data-show][hidden]{display:none!important}
+.rv-alt{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.rv-q{text-align:left;width:100%;font:inherit;cursor:pointer;background:none;border:0}
+.nbadge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#C8452B;color:#fff;font-size:.7rem;font-weight:700;margin-left:4px;vertical-align:1px}
+.est-tag{display:block;font-size:.68rem;font-weight:600;color:var(--muted);font-style:italic}
+@media (max-width:640px){.mchips{grid-template-columns:repeat(4,1fr)}}
+
+.m-intro>button{margin:8px 6px 0 0}
+.ls-info{display:flex;flex-direction:column;gap:2px;color:var(--ink,inherit)}
+@media (max-width:640px){
+  #calCard tr.cal-r{grid-template-columns:minmax(0,1fr) auto 14px!important}
+  #calCard tr.cal-r .cal-x{display:block!important;grid-column:3!important;grid-row:1 / span 4!important;align-self:center!important;justify-self:end;width:auto}
+  #calCard tr.cal-grp .cal-a:not(:empty){display:block!important}
+  #calCard .cal-rv:empty{display:none!important}
+}
+
 .rg-box{display:flex;gap:8px;align-items:flex-start;font-size:.85rem}
 .rg-ico{color:var(--muted);padding-top:4px}
 .rg-item{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;padding:6px 10px;margin-bottom:6px;border-radius:8px;background:var(--surface-2)}
@@ -434,6 +518,128 @@ html.sk .fab{border:var(--sk-ow2) solid var(--sk-oc2)}
 .amt-edit span{opacity:.35;font-size:.85em;margin-left:2px}
 .amt-edit:hover{border-color:var(--line);background:var(--surface-2)} .amt-edit:hover span{opacity:1}
 .regtag{display:inline-block;margin-left:6px;font-size:.72rem;font-style:normal;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--good-soft);color:var(--good);vertical-align:1px}
+.grid.sim .v.io{display:flex;flex-direction:column;gap:2px;font-size:1.05rem!important}
+.grid.sim .sgn{display:inline-block;margin-right:2px}
+html.sk .grid.sim>.tile.t-neg{background:#9E2A12!important;color:#FFF4E0!important}
+html.sk .grid.sim>.tile.t-neg .k,html.sk .grid.sim>.tile.t-neg .s{color:#FFE2CF!important}
+html.sk .grid.sim>.tile.t-pos{background:#5E7A1E!important;color:#FFF4E0!important}
+html.sk .grid.sim>.tile.t-pos .k,html.sk .grid.sim>.tile.t-pos .s{color:#EEF3D8!important}
+html.sk .grid.sim>.tile:nth-child(2){background:#F2B53A!important;color:#4A2A12!important}
+.grid.sim>.tile.t-neg .v{color:var(--bad)} .grid.sim>.tile.t-pos .v{color:var(--good)}
+html.sk .grid.sim>.tile.t-neg .v,html.sk .grid.sim>.tile.t-pos .v{color:inherit}
+@media (max-width:900px){ .donut{flex:none!important;width:160px!important;height:160px!important} }
+.donut-c strong{max-width:72%;font-size:clamp(.85rem,4.2vw,1.1rem)!important}
+.overlay.ov-top{z-index:120}
+.danger-btn{background:var(--bad)!important;border-color:var(--bad)!important;color:#fff!important}
+.pop-bd{display:none}
+@media (max-width:640px){ .pop-bd{display:block;position:fixed;inset:0;background:rgba(40,20,8,.35);z-index:59} body:has(.pop){overflow:hidden} .pop{padding-top:0!important} .pop .pop-t{position:sticky;top:0;z-index:2;background:inherit;background-color:var(--surface);margin:0 -12px 6px;padding:12px 12px 8px;border-bottom:1px solid var(--line)} .pop{position:fixed!important;left:10px!important;right:10px!important;top:auto!important;bottom:calc(84px + env(safe-area-inset-bottom))!important;min-width:0!important;max-width:none!important;max-height:62vh;overflow:auto;z-index:60} .pop-r{gap:10px} }
+.j-list{display:flex;flex-direction:column}
+.j-day{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:12px 0 4px}
+.j-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.j-ic{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--surface-2);flex:none;font-size:.85rem}
+.j-row.delete .j-ic{background:var(--bad-soft);color:var(--bad)} .j-row.create .j-ic{background:var(--good-soft);color:var(--good)}
+.j-row.done{opacity:.65}
+.j-row .grow{flex:1 1 0;min-width:0}
+.j-l{color:var(--muted);font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){ .j-row [data-a=j-restore],.j-row .chip{margin-left:36px} }
+.j-t{font-size:.78rem;white-space:nowrap}
+body.locked>header,body.locked>main,body.locked>nav,body.locked .bnav,body.locked .fab{visibility:hidden}
+#lockRoot{position:fixed;inset:0;z-index:200}
+.lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:#F2B53A;background-image:repeating-conic-gradient(from 0deg at 50% 30%,rgba(255,255,255,.10) 0 6deg,transparent 6deg 12deg)}
+.lock-box{width:min(360px,100%);background:#FFF8EA;border-radius:28px 28px 28px 8px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;box-shadow:0 4px 0 #E2CBA0}
+.lock-logo img{width:84px;height:84px;border-radius:20px;display:block}
+.lock-box h1{margin:4px 0 0;font-size:2rem}
+.lock-box input[type=password]{width:100%;text-align:center;font-size:1.1rem;margin-top:8px}
+.lock-box button{width:100%;justify-content:center;text-align:center}
+.lock-hi{margin:6px 0 0;font-family:var(--font-display);font-size:1.3rem;color:#4A2A12}
+.lock-rem{display:flex;gap:10px;align-items:center;font-size:.85rem;color:var(--muted);text-align:left;align-self:stretch;justify-content:center}
+.lock-rem input{width:auto;accent-color:#7A3A1E;width:18px;height:18px}
+.lock-err{min-height:1.2em;margin:0;font-size:.88rem}
+body.locked .overlay{z-index:210}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#calCard .cal-t td{vertical-align:middle}
+#calCard input.jour,#jourAgence{width:60px;text-align:center}
+.cal-sub{display:block}
+.cal-var{font-style:italic}
+.cal-wrap{overflow-x:visible}
+.cal-h{margin:18px 0 6px;font-size:.95rem}
+#calCard tr.cal-grp td{border-top:1.5px solid var(--line)}
+#calCard tr.cal-child .cal-l{padding-left:22px}
+.cal-ind{color:var(--muted);margin-right:6px}
+.cal-day-lock{display:inline-block;width:60px;text-align:center;padding:6px 0;color:var(--muted)}
+#calCard .cal-a{white-space:nowrap;width:150px}
+#calCard .cal-a .amt-edit{min-width:112px;justify-content:flex-end;display:inline-flex;gap:4px}
+#calCard .cal-a .cal-var,#calCard .cal-a .cal-sub{display:block}
+#calCard .cal-rv{width:150px}
+.rv{border:1px dashed var(--line);background:transparent;color:var(--muted);font-size:.78rem;padding:4px 10px;border-radius:99px;cursor:pointer;white-space:nowrap;min-height:0}
+.rv.on{border:1px solid var(--good);color:var(--good);font-weight:700;background:var(--good-soft)}
+.rv small{font-weight:500;opacity:.85}
+.rv-none{display:inline-block;padding-left:12px}
+html.sk .rv{border:1.5px dashed var(--sk-oc2)!important;background:transparent!important;color:var(--muted)!important;font-weight:600;box-shadow:none!important}
+html.sk .rv.on{border:1.5px solid var(--good)!important;color:var(--good)!important;background:var(--good-soft)!important}
+#calCard tr.cal-addrow td{padding-top:6px;padding-bottom:10px}
+.ag-box{border:1.5px solid var(--line);border-radius:16px;background:var(--surface-2);padding:12px 14px;margin-bottom:6px}
+.ag-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ag-tog{display:flex;align-items:flex-start;gap:8px;background:none;border:0;padding:0;text-align:left;color:var(--ink);cursor:pointer;min-height:0}
+.ag-tog strong{display:block;font-size:1rem}.ag-tog small{display:block;font-weight:500}
+.ag-chev{font-size:.9rem;margin-top:3px;width:14px}
+.ag-day{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted);margin:0}
+.ag-note{font-size:.8rem;margin:10px 0 4px}
+.ag-list{list-style:none;margin:0;padding:0;background:var(--surface);border-radius:12px;border:1px solid var(--line)}
+.ag-row{padding:8px 12px;border-bottom:1px solid var(--line)}
+.ag-row:last-child{border-bottom:0}
+.ag-main{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ag-l{font-weight:600;min-width:0}
+.ag-a{text-align:right;flex:none}
+.ag-a .reval-btn{margin-top:0}
+.ag-sub{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.78rem;margin-top:2px}
+.ag-out{background:none;border:0;color:var(--muted);font-size:.76rem;padding:2px 4px;text-decoration:underline;min-height:0;cursor:pointer}
+.ag-out:hover{color:var(--bad)}
+html.sk .ag-tog,html.sk .ag-out,html.sk .reval-btn{border:0!important;background:none!important;box-shadow:none!important;border-radius:6px}
+html.sk .ag-out{font-weight:500;text-decoration:underline}
+html.sk .ag-tog{font-weight:400}
+@media (min-width:761px){
+  .ag-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,240px) 230px 60px;align-items:center;gap:12px;padding:6px 12px}
+  .ag-main,.ag-sub{display:contents}
+  .ag-l{grid-column:1} .ag-sub>.muted{grid-column:2;grid-row:1;font-size:.8rem} .ag-a{grid-column:3;grid-row:1;display:flex;align-items:center;gap:6px;justify-content:flex-end}
+  .ag-a .cal-sub{display:inline} .ag-out{grid-column:4;grid-row:1;justify-self:end}
+}
+.ag-add{display:block;margin-top:10px}
+.ag-add select{width:100%;font-size:.86rem}
+@media (max-width:760px){
+  #calCard .cal-t thead{display:none}
+  #calCard .cal-t,#calCard .cal-t tbody{display:block;width:100%}
+  #calCard tr.cal-r{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:3px;padding:10px 4px;border-bottom:1px solid var(--line)}
+  #calCard tr.cal-r td{display:block;padding:0;border:0;background:transparent!important}
+  #calCard .cal-l{grid-column:1;grid-row:1;font-weight:600;min-width:0}
+  #calCard .cal-a{grid-column:2;grid-row:1;text-align:right}
+  #calCard .cal-b{grid-column:1;grid-row:2}
+  #calCard .cal-q{grid-column:1;grid-row:3;font-size:.8rem}
+  #calCard .cal-d{grid-column:2;grid-row:2 / span 2;justify-self:end;align-self:center}
+  #calCard .cal-rv{grid-column:1;grid-row:4;width:auto}
+  #calCard .cal-rv:has(.rv-none){display:none}
+  #calCard .cal-x{grid-column:2;grid-row:4;justify-self:end}
+  #calCard tr.cal-child .cal-d{display:none}
+  #calCard tr.cal-child .cal-q{grid-row:2}
+  #calCard tr.cal-child .cal-x{grid-row:2;align-self:center}
+  #calCard tr.cal-child .cal-rv{grid-row:3}
+  #calCard tr.cal-child{padding:8px 4px}
+  #calCard .cal-x:empty,#calCard .cal-b:empty{display:none}
+  #calCard .cal-a{width:auto}
+  #calCard tr.cal-child{margin-left:10px;border-left:2px solid var(--line)}
+  #calCard tr.cal-child .cal-l{padding-left:0}
+  #calCard tr.cal-grp .cal-a,#calCard tr.cal-grp .cal-rv{display:none}
+  #calCard tr.cal-addrow{display:block}
+  #calCard tr.cal-addrow td{display:block}
+  #calCard tr.rg-row{display:block}
+  #calCard tr.rg-row td{display:block;padding:0 0 8px}
+  .ag-head{flex-direction:column;align-items:stretch}
+  .ag-day{justify-content:flex-start;padding-left:22px}
+}
+.reval-btn{display:block;margin:2px 0 0 auto;border:0;background:transparent;color:var(--muted);font-size:.72rem;padding:1px 4px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.reval-btn.on{color:var(--good);font-weight:700}
+.reval-btn:hover{background:var(--surface-2)}
+@media (max-width:640px){ table.prev-t{font-size:.84rem;table-layout:fixed;width:100%} table.prev-t th,table.prev-t td{padding:8px 4px} table.prev-t th:first-child,table.prev-t td:first-child{width:3.4em} table.prev-t th{font-size:.66rem;white-space:normal} }
 .stack{display:flex;flex-direction:column;gap:16px;min-width:0}
 .stack>.card{margin:0}
 .card-sub{margin:-4px 0 12px;font-size:.82rem;color:var(--muted)}
@@ -538,6 +744,7 @@ html.sk .tile{border-radius:var(--sk-rt,var(--sk-r));color:var(--sk-tink,var(--i
 html.sk .grid>.tile:nth-child(4n+1){background:var(--sk-t1);border-color:var(--sk-tb1,var(--sk-oc));transform:rotate(var(--sk-rot1,0deg))}
 html.sk .grid>.tile:nth-child(4n+2){background:var(--sk-t2);border-color:var(--sk-tb2,var(--sk-oc));color:var(--sk-tink2,var(--sk-tink,var(--ink)));transform:rotate(var(--sk-rot2,0deg))}
 html.sk .grid>.tile:nth-child(4n+3){background:var(--sk-t3);border-color:var(--sk-tb3,var(--sk-oc));transform:rotate(var(--sk-rot1,0deg))}
+html.sk .grid>a.tile:nth-child(4n+4){color:var(--sk-tink4,var(--sk-tink,var(--ink)))!important}
 html.sk .grid>.tile:nth-child(4n+4){background:var(--sk-t4);border-color:var(--sk-tb4,var(--sk-oc));color:var(--sk-tink4,var(--sk-tink,var(--ink)));transform:rotate(var(--sk-rot2,0deg))}
 html.sk .card,html.sk .tile{border-top:var(--sk-ctop,var(--sk-ow) solid var(--sk-oc))}
 html.sk .grid>.tile.hero{background:var(--accent);color:var(--accent-ink)}
@@ -603,6 +810,8 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 </style>
 </head>
 <body>
+<div id="lockRoot" hidden></div>
+<script>try{ if(JSON.parse(localStorage.getItem("indiv-gas")||"null")) document.body.classList.add("locked"); }catch(e){}</script>
 <header class="top">
   <div class="top-inner">
     <div class="brand">
@@ -614,7 +823,7 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 </header>
 <main id="main"></main>
 <nav class="bnav" id="bnav" aria-label="Sections"></nav>
-<div id="modalRoot"></div>
+<div id="modalRoot"></div><div id="confirmRoot"></div>
 <div id="toastRoot"></div>
 
 <script>
@@ -642,12 +851,25 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
     let r; try{ r=await fetch(conf.url+"?key="+encodeURIComponent(conf.key)+"&t="+Date.now()); }catch(e){ throw Object.assign(new Error("Réseau indisponible"),{code:"unavailable"}); }
     const j=await r.json(); if(!j.ok) throw Object.assign(new Error(j.error||"Erreur"),{code:j.code==="denied"?"permission-denied":"server"}); return j.data||{};
   }
-  function write(op){ applyLocal(op); emitCol(op.col); emitDoc(op.col,op.id);
+  const labelOf=(c,d)=>{ if(!d) return ""; if(c==="operations") return `${String(d.libelle||"").split(" – ")[0]} · ${(d.sens==="in"?"+":"−")}${(+d.montant||0).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})} € · ${String(d.date||"").split("-").reverse().join("/")}`; if(c==="config") return "Paramètres"; return d.titre||d.nom||d.equipement||d.libelle||""; };
+  const COLN={operations:"Opération",travaux:"Petits travaux",entretiens:"Entretien",notices:"Notice",sorties:"Adresse",config:"Paramètres"};
+  function journalFor(ops){
+    let cw=""; try{ cw=sessionStorage.getItem("indiv-who")||""; }catch(e){} const who=cw||conf.name||"", at=new Date().toISOString(), out=[]; const rnd=()=>Math.random().toString(36).slice(2,6);
+    const real=ops.filter(o=>o.col!=="journal"&&!o.nolog);
+    const del=real.filter(o=>o.op==="delete"), oth=real.filter(o=>o.op!=="delete");
+    for(const o of del) out.push({act:"delete",col:o.col,id:o.id,label:labelOf(o.col,o._before),before:o._before||null});
+    if(oth.length>6){ const n=oth.filter(o=>o.col==="operations").length; out.push({act:"bulk",col:"operations",label:`${oth.length} modifications groupées${n?` (dont ${n} opérations)`:""}`}); }
+    else for(const o of oth) out.push({act:o._existed?"update":"create",col:o.col,id:o.id,label:labelOf(o.col,(store[o.col]||{})[o.id]||o.data)});
+    return out.map((e,i)=>({op:"set",col:"journal",id:"j"+Date.now().toString(36)+rnd()+i,data:{...e,at,who,kind:COLN[e.col]||e.col}}));
+  }
+  function write(op){ const prev=(store[op.col]||{})[op.id]; op._existed=!!prev; if(op.op==="delete") op._before=clone(prev); applyLocal(op); emitCol(op.col); emitDoc(op.col,op.id);
     return new Promise((res,rej)=>{ queue.push(op); waiters.push({res,rej}); clearTimeout(flushT); flushT=setTimeout(flush,queue.length>50?50:300); }); }
   async function flush(){
     if(busy){ clearTimeout(flushT); flushT=setTimeout(flush,300); return; } if(!queue.length) return;
     const ops=queue.splice(0,400), ws=waiters.splice(0,ops.length); busy=true; window.GAS.pending=true;
-    try{ await post({action:"write",ops}); ws.forEach(w=>w.res()); }catch(e){ ws.forEach(w=>w.rej(e)); }
+    let jr=[]; try{ jr=journalFor(ops); jr.forEach(applyLocal); const J=Object.entries(store.journal||{}).sort((a,b)=>(a[1].at||"").localeCompare(b[1].at||"")); if(J.length>350) J.slice(0,J.length-300).forEach(([id])=>{ jr.push({op:"delete",col:"journal",id}); delete store.journal[id]; }); if(jr.length) emitCol("journal"); }catch(e){ console.warn(e); }
+    const send=ops.map(({_before,_existed,nolog,...o})=>o).concat(jr);
+    try{ await post({action:"write",ops:send}); ws.forEach(w=>w.res()); }catch(e){ ws.forEach(w=>w.rej(e)); }
     finally{ busy=false; window.GAS.pending=!!queue.length; if(queue.length) flush(); }
   }
   async function refresh(){
@@ -674,7 +896,7 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
     async delete(id){ await post({action:"deletefile",id}); }
   };
   const user={ can:async()=>true };
-  window.GAS.bulk=ops=>{ const cols=new Set(); const ps=ops.map(op=>{ applyLocal(op); cols.add(op.col); return new Promise((res,rej)=>{ queue.push(op); waiters.push({res,rej}); }); }); cols.forEach(emitAll); clearTimeout(flushT); flushT=setTimeout(flush,50); return Promise.all(ps); };
+  window.GAS.bulk=ops=>{ const cols=new Set(); const ps=ops.map(op=>{ op.nolog=true; applyLocal(op); cols.add(op.col); return new Promise((res,rej)=>{ queue.push(op); waiters.push({res,rej}); }); }); cols.forEach(emitAll); clearTimeout(flushT); flushT=setTimeout(flush,50); return Promise.all(ps); };
   window.GAS.refresh=refresh;
   window.claude={ use:async n=>n==="db"?db:n==="user"?user:n==="assets"?assets:null };
   refresh(); setInterval(()=>{ if(document.visibilityState==="visible") refresh(); },30000);
@@ -756,7 +978,7 @@ function writeErr(e){
   console.warn(e);
 }
 async function save(coll,id,data){
-  if(!S.db){ toast("Données indisponibles : ouvrez la page connecté à claude.ai."); return false; }
+  if(!S.db){ toast("Données indisponibles : vérifiez la connexion à la base."); return false; }
   try{ if(id) await S.db.collection(coll).doc(id).set(data); else await S.db.collection(coll).add(data); toast("Enregistré"); return true; }
   catch(e){ writeErr(e); return false; }
 }
@@ -767,7 +989,7 @@ async function remove(coll,id){
   try{ await S.db.collection(coll).doc(id).delete(); toast("Supprimé"); } catch(e){ writeErr(e); }
 }
 async function saveConfig(p){
-  if(!S.db){ toast("Données indisponibles : ouvrez la page connecté à claude.ai."); return false; }
+  if(!S.db){ toast("Données indisponibles : vérifiez la connexion à la base."); return false; }
   const next={...cfg(),...p,updatedAt:new Date().toISOString()};
   try{ await S.db.doc("config/main").set(next); toast("Paramètres enregistrés"); return true; } catch(e){ writeErr(e); return false; }
 }
@@ -792,7 +1014,13 @@ function optsHTML(options,v){
   }).join("");
 }
 function fieldHTML(f,v){
+  const h=fieldHTML0(f,v); return f.show?h.replace(/^<div class="field/,`<div data-show="${esc(f.show)}" class="field`):h;
+}
+function fieldHTML0(f,v){
   const id="f_"+f.id, req=f.required?" required":"", half=f.half?" half":"";
+  if(f.type==="html") return `<div class="field${half} f-html">${f.label?`<span class="f-lab">${esc(f.label)}</span>`:""}<div>${f.html}</div></div>`;
+  if(f.type==="radio") return `<fieldset class="field f-radio${half}"><legend>${esc(f.label)}</legend><div class="seg">${f.options.map((o,i)=>`<label><input type="radio" name="${f.id}" id="${id}_${i}" value="${esc(o.value)}" ${String(o.value)===String(v)?"checked":""}><span>${esc(o.label)}</span></label>`).join("")}</div>${f.hint?`<small>${esc(f.hint)}</small>`:""}</fieldset>`;
+  if(f.type==="months"){ const set=new Set((v||[]).map(Number)); return `<fieldset class="field f-months${half}"><legend>${esc(f.label)}</legend><div class="mchips">${MOIS_L.map((m,i)=>`<label><input type="checkbox" name="${f.id}" value="${i+1}" ${set.has(i+1)?"checked":""}><span>${esc(MOIS[i])}</span></label>`).join("")}</div>${f.hint?`<small>${esc(f.hint)}</small>`:""}</fieldset>`; }
   if(f.type==="checkbox") return `<div class="field check${half}"><input type="checkbox" id="${id}" name="${f.id}" ${v?"checked":""}><label for="${id}">${esc(f.label)}</label></div>`;
   const lab=`<label for="${id}">${esc(f.label)}${f.required?' <span class="req">*</span>':""}</label>`;
   let input;
@@ -806,17 +1034,23 @@ function closeModal(){ $("#modalRoot").innerHTML=""; }
 function openForm({title,intro,fields,values={},submitLabel="Enregistrer",onSubmit}){
   const root=$("#modalRoot");
   root.innerHTML=`<div class="overlay" data-overlay><form class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" novalidate>
-    <h2 id="mTitle">${esc(title)}</h2>${intro?`<p class="muted" style="margin:0">${intro}</p>`:""}
+    <h2 id="mTitle">${esc(title)}</h2>${intro?`<div class="muted m-intro">${intro}</div>`:""}
     <div class="form-grid">${fields.map(f=>fieldHTML(f,values[f.id])).join("")}</div>
     <div class="form-err" id="formErr" role="alert"></div>
     <div class="modal-foot"><button type="button" data-close>Annuler</button><button type="submit" class="primary">${esc(submitLabel)}</button></div>
   </form></div>`;
   const form=root.querySelector("form");
   const t=form.querySelector("#mTitle"); if(t){ t.tabIndex=-1; t.focus({preventScroll:true}); }
+  const syncShow=()=>form.querySelectorAll("[data-show]").forEach(w=>{ const [k,val]=w.dataset.show.split("="); const el=form.elements[k]; w.hidden=!(el&&el.value===val); });
+  syncShow(); form.addEventListener("change",syncShow);
   form.addEventListener("submit",async ev=>{
     ev.preventDefault();
     const vals={};
-    for(const f of fields){ const el=form.elements[f.id]; if(!el) continue;
+    for(const f of fields){ if(f.type==="html") continue;
+      if(f.type==="months"){ vals[f.id]=[...form.querySelectorAll(`input[name="${f.id}"]:checked`)].map(x=>+x.value); continue; }
+      const el=form.elements[f.id]; if(!el) continue;
+      if(f.type==="radio"){ vals[f.id]=el.value; continue; }
+      const wrap=el.closest&&el.closest("[data-show]"); if(wrap&&wrap.hidden){ vals[f.id]=""; continue; }
       if(f.type==="checkbox") vals[f.id]=el.checked;
       else if(f.type==="number") vals[f.id]=parseNum(el.value);
       else vals[f.id]=el.value.trim();
@@ -827,6 +1061,15 @@ function openForm({title,intro,fields,values={},submitLabel="Enregistrer",onSubm
     if(typeof r==="string"){ $("#formErr").textContent=r; btn.disabled=false; return; }
     if(r===false){ btn.disabled=false; return; }
     closeModal();
+  });
+}
+const IMPACT="Le solde, les prévisions et les statistiques (tableau de bord, Béziers) seront recalculés en conséquence.";
+function askConfirm(title,msg,yesLabel,danger){
+  return new Promise(res=>{ const r=$("#confirmRoot");
+    r.innerHTML=`<div class="overlay ov-top"><div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="acT"><h2 id="acT">${esc(title)}</h2><p style="margin:0">${msg}</p>
+      <div class="modal-foot"><button type="button" id="acNo">Annuler</button><button type="button" class="primary ${danger?"danger-btn":""}" id="acYes">${esc(yesLabel)}</button></div></div></div>`;
+    const done=v=>{ r.innerHTML=""; res(v); }; $("#acNo").onclick=()=>done(false); $("#acYes").onclick=()=>done(true);
+    r.querySelector(".overlay").addEventListener("click",e=>{ if(e.target.classList.contains("overlay")) done(false); });
   });
 }
 function openConfirm(msg,yesLabel,onYes){
@@ -855,7 +1098,9 @@ function opForm(op={},preset={},intro){
     const lib=x.libelle.replace(/(\s+[–-]\s+)(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+\d{4}$/i,(_,sep)=>`${sep}${MOIS_L[+x.date.slice(5,7)-1]} ${x.date.slice(0,4)}`);
     const data={date:x.date,montant:Math.round(x.montant*100)/100,categorie:x.categorie,sens:sensOf(x.categorie),libelle:lib,
       bien:x.bien||"commun",indivisaire:x.indivisaire||"",...(op.groupe?{groupe:op.groupe}:{}),...(op.personne?{personne:op.personne}:{}),pointe:false,prevision:op.id?!!op.prevision:(preset._forcePrev!==undefined?!!preset._forcePrev:x.date>todayStr()),note:x.note||"",createdAt:op.createdAt||now,updatedAt:now};
+    if(op.id && !(await askConfirm("Enregistrer la modification ?",`« ${esc(shortLib(lib))} » · ${eur(data.montant)} le ${fmtD(data.date)}.<br><br>${IMPACT}`,"Enregistrer"))) return false;
     const ok=await save("operations",op.id,data);
+    if(ok&&op.id) setTimeout(()=>revalOffer({...op,date:data.date},+op.montant,data.montant),700);
     if(ok && !isHono(data) && (data.bien==="locatif"||op.bien==="locatif")) setTimeout(()=>majHonoraires([data.date.slice(0,7),(op.date||"").slice(0,7),(op._oldDate||"").slice(0,7)]),400);
     return ok;
   }});
@@ -1020,9 +1265,24 @@ function alertes(){
     const miss=loyersMois(y).filter(x=>x.st==="missing"||x.st==="due");
     if(miss.length) a.push({k:"bad",t:`Loyer non enregistré : ${miss.map(x=>MOIS_L[x.m-1]).join(", ")}`,h:"#locatif"});
   }
-  const rt=recurTypes(), nt=rt.length, nj=rt.filter(r=>groupeAgence().includes(r.key)?cfg().jourAgence:(cfg().jours||{})[r.key]).length;
+  const rt=recurTypes().filter(r=>hasFuture(r.key)), nt=rt.length, nj=rt.filter(r=>dayOf(r)).length;
   if(nt && nj<nt) a.push({k:"info",t:`Jours de passage à renseigner pour ${nt-nj} opération${nt-nj>1?"s":""} récurrente${nt-nj>1?"s":""} (solde au jour près)`,h:"#parametres"});
-  const pp=S.ops.filter(o=>o.prevision && o.date && o.date<=todayStr()).length;
+  const t0=todayStr(), plus=n=>{ const d=new Date(); d.setDate(d.getDate()+n); return ds(d); };
+  // Découvert dans les 20 prochains jours
+  { const lim=plus(+c.alerteDecouvertJours||20); let sol=soldeActuel(), first=null, low=Infinity, lowD="";
+    const L=S.ops.filter(o=>o.prevision&&o.date&&o.date<=lim).sort((a,b)=>a.date.localeCompare(b.date));
+    L.forEach((o,i)=>{ sol+=sg(o); if(L[i+1]&&L[i+1].date===o.date) return; if(sol<-0.004&&!first) first=o.date; if(sol<low){ low=sol; lowD=o.date; } });
+    if(first){ const j=daysBetween(t0,first<t0?t0:first), at=soldePrevu(first<t0?t0:first); a.push({k:"bad",t:`Découvert prévu le ${fmtD(first<t0?t0:first)} : ${eur(at).replace("-","−")}`,s:`${j<=0?"Dès aujourd'hui":`Dans ${j} jour${j>1?"s":""}`}${lowD!==first?` · point bas ${eur(low).replace("-","−")} le ${fmtD(lowD)}`:""} · prévoir un apport`,h:"#tableau"}); } }
+  // Apports déséquilibrés (sans montant plancher)
+  if(c.indivisaires&&c.indivisaires.length>1){ const noms=c.indivisaires.map(i=>i.nom), ap=S.ops.filter(o=>real(o)&&o.categorie==="Apport indivisaire"&&noms.includes(o.indivisaire)), tot=sum(ap);
+    for(const i of c.indivisaires){ const v=sum(ap.filter(o=>o.indivisaire===i.nom)), d=v-tot*(+i.quotePart||0)/100;
+      if(d<=-0.5) a.push({k:"warn",t:`Apports déséquilibrés : ${i.nom} ${eur(d).replace("-","−")}`,s:`Écart par rapport à sa quote-part de ${(+i.quotePart||0).toLocaleString("fr-FR")} %, depuis le début`,h:"#tableau"}); } }
+  // Grosse échéance dans les 30 jours
+  { const lim=plus(+c.alerteEcheanceJours||30), seuil=+c.alerteEcheanceSeuil||300;
+    for(const o of S.ops.filter(o=>o.prevision&&o.sens==="out"&&o.date>=t0&&o.date<=lim&&+o.montant>=seuil).sort((x,y)=>x.date.localeCompare(y.date))){
+      const j=daysBetween(t0,o.date), apres=soldePrevu(o.date);
+      a.push({k:"warn",t:`${j===0?"Aujourd'hui":`Dans ${j} jour${j>1?"s":""}`} : ${shortLib(o.libelle)} −${eur(+o.montant)}`,s:`Le ${fmtD(o.date)} · solde prévu ce jour-là : ${eur(apres).replace("-","−")}`,h:"#tresorerie"}); } }
+  const pp=S.ops.filter(o=>o.prevision && o.date && o.date<=todayStr() && !regulCovered(o)).length;
   if(pp) a.push({k:"warn",t:`${pp} opération${pp>1?"s":""} prévue${pp>1?"s":""} dont la date est passée : à valider ou corriger`,h:"#tresorerie"});
 
   const order={bad:0,warn:1,info:2}; return a.sort((p,q)=>order[p.k]-order[q.k]);
@@ -1030,7 +1290,7 @@ function alertes(){
 
 /* ---------- Calendrier des opérations récurrentes ---------- */
 const IMP_RE=/^imp-(\d{4})-(\d{2})-([A-Z]+(?:-\d)?)$/;
-const GROUPE_AGENCE_DEFAUT=["C","D","G","J","L","M","O"];
+const GROUPE_AGENCE_DEFAUT=["C","D","E","F","G","I","J","K","L","M","N","O"];
 const groupeAgence=()=>Array.isArray(cfg().groupeAgence)?cfg().groupeAgence:GROUPE_AGENCE_DEFAUT;
 const keyOf=o=>{ const mm=IMP_RE.exec(o.id||""); return mm?mm[3]:""; };
 const CAT_AGENCE=["Loyer","Charges récupérées","Frais de gestion / agence"];
@@ -1043,12 +1303,16 @@ const ANNUELS=[
   {k:"tom",lab:"Remboursement taxe ordures ménagères",lib:"Remboursement taxe ordures ménagères",cat:"Remboursement / indemnité",sens:"in",re:/ordures m[ée]nag/i}];
 const RE_AGENCE=/impay|^assurance pno|^archivage|ordures m[ée]nag|^r[ée]gularisation charges|^aide [àa] la d[ée]claration/i;
 function inVersementAgence(o){ if(o.bien!=="locatif") return false; const k=keyOf(o); return k?groupeAgence().includes(k):(CAT_AGENCE.includes(o.categorie)||RE_AGENCE.test(o.libelle||"")); }
-function dayFor(key,y,m){ const c=cfg(); const j=groupeAgence().includes(key)?+c.jourAgence:+(c.jours||{})[key]; if(!(j>=1&&j<=31)) return null; const last=new Date(+y,+m,0).getDate(); return `${y}-${m}-${pad(Math.min(j,last))}`; }
+const isAssuKey=k=>/^Y(-\d)?$/.test(k);
+function dayFor(key,y,m){ const c=cfg(); const j=groupeAgence().includes(key)?+c.jourAgence:(isAssuKey(key)&&+c.jourAssurance)?+c.jourAssurance:+(c.jours||{})[key]; if(!(j>=1&&j<=31)) return null; const last=new Date(+y,+m,0).getDate(); return `${y}-${m}-${pad(Math.min(j,last))}`; }
 function recurTypes(){
   const t={};
   for(const o of S.ops){ const mm=IMP_RE.exec(o.id||""); if(!mm) continue; const key=mm[3];
     const r=t[key]||(t[key]={key,label:(o.libelle||"").split(" – ")[0]+(o.indivisaire?` (${o.indivisaire})`:""),bien:o.bien,sens:o.sens,months:new Set(),last:0,lastDate:"",days:new Set()});
-    r.months.add(+mm[2]); r.days.add((o.date||"").slice(8,10)); if((o.date||"")>=r.lastDate){ r.lastDate=o.date; r.last=+o.montant; } }
+    (r._all||(r._all=[])).push(o.date||`${mm[1]}-${mm[2]}-01`); if(o.prevision&&(o.date||"")>=todayStr()) r.months.add(+mm[2]);
+    r.days.add((o.date||"").slice(8,10)); if((o.date||"")>=r.lastDate){ r.lastDate=o.date; r.last=+o.montant; } }
+  // Mois : ceux des échéances à venir ; à défaut, ceux des 12 derniers mois d'historique
+  for(const r of Object.values(t)){ if(!r.months.size){ const last=r._all.sort().pop(); const lim=`${+last.slice(0,4)-1}${last.slice(4,7)}`; r._all.concat(last).filter(d=>d.slice(0,7)>lim).forEach(d=>r.months.add(+d.slice(5,7))); } delete r._all; }
   const ord={locatif:0,secondaire:1,commun:2};
   return Object.values(t).sort((a,b)=>ord[a.bien]-ord[b.bien]||a.label.localeCompare(b.label,"fr"));
 }
@@ -1057,41 +1321,337 @@ function recurAmountForm(key){
   const r=recurTypes().find(x=>x.key===key); if(!r) return;
   const t=todayStr(), fut=S.ops.filter(o=>keyOf(o)===key&&o.prevision).sort((a,b)=>a.date.localeCompare(b.date));
   const next=fut.find(o=>o.date>=t)||fut[0];
+  const RV=(cfg().reval||{})[key];
+  if(RV&&+RV.taux){
+    const mo=String(+RV.mois||1).padStart(2,"0"), y=+t.slice(0,4);
+    const last=`${t.slice(5,7)>=mo?y:y-1}-${mo}-01`, nxt=`${+last.slice(0,4)+1}-${mo}-01`;
+    const dd=(a,b)=>Math.abs(new Date(a)-new Date(b));
+    const def=dd(t,nxt)<dd(t,last)?nxt:last, lab=d=>`${MOIS_L[+mo-1]} ${d.slice(0,4)}`;
+    const firstOn=d=>fut.find(o=>o.date>=d);
+    const cur=firstOn(def);
+    return openForm({title:`Montant réel : ${r.label}`,
+      intro:`Revalorisation prévue chaque année en <strong>${MOIS_L[+mo-1]}</strong>. Saisissez le montant réellement appliqué : il remplace l'estimation à partir de ce mois, et la hausse de ${(+RV.taux).toLocaleString("fr-FR")} % repartira de ce montant l'année suivante. Les opérations déjà passées ne changent pas.`,
+      values:{montant:cur?+cur.montant:r.last,per:def},fields:[
+      {id:"montant",label:"Nouveau montant (€)",type:"number",required:true,half:true,hint:"Toujours positif"},
+      {id:"per",label:"Revalorisation de",type:"select",half:true,options:[{value:last,label:lab(last)},{value:nxt,label:lab(nxt)}]}
+    ],submitLabel:"Appliquer",onSubmit:async x=>{
+      if(!(x.montant>=0)) return "Montant invalide.";
+      const list=fut.filter(o=>o.date>=x.per); if(!list.length) return "Aucune opération prévue à partir de ce mois.";
+      const m=Math.round(x.montant*100)/100, months=[], PP=[]; let n=0;
+      for(const o of list){ const d={...(o.regul?{regul:{...o.regul,base:m}}:{montant:m}),revalBase:m,revalFrom:x.per,updatedAt:new Date().toISOString()}; PP.push(patch("operations",o.id,d)); n++; if(o.bien==="locatif") months.push(o.date.slice(0,7)); }
+      await Promise.all(PP); toast(`Montant réel enregistré à partir de ${lab(x.per)}`);
+      setTimeout(async()=>{ await applyReval(key); if(list.some(o=>o.regul)) await applyReguls(); if(months.length) await majHonoraires(months,true); },400);
+    }});
+  }
   openForm({title:`Changer le montant : ${r.label}`,
     intro:fut.length?`${fut.length} opération${fut.length>1?"s":""} prévue${fut.length>1?"s":""} jusqu'au ${fmtD(fut[fut.length-1].date)}. Les opérations déjà passées ne changent pas.`:"Aucune opération prévue pour cette ligne.",
-    values:{montant:r.last,depuis:next?next.date:t},fields:[
+    values:{montant:next?(next.revalBase!=null?+next.revalBase:+next.montant):r.last,depuis:next?next.date:t},fields:[
     {id:"montant",label:"Nouveau montant (€)",type:"number",required:true,half:true,hint:"Toujours positif"},
     {id:"depuis",label:"À partir du",type:"date",required:true,half:true,hint:"Première échéance concernée"}
   ],submitLabel:"Appliquer",onSubmit:async x=>{
     if(!(x.montant>=0)) return "Montant invalide.";
     const list=fut.filter(o=>o.date>=x.depuis); if(!list.length) return "Aucune opération prévue à partir de cette date.";
     const m=Math.round(x.montant*100)/100; let n=0; const months=[];
-    for(const o of list){ const d=o.regul?{regul:{...o.regul,base:m}}:{montant:m}; if(o.regul||Math.abs(+o.montant-m)>0.004){ if(await patch("operations",o.id,{...d,updatedAt:new Date().toISOString()})) n++; } if(o.bien==="locatif") months.push(o.date.slice(0,7)); }
-    toast(`${n} opération${n>1?"s":""} mise${n>1?"s":""} à jour`);
-    setTimeout(async()=>{ if(list.some(o=>o.regul)) await applyReguls(); if(months.length) await majHonoraires(months,true); },400);
+    const hasR=!!((cfg().reval||{})[key]&&+(cfg().reval||{})[key].taux); const PP=[];
+    for(const o of list){ const d=o.regul?{regul:{...o.regul,base:m}}:{montant:m}; if(hasR){ d.revalBase=m; d.revalFrom=x.depuis; } if(o.regul||Math.abs(+o.montant-m)>0.004){ PP.push(patch("operations",o.id,{...d,updatedAt:new Date().toISOString()})); n++; } if(o.bien==="locatif") months.push(o.date.slice(0,7)); }
+    await Promise.all(PP); toast(`${n} opération${n>1?"s":""} mise${n>1?"s":""} à jour`);
+    setTimeout(async()=>{ if(hasR) await applyReval(key); if(list.some(o=>o.regul)) await applyReguls(); if(months.length) await majHonoraires(months,true); },400);
   }});
 }
 function freqLabel(ms){ const a=[...ms].sort((x,y)=>x-y); if(a.length===12) return "Tous les mois"; if(a.length>=10) return "Presque tous les mois"; return a.map(m=>MOIS[m-1]).join(", "); }
+function hasFuture(key){ const t=todayStr(); return S.ops.some(o=>keyOf(o)===key&&o.prevision&&(o.date||"")>=t); }
+function nextAmt(r){ const t=todayStr(); const f=S.ops.filter(o=>keyOf(o)===r.key&&o.prevision&&(o.date||"")>=t).sort((a,b)=>a.date.localeCompare(b.date))[0]; return f?(f.regul?+f.regul.base:+f.montant):r.last; }
+function amtCell(r){
+  const sign=r.sens==="in"?"+":"−";
+  if(isHonoKey(r)) return `<span class="${r.sens==="in"?"pos":"neg"}" title="Prochaine échéance prévue">${sign}${eur(nextAmt(r))}</span><small class="muted cal-sub">calculé (${(tauxTTC()/1.2*100).toLocaleString("fr-FR",{maximumFractionDigits:2})} % HT)</small>`;
+  if(!hasFuture(r.key)) return `<span class="muted cal-var" title="Pas d'échéance prévue : saisissez le montant réel quand l'opération arrive">variable</span>`;
+  return `<button type="button" class="amt-edit w ${r.sens==="in"?"pos":"neg"}" data-a="recur-amount" data-key="${esc(r.key)}" title="Prochaine échéance prévue — changer le montant à partir d'une date">${sign}${eur(nextAmt(r))} <span aria-hidden="true">✎</span></button>`;
+}
+const AG_ORDER=[/^loyer/i,/^charges locataire/i,/honoraires de gestion/i,/option web/i,/frais administratifs/i];
+function agOrder(list){
+  const rank=r=>{ const i=AG_ORDER.findIndex(re=>re.test(r.label)); if(i>=0) return i; const fut=hasFuture(r.key); const M=r.months; const n=M?(M.size??M.length??0):0; return 10+(fut?0:50)+(12-n); };
+  return [...list].sort((a,b)=>rank(a)-rank(b)||a.label.localeCompare(b.label,"fr"));
+}
+function dayOf(r){ const c=cfg(); if(groupeAgence().includes(r.key)) return c.jourAgence||""; if(isAssuKey(r.key)) return c.jourAssurance||(c.jours||{})["Y-1"]||(c.jours||{})[r.key]||""; return (c.jours||{})[r.key]||""; }
+function rvText(r){ if(!REVAL_OK(r)||!hasFuture(r.key)) return `<span class="muted rv-none">—</span>`; const R=(cfg().reval||{})[r.key]; return R&&+R.taux?`<span class="rv-on">↗ +${(+R.taux).toLocaleString("fr-FR")} %/an</span> <small class="muted">en ${MOIS_L[(+R.mois||1)-1]}</small>`:`<span class="muted rv-none">aucune</span>`; }
+function amtText(r){
+  const sign=r.sens==="in"?"+":"−";
+  if(isHonoKey(r)) return `<span class="neg">${sign}${eur(nextAmt(r))}</span><small class="muted cal-sub">calculé (${(tauxTTC()/1.2*100).toLocaleString("fr-FR",{maximumFractionDigits:2})} % HT)</small>`;
+  if(!hasFuture(r.key)) return `<span class="muted cal-var">variable</span>`;
+  return `<span class="${r.sens==="in"?"pos":"neg"}">${sign}${eur(nextAmt(r))}</span>`;
+}
+const COPRO_RE=/^pr[ée]l[èe]vement charges de copro/i;
+function regulBox(){
+  const P=regulPlan(), M=d=>MOIS_L[+d.slice(5,7)-1]+" "+d.slice(0,4);
+  const items=P.regs.map(r=>{ const pl=P.plan[r.id]||[];
+    return `<div class="rg2-item"><div class="rg2-h"><strong>Exercice ${esc(r.exercice)}</strong> <span class="${r.sens==="trop"?"pos":"neg"}">${r.sens==="trop"?"trop-perçu":"complément"} ${eur(+r.montant)}</span><span class="row" style="gap:2px;margin-left:auto"><button type="button" class="ghost sm" data-a="edit-regul" data-id="${esc(r.id)}">Modifier</button><button type="button" class="ghost sm danger" data-a="del-regul" data-id="${esc(r.id)}" aria-label="Supprimer">✕</button></span></div>
+      <small class="muted">${pl.length?"Imputée sur : "+pl.map(p=>`${esc(M(p.date))} ${p.d<0?"−":"+"}${eur(Math.abs(p.d))}${p.fixe?" ✓":""}`).join(" · "):`aucun appel prévu après le ${fmtD(r.debut)}`}${r._reste>0?` · <span class="neg">reste ${eur(r._reste)} à imputer</span>`:""}</small></div>`; }).join("");
+  return `<div class="rg2"><span class="f-lab">Régularisation annuelle (décompte du syndic)</span>${items||`<small class="muted">Aucune régularisation en cours.</small>`}<button type="button" class="sm w" data-a="add-regul">+ Ajouter une régularisation</button></div>`;
+}
+/* ---------- Charges ponctuelles de copropriété (appels de fonds travaux) ---------- */
+const afList=()=>Array.isArray(cfg().appelsFonds)?cfg().appelsFonds:[];
+const afOps=id=>S.ops.filter(o=>o.appelFonds===id);
+function afRow(){
+  const t=todayStr(), L=afList(), nx=S.ops.filter(o=>o.appelFonds&&o.prevision&&o.date>=t).sort((a,b)=>a.date.localeCompare(b.date))[0];
+  const enCours=L.filter(a=>afOps(a.id).some(o=>o.prevision));
+  return `<tr class="cal-r cal-click" data-a="af-set" tabindex="0" role="button"><td class="cal-l"><span>Charges ponctuelles copropriété</span> <small class="muted cal-todo">· travaux votés, appels de fonds</small></td><td class="cal-b">${bienChip("locatif")}</td><td class="cal-q muted">${enCours.length?`${enCours.length} appel${enCours.length>1?"s":""} en cours`:"aucun en cours"}</td><td class="amt cal-a">${nx?`<span class="neg">−${eur(+nx.montant)}</span><small class="muted cal-sub">le ${fmtD(nx.date)}</small>`:`<span class="muted">—</span>`}</td><td class="cal-x" aria-hidden="true">›</td></tr>`;
+}
+function afSet(){
+  const t=todayStr(), M=d=>MOIS_L[+d.slice(5,7)-1]+" "+d.slice(0,4);
+  const items=afList().map(a=>{ const ops=afOps(a.id).sort((x,y)=>x.date.localeCompare(y.date)); const done=ops.filter(o=>!o.prevision).length;
+    return `<div class="rg2-item"><div class="rg2-h"><strong>${esc(a.lib)}</strong> <span class="neg">${eur(+a.total)}</span><span class="row" style="gap:2px;margin-left:auto"><button type="button" class="ghost sm" data-a="af-edit" data-id="${esc(a.id)}">Modifier</button><button type="button" class="ghost sm danger" data-a="af-del" data-id="${esc(a.id)}" aria-label="Supprimer">✕</button></span></div>
+      <small class="muted">${a.n>1?`${a.n} échéances ${a.freq==3?"trimestrielles":"mensuelles"} de ${eur(a.saisie==="echeance"?+a.montant:Math.round(a.total/a.n*100)/100)}, de ${M(a.debut)} à ${M(ops.length?ops[ops.length-1].date:a.debut)}`:`En une fois, ${M(a.debut)}`}${a.jour?` · le ${a.jour} du mois`:""} · ${done}/${ops.length} réglée${done>1?"s":""}</small></div>`; }).join("");
+  openForm({title:"Charges ponctuelles copropriété",intro:`Travaux votés en AG ou appels de fonds exceptionnels, réglés en une ou plusieurs fois. Ils s'ajoutent aux charges trimestrielles sans les modifier, prélevés le même jour que les charges de copropriété.
+    <div class="rg2" style="margin-top:12px">${items||`<small class="muted">Aucun appel de fonds enregistré.</small>`}<button type="button" class="sm w" data-a="af-edit">+ Ajouter un appel de fonds</button></div>`,
+    fields:[],submitLabel:"Fermer",onSubmit:async()=>true});
+  const c=$("#modalRoot [data-close]"); if(c) c.remove();
+}
+function afForm(a={}){
+  const ed=!!a.id;
+  openForm({title:ed?"Modifier l'appel de fonds":"Nouvel appel de fonds",intro:ed?"Les échéances déjà réglées (validées) ne sont pas modifiées.":"",
+    values:ed?{lib:a.lib,mode:a.n>1?"plus":"une",montant:a.montant??a.total,saisie:a.saisie||"total",n:String(a.n),freq:String(a.freq||1),debut:a.debut.slice(0,7),jmode:a.jour?"autre":"copro",jour:a.jour||""}:{lib:"",mode:"une",montant:"",saisie:"total",n:"",freq:"1",debut:"",jmode:"copro",jour:""},
+    fields:[
+      {id:"lib",label:"Objet",type:"text",required:true,placeholder:"ex. Ravalement de façade (AG 2026)"},
+      {id:"mode",label:"Paiement",type:"radio",options:[{value:"une",label:"En une fois"},{value:"plus",label:"En plusieurs fois"}]},
+      {id:"saisie",label:"Le montant saisi correspond à",type:"radio",show:"mode=plus",options:[{value:"total",label:"Total à diviser"},{value:"echeance",label:"Montant par échéance"}]},
+      {id:"montant",label:"Montant (€)",type:"number",required:true,half:true},
+      {id:"n",label:"Nombre d'échéances",type:"number",half:true,show:"mode=plus",placeholder:"ex. 5"},
+      {id:"freq",label:"Récurrence",type:"select",half:true,show:"mode=plus",options:[{value:"1",label:"Tous les mois"},{value:"3",label:"Tous les trimestres"}]},
+      {id:"debut",label:"Premier prélèvement (mois)",type:"month",required:true,half:true,placeholder:"AAAA-MM"},
+      {id:"jmode",label:"Jour de prélèvement",type:"radio",options:[{value:"copro",label:`Le ${coproDay()}, comme les charges`},{value:"autre",label:"Autre jour"}]},
+      {id:"jour",label:"Jour du mois",type:"number",half:true,show:"jmode=autre",placeholder:"1 à 31",hint:"Pour cet appel de fonds uniquement"},
+      {id:"_calc",type:"html",label:"Récapitulatif",html:`<span class="rg-debut" id="afPar">—</span>`}
+    ],submitLabel:"Enregistrer",
+    onSubmit:async v=>{
+      const plus=v.mode==="plus", n=plus?Math.round(+v.n):1, fr=plus?(+v.freq||1):1, m=Math.round(+v.montant*100)/100, saisie=plus?v.saisie||"total":"total";
+      if(!(m>0)) return "Indiquez le montant."; if(plus&&!(n>=2&&n<=60)) return "Indiquez un nombre d'échéances entre 2 et 60."; if(!/^\d{4}-\d{2}$/.test(v.debut||"")) return "Choisissez le mois du premier prélèvement.";
+      const jr=v.jmode==="autre"?Math.round(+v.jour):null; if(v.jmode==="autre"&&!(jr>=1&&jr<=31)) return "Indiquez un jour entre 1 et 31.";
+      const tot=saisie==="echeance"?Math.round(m*n*100)/100:m;
+      const id=a.id||("af-"+Date.now().toString(36));
+      const L=afList().filter(x=>x.id!==id).concat([{id,lib:v.lib.trim(),total:tot,montant:m,saisie,n,freq:fr,debut:v.debut+"-01",jour:jr}]);
+      if(!(await saveConfig({appelsFonds:L}))) return false;
+      setTimeout(async()=>{ const k=await afGenerate(L.find(x=>x.id===id)); toast(`${k} échéance${k>1?"s":""} prévue${k>1?"s":""}`); render(true); },300);
+    }});
+  afParUpd();
+}
+function afParUpd(){ const el=$("#afPar"); if(!el) return; const f=el.closest("form"); const plus=f.elements.mode.value==="plus", m=parseNum($("#f_montant").value), n=plus?Math.round(parseNum($("#f_n").value)):1, fr=+($("#f_freq")||{}).value||1, ech=plus&&f.elements.saisie.value==="echeance", dv=$("#f_debut").value;
+  if(!(m>0)||!(n>=1)){ el.textContent="—"; return; }
+  const per=ech?m:Math.round(m/n*100)/100, tot=ech?m*n:m;
+  const fin=/^\d{4}-\d{2}$/.test(dv)&&n>1?addMonth(dv+"-01",(n-1)*fr):"", ml=d=>MOIS_L[+d.slice(5,7)-1]+" "+d.slice(0,4);
+  const jd=f.elements.jmode.value==="autre"&&+$("#f_jour").value>=1?Math.round(+$("#f_jour").value):coproDay();
+  el.textContent=n>1?`${n} × ${eur(per)} = ${eur(tot)}${dv&&fin?` · le ${jd} de chaque ${fr==3?"trimestre":"mois"}, de ${ml(dv+"-01")} à ${ml(fin)}`:""}`:`${eur(tot)} en une fois${/^\d{4}-\d{2}$/.test(dv)?` · le ${jd} ${ml(dv+"-01")}`:""}`; }
+document.addEventListener("input",ev=>{ if(["f_montant","f_n","f_debut","f_jour"].includes(ev.target.id)) afParUpd(); });
+document.addEventListener("change",ev=>{ if($("#afPar")&&["mode","saisie","freq","debut","jmode"].includes(ev.target.name)) afParUpd(); });
+function coproDay(){ const r=recurTypes().find(x=>COPRO_RE.test(x.label)); const j=r&&+(cfg().jours||{})[r.key]; if(j) return j; const nx=S.ops.filter(isCoproCall).filter(o=>o.date>=todayStr()).sort((a,b)=>a.date.localeCompare(b.date))[0]; return nx?+nx.date.slice(8,10):5; }
+async function afGenerate(a){
+  const W=[], ops=afOps(a.id), paid=ops.filter(o=>!o.prevision), now=new Date().toISOString();
+  for(const o of ops) if(o.prevision) W.push(S.db.collection("operations").doc(o.id).delete());
+  const paidSum=paid.reduce((x,o)=>x+(+o.montant||0),0), paidIdx=new Set(paid.map(o=>o.afIdx));
+  const restN=a.n-paidIdx.size, per=a.saisie==="echeance"?+a.montant:Math.round(a.total/a.n*100)/100; let rest=Math.round((a.total-paidSum)*100)/100, k=0, left=restN;
+  for(let i=1;i<=a.n;i++){ if(paidIdx.has(i)) continue;
+    const ms=addMonth(a.debut,(i-1)*(a.freq||1)), y=ms.slice(0,4), m=ms.slice(5,7), last=new Date(+y,+m,0).getDate();
+    left--; const amt=left===0?rest:Math.min(per,rest); rest=Math.round((rest-amt)*100)/100;
+    W.push(S.db.collection("operations").doc(`${a.id}-${i}`).set({date:`${y}-${m}-${pad(Math.min(+a.jour||coproDay(),last))}`,categorie:"Charges de copropriété",sens:"out",bien:"locatif",libelle:`${a.lib} – échéance ${i}/${a.n}`,indivisaire:"",pointe:false,prevision:true,note:"Appel de fonds copropriété",montant:amt,appelFonds:a.id,afIdx:i,createdAt:now,updatedAt:now})); k++; }
+  await Promise.all(W); return k;
+}
+async function afDelete(id){
+  const a=afList().find(x=>x.id===id); if(!a) return; const ops=afOps(id), fut=ops.filter(o=>o.prevision);
+  if(!(await askConfirm("Supprimer cet appel de fonds ?",`« ${esc(a.lib)} » : ${fut.length} échéance${fut.length>1?"s":""} prévue${fut.length>1?"s":""} ser${fut.length>1?"ont":"a"} supprimée${fut.length>1?"s":""}. Les échéances déjà réglées restent dans l'historique. ${IMPACT}`,"Supprimer",true))) return;
+  closeModal(); if(!(await saveConfig({appelsFonds:afList().filter(x=>x.id!==id)}))) return;
+  await Promise.all(fut.map(o=>S.db.collection("operations").doc(o.id).delete())); toast("Appel de fonds supprimé"); render(true);
+}
+function calRow(r,o={}){
+  const d=dayOf(r);
+  return `<tr class="cal-r cal-click ${o.child?"cal-child":""}" data-a="line-set" data-key="${esc(r.key)}" tabindex="0" role="button" aria-label="Régler ${esc(r.label)}"><td class="cal-l">${o.child?'<span class="cal-ind" aria-hidden="true">└</span>':""}<span>${esc(r.label)}</span>${d||!hasFuture(r.key)?"":` <small class="warn-t cal-todo">· jour à régler</small>`}${COPRO_RE.test(r.label)&&regulPlan().regs.length?` <small class="muted cal-todo">· régul. ${regulPlan().regs.map(x=>esc(x.exercice)).join(", ")} en cours</small>`:""}</td><td class="cal-b">${o.child?"":bienChip(r.bien)}</td><td class="cal-q muted">${esc(freqLabel(r.months))}</td><td class="amt cal-a">${amtText(r)}</td><td class="cal-x" aria-hidden="true">›</td></tr>`
+    ;
+}
+function grpBlock(g,types){
+  const list=g.order?g.order(types):types; if(!list.length) return "";
+  const open=!!(S.ui.gOpen||{})[g.id], d=g.day();
+  return `<tr class="cal-r cal-grp cal-click" data-a="grp-set" data-g="${g.id}" tabindex="0" role="button"><td class="cal-l"><button type="button" class="ag-tog" data-a="grp-toggle" data-g="${g.id}" aria-expanded="${open}" aria-label="${open?"Replier":"Déplier"} ${esc(g.label)}"><span class="ag-chev" aria-hidden="true">${open?"▾":"▸"}</span></button><span><strong>${esc(g.label)}</strong><small class="muted">${list.length} lignes · ${d?"même jour":`<span class="warn-t">jour à régler</span>`}</small></span></td><td class="cal-b">${g.bien?bienChip(g.bien):""}</td><td class="cal-q muted">${esc(g.freq)}</td><td class="amt cal-a">${g.total?g.total(list):""}</td><td class="cal-x" aria-hidden="true">›</td></tr>
+    ${open?list.map(r=>calRow(r,{child:true})).join(""):""}`;
+}
+function grpNext(fk,lab){
+  const t=todayStr(); const nx=S.ops.filter(o=>{ const k=keyOf(o); return k&&fk(k)&&o.prevision&&o.date>=t; }).sort((a,b)=>a.date.localeCompare(b.date)); if(!nx.length) return "";
+  const d0=nx[0].date, v=nx.filter(o=>o.date===d0).reduce((a,o)=>a+(o.sens==="in"?1:-1)*(+o.montant||0),0);
+  return `<span class="${v>=0?"pos":"neg"}">${v>=0?"+":"−"}${eur(Math.abs(v))}</span><small class="muted cal-sub">${lab}</small>`;
+}
+function calGroups(){
+  return [
+    {id:"agence",label:agLabel(),bien:"locatif",freq:"Tous les mois",keys:k=>groupeAgence().includes(k),order:agOrder,total:list=>grpNext(k=>groupeAgence().includes(k),"prochain versement"),day:()=>cfg().jourAgence||"",field:"jourAgence"},
+    {id:"assu",label:"Assurance crédit",bien:"commun",freq:"Janv., avril, juil., oct.",keys:k=>isAssuKey(k),day:()=>cfg().jourAssurance||(cfg().jours||{})["Y-1"]||(cfg().jours||{}).Y||"",field:"jourAssurance",
+      total:list=>grpNext(isAssuKey,"prochaine échéance"),
+      order:list=>list.filter(r=>r.key!=="Y"||hasFuture("Y")).sort((a,b)=>a.key.localeCompare(b.key))}
+  ];
+}
 function calendrierCard(){
   const types=recurTypes(); if(!types.length) return "";
-  const J=cfg().jours||{}, G=groupeAgence(), ja=cfg().jourAgence||"";
-  const done=types.filter(r=>G.includes(r.key)?ja:J[r.key]).length;
-  return `<div class="card" id="calCard"><div class="card-head"><h3>Dates des opérations récurrentes</h3><span class="chip ${done===types.length?"good":"warn"}">${done} / ${types.length} renseignées</span></div>
-    <p style="margin:0" class="muted">Indiquez le jour du mois où chaque opération passe sur le compte (date d'opération du relevé). Le mois reste celui du tableur. Laissez vide si vous ne savez pas : la date reste au 1er.</p>
-    <div class="banner" style="background:var(--loc-soft)"><div><strong>Versement de l'agence</strong> <span class="muted">(compte rendu de gestion) : toutes les lignes cochées « Agence » passent ce jour-là, chacune gardant son montant.</span></div>
-      <div class="row"><label for="jourAgence" class="muted" style="font-size:.85rem">Jour du mois</label><input id="jourAgence" class="w" inputmode="numeric" value="${esc(ja)}" placeholder="1 à 31" style="width:90px"></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Opération</th><th>Bien</th><th>Quand</th><th class="amt">Montant</th><th title="Fait partie du versement de l'agence">Agence</th><th style="width:110px">Jour du mois</th></tr></thead><tbody>
-    ${types.map(r=>{ const g=G.includes(r.key); return `<tr><td>${esc(r.label)}</td><td>${bienChip(r.bien)}</td><td class="muted">${esc(freqLabel(r.months))}</td><td class="amt ${r.sens==="in"?"pos":"neg"}">${isHonoKey(r)?`${r.sens==="in"?"+":"−"}${eur(r.last)}<br><small class="muted">calculé (taux)</small>`:`<button type="button" class="amt-edit w" data-a="recur-amount" data-key="${esc(r.key)}" title="Changer le montant à partir d'une date">${r.sens==="in"?"+":"−"}${eur(r.last)} <span aria-hidden="true">✎</span></button>`}</td>
-      <td>${r.bien==="locatif"?`<input type="checkbox" class="grp w" data-key="${esc(r.key)}" aria-label="${esc(r.label)} fait partie du versement agence" ${g?"checked":""} style="width:auto">`:""}</td>
-      <td><input class="jour w ${g?"jour-ag":""}" data-key="${esc(r.key)}" inputmode="numeric" aria-label="Jour du mois pour ${esc(r.label)}" value="${g?esc(ja):esc(J[r.key]||"")}" placeholder="1 à 31" title="${g?"Jour du versement de l'agence (commun à toutes les lignes Agence)":""}"></td></tr>`+(/^pr[ée]l[èe]vement charges de copro/i.test(r.label)?regulRow():"");}).join("")}
+  const G=calGroups(), inAny=r=>G.some(g=>g.keys(r.key));
+  const out=types.filter(r=>!inAny(r));
+  const all=types.filter(r=>!(r.key==="Y"&&!hasFuture("Y")));
+  const need=all.filter(r=>hasFuture(r.key)), done=need.filter(r=>dayOf(r)).length;
+  return `<div class="card" id="calCard"><div class="card-head"><h3>Opérations récurrentes</h3><span class="row" style="gap:8px">${done<need.length?`<span class="chip warn">${need.length-done} jour${need.length-done>1?"s":""} à régler</span>`:""}<button type="button" class="sm w" data-a="recur-new">+ Nouvelle</button></span></div>
+    <p style="margin:0 0 12px" class="muted">Touchez une ligne pour voir et régler son jour de prélèvement, sa revalorisation annuelle et son montant. Les blocs regroupés partagent le même jour.</p>
+    <div class="table-wrap cal-wrap"><table class="cal-t"><thead><tr><th>Opération</th><th>Bien</th><th>Quand</th><th class="amt">Prochain montant</th><th style="width:24px"></th></tr></thead><tbody>
+    ${G.map(g=>grpBlock(g,types.filter(r=>g.keys(r.key)))).join("")}${out.map(r=>calRow(r)+(COPRO_RE.test(r.label)?afRow():"")).join("")}
     </tbody></table></div>
-    <div id="calProg" class="progress" style="display:none"><div></div></div><small id="calMsg"></small>
-    <div class="row w"><button type="button" class="primary" data-a="cal-apply">Enregistrer et redater les opérations</button><small>Les fins de mois courts sont gérées (31 → 28 ou 30).</small></div></div>`;
+    <div id="calProg" class="progress" style="display:none"><div></div></div><small id="calMsg"></small></div>`;
+}
+async function redateKeys(keys){
+  const K=new Set(keys), W=[]; let n=0;
+  for(const o of S.ops){ const mm=IMP_RE.exec(o.id||""); if(!mm||!K.has(mm[3])) continue; const nd=dayFor(mm[3],(o.date||"").slice(0,4)||mm[1],(o.date||"").slice(5,7)||mm[2]); if(nd&&nd!==o.date){ W.push(S.db.collection("operations").doc(o.id).update({date:nd})); n++; } }
+  for(let i=0;i<W.length;i+=200) await Promise.all(W.slice(i,i+200));
+  return n;
+}
+const LS_AMT=["Changer le montant à partir d'une date…","Saisir le montant réel de la revalorisation…"];
+document.addEventListener("input",ev=>{ if(ev.target.id==="f_taux"){ const b=$("#lsAmt"); if(b) b.textContent=+ev.target.value>0?LS_AMT[1]:LS_AMT[0]; } });
+async function recurAmountFromLine(key){
+  const ti=$("#f_taux"), mi=$("#f_mois");
+  if(ti){ const t=ti.value===""?0:+ti.value, m=mi?+mi.value:1, R=(cfg().reval||{})[key];
+    const same=t? (R&&+R.taux===t&&(+R.mois||1)===m) : !(R&&+R.taux);
+    if(!same){ if(!(t>=0&&t<=30)) return toast("Taux entre 0 et 30 %."); const all={...(cfg().reval||{})}; if(t) all[key]={taux:t,mois:m}; else delete all[key];
+      if(!(await saveConfig({reval:all}))) return; await applyReval(key); } }
+  recurAmountForm(key);
+}
+function lineSet(key){
+  const r=recurTypes().find(x=>x.key===key); if(!r) return;
+  const G=calGroups().find(g=>g.keys(key)), t=todayStr(), hono=isHonoKey(r), fixe=hasFuture(key)&&!hono;
+  const RI=revalInfo(key), R=(cfg().reval||{})[key]||{};
+  const fut=S.ops.filter(o=>keyOf(o)===key&&o.prevision&&(o.date||"")>=t).sort((a,b)=>a.date.localeCompare(b.date));
+  const cur=fut.length?(fut[0].revalBase!=null?+fut[0].revalBase:fut[0].regul?+fut[0].regul.base:+fut[0].montant):r.last;
+  const mensuel=r.months.size>=12;
+  const F=[];
+  if(fixe) F.push({id:"montant",label:"Montant (€)",type:"number",required:true,half:true,hint:RI?"Montant actuel, avant la prochaine revalorisation":"S'applique aux prochaines échéances"});
+  else F.push({id:"_m",type:"html",label:"Montant",half:true,html:hono?`Calculé automatiquement (${(tauxTTC()/1.2*100).toLocaleString("fr-FR",{maximumFractionDigits:2})} % HT des encaissements)`:`<em>Variable</em> : saisi à chaque opération`});
+  if(G) F.push({id:"_j",type:"html",label:"Jour de prélèvement",half:true,html:`Le <strong>${esc(G.day()||"—")}</strong>, comme tout le bloc « ${esc(G.label)} »`});
+  else F.push({id:"jour",label:"Jour de prélèvement",type:"number",half:true,placeholder:"1 à 31",hint:"31 = dernier jour du mois"});
+  if(!mensuel) F.push({id:"mois",label:"Mois de prélèvement",type:"months",hint:"Cochez les mois où l'opération a lieu"});
+  else F.push({id:"_q",type:"html",label:"Mois de prélèvement",html:"Tous les mois"});
+  if(fixe){
+    F.push({id:"rv",label:"Cette ligne est-elle susceptible d'être revalorisée chaque année ?",type:"radio",options:[{value:"non",label:"Non"},{value:"oui",label:"Oui"}]});
+    F.push({id:"taux",label:"Taux de revalorisation (%)",type:"number",half:true,placeholder:"ex. 3",show:"rv=oui",hint:REVAL_HINT(r.label)});
+    F.push({id:"rmois",label:"Mois où elle intervient",type:"select",half:true,show:"rv=oui",options:MOIS_L.map((m,i)=>({value:String(i+1),label:m[0].toUpperCase()+m.slice(1)}))});
+  }
+  const v0={rgmois:String(regulMois()),montant:cur,jour:(cfg().jours||{})[key]||"",mois:[...r.months],rv:RI?"oui":"non",taux:RI?RI.taux:"",rmois:String(+R.mois||(/taxe fonci/i.test(r.label)?10:1))};
+  if(COPRO_RE.test(r.label)){ F.push({id:"_rg",type:"html",html:regulBox()}); F.push({id:"rgmois",label:"Les régularisations sont imputées à partir de l'appel de",type:"select",half:true,options:MOIS_L.map((m,i)=>({value:String(i+1),label:m[0].toUpperCase()+m.slice(1)}))}); }
+  openForm({title:r.label,intro:G&&G.id==="agence"?`<button type="button" class="ghost sm w" data-a="grp-out" data-key="${esc(key)}">Retirer du versement de l'agence</button>`:"",
+    values:v0,fields:F,submitLabel:"Enregistrer",
+    onSubmit:async v=>{
+      const P={}; const C=cfg();
+      // jour
+      let redo=false;
+      if(!G){ const j=v.jour===""||v.jour==null?"":Math.round(+v.jour); if(j!==""&&!(j>=1&&j<=31)) return "Jour entre 1 et 31."; if(String(C.jours?.[key]||"")!==String(j)){ P.jours={...(C.jours||{}),[key]:j||undefined}; redo=!!j; } }
+      // mois
+      let addM=[],delM=[];
+      if(!mensuel){ if(!v.mois.length) return "Cochez au moins un mois."; addM=v.mois.filter(m=>!r.months.has(m)); delM=[...r.months].filter(m=>!v.mois.includes(m)); }
+      // reval
+      let rvChg=false;
+      if(fixe){
+        const all={...(C.reval||{})}, before=JSON.stringify(all[key]||null);
+        if(v.rv==="oui"){ const tx=+v.taux; if(!(tx>0&&tx<=30)) return "Indiquez un taux de revalorisation entre 0 et 30 %."; all[key]={taux:tx,mois:+v.rmois}; }
+        else delete all[key];
+        if(JSON.stringify(all[key]||null)!==before){ P.reval=all; rvChg=true;
+          const RS={...(C.revalState||{})};
+          if(all[key]){ const mo=pad(all[key].mois), y=+t.slice(0,4); RS[key]={ack:`${t.slice(5,7)>=mo?y:y-1}-${mo}-01`}; } else delete RS[key];
+          P.revalState=RS; }
+      }
+      let rgChg=false; if(v.rgmois&&+v.rgmois!==regulMois()){ P.regulMois=+v.rgmois; P.regulsCopro=(C.regulsCopro||[]).map(z=>({...z,debut:`${+z.exercice+1}-${pad(+v.rgmois)}-01`})); rgChg=true; }
+      const amtChg=fixe&&v.montant!=null&&Math.abs(+v.montant-cur)>0.004; if(fixe&&!(+v.montant>=0)) return "Montant invalide.";
+      if(!Object.keys(P).length&&!addM.length&&!delM.length&&!amtChg) return true;
+      if(delM.length){ const n=fut.filter(o=>delM.includes(+o.date.slice(5,7))).length; if(n&&!(await askConfirm("Retirer des mois ?",`${n} échéance${n>1?"s":""} prévue${n>1?"s":""} en ${delM.map(m=>MOIS_L[m-1]).join(", ")} ser${n>1?"ont":"a"} supprimée${n>1?"s":""}. Les opérations passées sont conservées. ${IMPACT}`,"Supprimer",true))) return false; }
+      if(Object.keys(P).length&&!(await saveConfig(P))) return false;
+      setTimeout(async()=>{
+        const W=[]; let n=0; const months=new Set();
+        const tpl=fut[0]||S.ops.filter(o=>keyOf(o)===key).sort((a,b)=>b.date.localeCompare(a.date))[0];
+        // supprimer mois
+        for(const o of fut) if(delM.includes(+o.date.slice(5,7))){ W.push(S.db.collection("operations").doc(o.id).delete()); n++; if(o.bien==="locatif") months.add(o.date.slice(0,7)); }
+        // ajouter mois
+        if(addM.length&&tpl){ const lastY=+(S.ops.filter(o=>keyOf(o)===key).map(o=>o.date).sort().pop()||t).slice(0,4); const ids=new Set(S.ops.map(o=>o.id)); const lib=(tpl.libelle||"").split(" – ")[0];
+          for(let y=+t.slice(0,4);y<=lastY;y++) for(const m of addM){ const id=`imp-${y}-${pad(m)}-${key}`; const d=dayFor(key,String(y),pad(m))||`${y}-${pad(m)}-01`; if(d<t||ids.has(id)) continue;
+            const amt=fixe?+v.montant:(+tpl.montant||0);
+            const o={date:d,categorie:tpl.categorie,sens:tpl.sens,bien:tpl.bien,libelle:`${lib} – ${MOIS_L[m-1]} ${y}`,indivisaire:tpl.indivisaire||"",pointe:false,prevision:true,note:"",montant:amt,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+            if(tpl.revalBase!=null||amtChg){ o.revalBase=amt; o.revalFrom=amtChg?t:(tpl.revalFrom||t); }
+            W.push(S.db.collection("operations").doc(id).set(o)); n++; if(o.bien==="locatif") months.add(d.slice(0,7)); } }
+        // montant
+        if(amtChg) for(const o of fut){ if(delM.includes(+o.date.slice(5,7))) continue; const m=+v.montant; const d={montant:m,revalBase:(P.reval||C.reval||{})[key]?m:null,revalFrom:(P.reval||C.reval||{})[key]?t:null,updatedAt:new Date().toISOString()}; if(o.regul) d.regul={...o.regul,base:m}; W.push(patch("operations",o.id,d)); n++; if(o.bien==="locatif") months.add(o.date.slice(0,7)); }
+        for(let i=0;i<W.length;i+=200) await Promise.all(W.slice(i,i+200));
+        if(addM.length){ const want=n; for(let k=0;k<20;k++){ if(S.ops.filter(o=>keyOf(o)===key&&o.prevision&&o.date>=t).length>=fut.length-0+0&&S.ops.some(o=>keyOf(o)===key&&addM.includes(+o.date.slice(5,7))&&o.date>=t)) break; await new Promise(r=>setTimeout(r,150)); } }
+        if(redo||addM.length) n+=await redateKeys([key]);
+        if(redo&&COPRO_RE.test(r.label)) for(const a of afList().filter(x=>!x.jour)) await afGenerate(a);
+        if(rvChg||amtChg||addM.length) n+=await applyReval(key);
+        if(fut.some(o=>o.regul)||rgChg) await applyReguls();
+        if(months.size) await majHonoraires([...months],true);
+        toast(n?`${n} opération${n>1?"s":""} mise${n>1?"s":""} à jour`:"Réglages enregistrés"); render(true);
+      },300);
+    }});
+}
+/* ---------- Revalorisation : question au mois prévu ---------- */
+function revalAsk(key){
+  const r=recurTypes().find(x=>x.key===key), I=revalInfo(key); if(!r||!I) return;
+  const t=todayStr(), fut=S.ops.filter(o=>keyOf(o)===key&&o.prevision&&(o.date||"")>=I.E).sort((a,b)=>a.date.localeCompare(b.date));
+  const est=Math.round(I.base*(1+I.taux/100)*100)/100;
+  const ml=d=>`${MOIS_L[+d.slice(5,7)-1]} ${d.slice(0,4)}`;
+  const late=I.E!==I.D;
+  openForm({title:`Revalorisation : ${r.label}`,
+    intro:`Revalorisation de ${I.taux.toLocaleString("fr-FR")} % prévue en <strong>${ml(I.D)}</strong>${late?`, toujours pas appliquée en ${ml(addMonth(I.E,-1))}`:""}. Ancien montant ${eur(I.base)}, estimation ${eur(est)}.<br>Quel est le nouveau montant ?
+      <div class="rv-alt"><button type="button" class="sm w" data-a="rv-later" data-key="${esc(key)}">Pas encore appliqué</button><button type="button" class="ghost sm w" data-a="rv-none" data-key="${esc(key)}">Pas de hausse cette année</button></div>`,
+    values:{montant:""},fields:[{id:"montant",label:"Nouveau montant (€)",type:"number",required:true,placeholder:eur(est).replace(/\s?€/,""),hint:`S'applique à partir de ${ml(I.E)}. La hausse de ${I.taux.toLocaleString("fr-FR")} % repartira de ce montant l'année prochaine.`}],
+    submitLabel:"Enregistrer le nouveau montant",
+    onSubmit:async v=>{ if(!(+v.montant>0)) return "Montant invalide.";
+      const shiftMonth=late&&!(await askConfirm("Décaler le mois de revalorisation ?",`La revalorisation est arrivée en ${MOIS_L[+I.E.slice(5,7)-1]} au lieu de ${MOIS_L[I.mois-1]}. La prévoir en ${MOIS_L[+I.E.slice(5,7)-1]} les prochaines années ?`,`Oui, en ${MOIS_L[+I.E.slice(5,7)-1]}`))?false:late;
+      await revalResolve(key,I,+v.montant,shiftMonth); }});
+}
+async function revalResolve(key,I,amount,shiftMonth){
+  const C=cfg(), RS={...(C.revalState||{})}; RS[key]={ack:I.D}; const P={revalState:RS};
+  if(shiftMonth){ P.reval={...(C.reval||{}),[key]:{...C.reval[key],mois:+I.E.slice(5,7)}}; RS[key]={ack:I.E}; }
+  const m=amount==null?I.base:Math.round(amount*100)/100;
+  const fut=S.ops.filter(o=>keyOf(o)===key&&o.prevision&&(o.date||"")>=I.E); const W=[]; const months=new Set();
+  for(const o of fut){ const d={montant:m,revalBase:m,revalFrom:I.E,updatedAt:new Date().toISOString()}; if(o.regul) d.regul={...o.regul,base:m}; W.push(patch("operations",o.id,d)); if(o.bien==="locatif") months.add(o.date.slice(0,7)); }
+  if(!(await saveConfig(P))) return false;
+  for(let i=0;i<W.length;i+=200) await Promise.all(W.slice(i,i+200));
+  await applyReval(key); if(fut.some(o=>o.regul)) await applyReguls(); if(months.size) await majHonoraires([...months],true);
+  toast(amount==null?"Montant inchangé cette année":`Nouveau montant ${eur(m)} enregistré`); render(true); return true;
+}
+async function revalLater(key){
+  const I=revalInfo(key); if(!I) return; const C=cfg(), RS={...(C.revalState||{})};
+  const nxt=addMonth(monthStart(todayStr())); RS[key]={...(RS[key]||{}),delay:nxt};
+  closeModal(); if(!(await saveConfig({revalState:RS}))) return;
+  await applyReval(key); const L=S.ops.filter(o=>keyOf(o)===key&&o.bien==="locatif"&&o.prevision).map(o=>o.date.slice(0,7)); if(L.length) await majHonoraires([...new Set(L)],true);
+  toast(`Je vous reposerai la question en ${MOIS_L[+nxt.slice(5,7)-1]}`); render(true);
+}
+async function revalOffer(o,old,amount){
+  const key=keyOf(o); if(!key) return; const I=revalInfo(key); if(!I||!I.pending||(o.date||"")<I.D) return;
+  if(Math.abs(+amount-+old)<0.005) return;
+  const r=recurTypes().find(x=>x.key===key); const E=monthStart(o.date)>I.D?monthStart(o.date):I.D, mE=MOIS_L[+E.slice(5,7)-1];
+  if(!(await askConfirm("Nouveau montant revalorisé ?",`<strong>${esc(r?r.label:"")}</strong> : une revalorisation de ${I.taux.toLocaleString("fr-FR")} % était prévue en ${MOIS_L[I.mois-1]}.<br>Utiliser <strong>${eur(amount)}</strong> comme nouveau montant à partir de ${mE} ${E.slice(0,4)} ? Les mois suivants seront mis à jour, et la hausse repartira de ce montant l'an prochain.`,"Oui, l'utiliser"))) return;
+  let shift=false; if(E!==I.D) shift=await askConfirm("Décaler le mois de revalorisation ?",`La revalorisation est arrivée en ${mE} au lieu de ${MOIS_L[I.mois-1]}. La prévoir en ${mE} les prochaines années ?`,`Oui, en ${mE}`);
+  await revalResolve(key,{...I,E},+amount,shift);
+}
+function revalDueCard(){
+  const L=revalDue(); if(!L.length) return "";
+  return `<div class="card rv-card"><div class="card-head"><h3>À vérifier</h3><span class="chip warn">${L.length}</span></div>
+    <div class="alerts compact">${L.map(({r,i})=>`<button type="button" class="alert warn rv-q" data-a="rv-ask" data-key="${esc(r.key)}"><span class="dot"></span><span><strong>${esc(r.label)}</strong> : revalorisation prévue en ${MOIS_L[+i.D.slice(5,7)-1]}. Quel est le nouveau montant ?</span></button>`).join("")}</div></div>`;
+}
+function grpSet(gid){
+  const g=calGroups().find(x=>x.id===gid); if(!g) return; const keys=recurTypes().map(r=>r.key).filter(k=>g.keys(k));
+  openForm({title:g.label,intro:`Jour où ${gid==="agence"?"l'agence verse le compte rendu de gestion":"les cotisations sont prélevées"}. Les ${keys.length} lignes du bloc prennent ce jour automatiquement.`,
+    values:{jour:g.day(),add:""},fields:[{id:"jour",label:"Jour du mois",type:"number",required:true,placeholder:"1 à 31",hint:"31 = dernier jour du mois"}].concat(gid==="agence"?[{id:"add",label:"Rattacher une autre ligne au bloc",type:"select",options:[{value:"",label:"— aucune —"}].concat(recurTypes().filter(r=>!calGroups().some(x=>x.keys(r.key))&&r.bien==="locatif").map(r=>({value:r.key,label:r.label})))}]:[]),submitLabel:"Enregistrer",
+    onSubmit:async v=>{ const j=Math.round(+v.jour); if(!(j>=1&&j<=31)) return "Jour entre 1 et 31.";
+      const chg=String(j)!==String(g.day()); if(chg&&!(await saveConfig({[g.field]:j}))) return false;
+      setTimeout(async()=>{ if(chg){ const n=await redateKeys(keys); toast(n?`${n} opérations redatées`:"Jour enregistré"); } if(v.add) await moveGroup(v.add,true); },300); }});
+}
+function calDraft(){ const D={}; document.querySelectorAll("#calCard .jour").forEach(i=>{ D[i.dataset.key]=i.value; }); const a=$("#jourAgence"); if(a) D.__ag=a.value; S.ui.jdraft=D; }
+async function moveGroup(key,into){
+  calDraft(); const G=groupeAgence().filter(k=>k!==key); if(into) G.push(key);
+  if(!(await saveConfig({groupeAgence:G}))) return;
+  const list=S.ops.filter(o=>keyOf(o)===key); let n=0; const PP=[];
+  for(const o of list){ const mm=IMP_RE.exec(o.id||""); if(!mm) continue; const nd=dayFor(mm[3],o.date.slice(0,4),o.date.slice(5,7)); if(nd&&nd!==o.date){ PP.push(S.db.collection("operations").doc(o.id).update({date:nd})); n++; } } await Promise.all(PP);
+  toast(into?"Ligne rattachée au versement de l'agence":"Ligne sortie du versement de l'agence"); render(true);
 }
 async function applyCalendrier(){
   const jours={}; let bad=0;
-  document.querySelectorAll("#calCard .jour").forEach(i=>{ if(i.classList.contains("jour-ag")) return; const v=i.value.trim(); if(!v) return; const n=parseInt(v,10); if(n>=1&&n<=31) jours[i.dataset.key]=n; else bad++; });
-  const groupe=[...document.querySelectorAll("#calCard .grp")].filter(c=>c.checked).map(c=>c.dataset.key);
+  document.querySelectorAll("#calCard .jour").forEach(i=>{ const v=i.value.trim(); if(!v) return; const n=parseInt(v,10); if(n>=1&&n<=31) jours[i.dataset.key]=n; else bad++; });
+  const groupe=groupeAgence();
   const jav=$("#jourAgence").value.trim(); let jourAgence=""; if(jav){ const n=parseInt(jav,10); if(n>=1&&n<=31) jourAgence=n; else bad++; }
   const msg=$("#calMsg"); if(bad){ msg.textContent=`${bad} jour${bad>1?"s":""} invalide${bad>1?"s":""} : mettez un nombre entre 1 et 31.`; msg.className="neg"; return; }
   const btn=document.querySelector('[data-a="cal-apply"]'); btn.disabled=true;
@@ -1100,11 +1660,8 @@ async function applyCalendrier(){
   const prog=$("#calProg"), bar=prog.firstElementChild; prog.style.display=""; S.importing=true; let i=0;
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   try{
-    for(const [id,nd] of todo){ let tries=0;
-      for(;;){ try{ await S.db.collection("operations").doc(id).update({date:nd}); break; }
-        catch(e){ if((e.code==="resource_exhausted"||e.code==="unavailable")&&tries<8){ tries++; msg.textContent="Pause pour respecter la limite d'écriture…"; await sleep(1500*tries); } else throw e; } }
-      i++; if(i%10===0||i===todo.length){ bar.style.width=(i/todo.length*100).toFixed(1)+"%"; msg.textContent=`${i} / ${todo.length} opérations redatées`; } }
-    S.importing=false; render(true); toast(todo.length?`${todo.length} opérations redatées`:"Dates enregistrées");
+    for(let k=0;k<todo.length;k+=200){ const part=todo.slice(k,k+200); await Promise.all(part.map(([id,nd])=>S.db.collection("operations").doc(id).update({date:nd}))); i+=part.length; bar.style.width=(i/todo.length*100).toFixed(1)+"%"; msg.textContent=`${i} / ${todo.length} opérations redatées`; }
+    S.importing=false; S.ui.jdraft=null; render(true); toast(todo.length?`${todo.length} opérations redatées`:"Dates enregistrées");
   }catch(e){ S.importing=false; writeErr(e); render(true); }
 }
 
@@ -1118,15 +1675,16 @@ function honoCalc(key){
   return {ops,base,montant:Math.max(0,Math.round(base*tauxTTC()*100)/100)};
 }
 async function majHonoraires(keys,silent){
-  let n=0;
+  let n=0; const HW=[];
   for(const key of [...new Set(keys)].filter(Boolean)){
     const {ops,base,montant}=honoCalc(key); const h=ops.filter(isHono);
     try{
-      if(h.length){ const o=h[0]; if(Math.abs((+o.montant||0)-montant)>0.004){ await S.db.collection("operations").doc(o.id).update({montant,updatedAt:new Date().toISOString()}); n++; } }
+      if(h.length){ const o=h[0]; if(Math.abs((+o.montant||0)-montant)>0.004){ HW.push(S.db.collection("operations").doc(o.id).update({montant,updatedAt:new Date().toISOString()})); n++; } }
       else if(base>0){ const [y,m]=key.split("-"); const loy=ops.find(o=>o.categorie==="Loyer")||ops.find(o=>o.sens==="in");
-        await S.db.collection("operations").doc(`hon-${key}`).set({date:loy?.date||`${key}-01`,montant,categorie:"Frais de gestion / agence",sens:"out",bien:"locatif",libelle:`Honoraires de gestion TTC – ${MOIS_L[+m-1]} ${y}`,prevision:!!loy?.prevision,pointe:false,note:"Calculé automatiquement",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}); n++; }
+        HW.push(S.db.collection("operations").doc(`hon-${key}`).set({date:loy?.date||`${key}-01`,montant,categorie:"Frais de gestion / agence",sens:"out",bien:"locatif",libelle:`Honoraires de gestion TTC – ${MOIS_L[+m-1]} ${y}`,prevision:!!loy?.prevision,pointe:false,note:"Calculé automatiquement",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()})); n++; }
     }catch(e){ writeErr(e); break; }
   }
+  try{ await Promise.all(HW); }catch(e){ writeErr(e); }
   if(n&&!silent) toast(`Honoraires recalculés (${n} mois)`);
   return n;
 }
@@ -1139,12 +1697,12 @@ function simHTML(){
   if(d<t) return `<p class="muted" style="margin:0">Choisissez une date à venir.</p>`;
   const now=soldeActuel(), list=S.ops.filter(o=>o.prevision&&o.date&&o.date<=d).sort((a,b)=>a.date.localeCompare(b.date));
   const tin=sum(list.filter(o=>o.sens==="in")), tout=sum(list.filter(o=>o.sens==="out")), fin=now+tin-tout;
-  const late=list.filter(o=>o.date<t).length;
+  const late=list.filter(o=>o.date<t&&!regulCovered(o)).length;
   const big=[...list].filter(o=>o.sens==="out").sort((a,b)=>b.montant-a.montant).slice(0,4);
   return `<div class="grid g3 sim">
-    <div class="tile"><span class="k">Solde aujourd'hui</span><span class="v">${eur(now)}</span><span class="s">réel, opérations validées</span></div>
-    <div class="tile"><span class="k">Prévu d'ici le ${fmtD(d).slice(0,5)}</span><span class="v"><span class="pos">+${eur0(tin)}</span> <span class="neg">−${eur0(tout)}</span></span><span class="s">${list.length} opération${list.length>1?"s":""}${late?` · ${late} en retard`:""}</span></div>
-    <div class="tile ${fin<0?"":"hero"}"><span class="k">Solde au ${fmtD(d)}</span><span class="v ${fin<0?"neg":""}">${eur(fin)}</span><span class="s">${fin<0?"Découvert : prévoir un apport":"après les opérations prévues"}</span></div>
+    <div class="tile ${now<0?"t-neg":"t-pos"}"><span class="k">Solde aujourd'hui</span><span class="v"><span class="sgn">${now<0?"−":"+"}</span>${eur(Math.abs(now))}</span><span class="s">${now<0?"⚠ à découvert":"réel, opérations validées"}</span></div>
+    <div class="tile"><span class="k">Prévu d'ici le ${fmtD(d).slice(0,5)}</span><span class="v io"><span>▲ +${eur0(tin)}</span><span>▼ −${eur0(tout)}</span></span><span class="s">${list.length} opération${list.length>1?"s":""}${late?` · ${late} en retard`:""}</span></div>
+    <div class="tile ${fin<0?"t-neg":"t-pos"}"><span class="k">Solde au ${fmtD(d)}</span><span class="v"><span class="sgn">${fin<0?"−":"+"}</span>${eur(Math.abs(fin))}</span><span class="s">${fin<0?"⚠ Découvert : prévoir un apport":"✓ après les opérations prévues"}</span></div>
   </div>${big.length?`<small class="sim-big">Plus grosses sorties : ${big.slice(0,3).map(o=>`${esc(shortLib(o.libelle))} ${eur0(o.montant)}`).join(" · ")}</small>`:""}`;
 }
 
@@ -1161,8 +1719,8 @@ function vTableau(){
   pts.push({l:"auj.",lf:`Aujourd'hui, ${fmtD(todayStr())}`,v:soldeActuel()});
   for(let i=1;i<=12;i++){ const d=new Date(now.getFullYear(),now.getMonth()+i,0); if(!lastF||ds(new Date(d.getFullYear(),d.getMonth(),1))>lastF) break; pts.push({l:MOIS[d.getMonth()]+(d.getMonth()===0?" "+String(d.getFullYear()).slice(2):""),lf:`Fin ${MOIS_L[d.getMonth()]} ${d.getFullYear()}`,v:soldePrevu(ds(d)),proj:true}); }
   const prevYears=[]; if(lastF){ const fd=[...new Set(S.ops.filter(o=>o.prevision).map(o=>o.date))].sort();
-  for(let yy=y;yy<=+lastF.slice(0,4);yy++){ let lo=Infinity,lom=""; const ds_=[...fd.filter(d=>d.startsWith(String(yy))&&d>=todayStr()), ...Array.from({length:12},(_,m)=>ds(new Date(yy,m+1,0))).filter(d=>d>=todayStr())];
-    for(const d of ds_){ const v=soldePrevu(d); if(v<lo){lo=v;lom=fmtD(d).slice(0,5)+" "+MOIS_L[+d.slice(5,7)-1].slice(0,0);} } prevYears.push({yy,fin:soldePrevu(yy+"-12-31"),lo,lom}); } }
+  for(let yy=y;yy<=+lastF.slice(0,4);yy++){ let lo=Infinity,lom="",hi=-Infinity,him=""; const ds_=[...fd.filter(d=>d.startsWith(String(yy))&&d>=todayStr()), ...Array.from({length:12},(_,m)=>ds(new Date(yy,m+1,0))).filter(d=>d>=todayStr())];
+    for(const d of ds_){ const v=soldePrevu(d); if(v<lo){lo=v;lom=fmtD(d).slice(0,5);} if(v>hi){hi=v;him=fmtD(d).slice(0,5);} } prevYears.push({yy,fin:soldePrevu(yy+"-12-31"),lo,lom,hi,him}); } }
   const parBien=[...["locatif","secondaire"].map(b=>({l:bienLabel(b),v:sum(yo.filter(o=>o.sens==="out"&&o.bien===b)),k:b==="locatif"?"loc":"sec"})),
     {l:"Frais bancaires",v:sum(yo.filter(o=>o.sens==="out"&&o.bien==="commun"&&o.categorie==="Frais bancaires")),k:"com"},
     {l:"Autres dépenses communes",v:sum(yo.filter(o=>o.sens==="out"&&o.bien==="commun"&&o.categorie!=="Frais bancaires")),k:"com"}];
@@ -1173,13 +1731,13 @@ function vTableau(){
       <div class="row"><label for="simDate" class="muted" style="font-size:.85rem">Au</label><input id="simDate" type="date" data-f="simDate" value="${esc(S.ui.simDate||"")}" style="width:auto"></div></div>
       <div id="simZone">${simHTML()}</div></div>`;
   const prevCard=(prevYears.length?`<div class="card"><div class="card-head"><h3>Prévisionnel</h3><small>d'après les opérations prévues</small></div>
-    <div class="table-wrap"><table><thead><tr><th>Année</th><th class="amt">Solde fin d'année</th><th class="amt">Point bas</th><th>Le</th></tr></thead><tbody>
-    ${prevYears.map(p=>`<tr><td>${p.yy}</td><td class="amt ${p.fin<0?"neg":""}">${eur0(p.fin)}</td><td class="amt ${p.lo<0?"neg":""}">${p.lo===Infinity?"—":eur0(p.lo)}</td><td class="muted">${esc(p.lom)}</td></tr>`).join("")}
-    </tbody></table></div><small>Un point bas négatif signale un mois où le compte passerait à découvert sans apport supplémentaire.</small></div>`:"");
+    <div class="table-wrap"><table class="prev-t"><thead><tr><th>Année</th><th class="amt">Fin d'année</th><th class="amt">Point bas</th><th class="amt">Point haut</th></tr></thead><tbody>
+    ${prevYears.map(p=>`<tr><td>${p.yy}</td><td class="amt ${p.fin<0?"neg":""}">${eur0(p.fin)}</td><td class="amt ${p.lo<0?"neg":""}">${p.lo===Infinity?"—":`${eur0(p.lo)}<br><small class="muted">le ${esc(p.lom)}</small>`}</td><td class="amt">${p.hi===-Infinity?"—":`${eur0(p.hi)}<br><small class="muted">le ${esc(p.him)}</small>`}</td></tr>`).join("")}
+    </tbody></table></div><small>Point bas négatif : le compte passerait à découvert ce jour-là sans apport supplémentaire. Point haut : le solde le plus élevé prévu dans l'année.</small></div>`:"");
   const apports=S.ops.filter(o=>real(o)&&o.categorie==="Apport indivisaire");
   const totAp=sum(apports);
   const apAtt=S.ops.filter(o=>o.prevision&&o.categorie==="Apport indivisaire"&&(o.date||"")<=todayStr()).sort((a,b)=>a.date.localeCompare(b.date));
-  const recents=groupRows(sortedOps().filter(o=>real(o)&&(o.date||"")<=todayStr()).slice(0,60)).slice(0,14).map(r=>r.o?r.o:{date:r.g.items[0].date,libelle:r.g.name,montant:Math.abs(r.g.items.reduce((a,o)=>a+sg(o),0)),sens:r.g.items.reduce((a,o)=>a+sg(o),0)>=0?"in":"out"});
+  const recents=groupRows(sortedOps().filter(o=>real(o)&&(o.date||"")<=todayStr()).slice(0,60)).slice(0,14).map(r=>r.o?r.o:{date:r.g.items[0].date,libelle:gName(r.g.name),montant:Math.abs(r.g.items.reduce((a,o)=>a+sg(o),0)),sens:r.g.items.reduce((a,o)=>a+sg(o),0)>=0?"in":"out"});
   return `
   ${!S.config&&S.ready?`<div class="banner"><div><strong>Première visite ?</strong> <span class="muted">Renseignez les indivisaires, leurs quotes-parts et le solde de départ du compte joint.</span></div><a class="btn w" href="#parametres">Ouvrir les paramètres</a></div>`:""}
   <div class="view-head"><div><h2>Situation au ${fmtD(todayStr())}</h2><p>Compte joint de l'indivision, chiffres de l'année ${y}.</p></div>
@@ -1194,8 +1752,9 @@ function vTableau(){
     <div class="stack"><div class="card"><div class="card-head"><h3>Solde fin de mois${pts.some(p=>p.proj)?" : réel puis prévu":", 12 derniers mois"}</h3><small class="muted hide-m">Survolez la courbe pour voir le détail</small></div>${lineChart(pts)}</div>
     ${simCard}</div>
     <div class="stack">
+      ${revalDueCard()}
       <div class="card"><div class="card-head"><h3>À surveiller</h3></div>
-        ${al.length?`<div class="alerts compact">${al.slice(0,4).map(x=>`<a class="alert ${x.k}" href="${x.h}"><span class="dot"></span><span>${esc(x.t)}</span></a>`).join("")}</div>`:`<p class="muted" style="margin:0">Rien en attente.</p>`}
+        ${al.length?`<div class="alerts compact">${al.map(x=>`<a class="alert ${x.k}" href="${x.h}"><span class="dot"></span><span>${esc(x.t)}${x.s?`<small class="al-s">${esc(x.s)}</small>`:""}</span></a>`).join("")}</div>`:`<p class="muted" style="margin:0">Rien en attente.</p>`}
       </div>
       <div class="card"><div class="card-head"><h3>Derniers mouvements</h3><a href="#tresorerie">Tout voir</a></div>
         ${recents.length?`<div class="mini-ops">${recents.map(o=>`<div class="mo"><span class="d">${fmtD(o.date).slice(0,5)}</span><span class="l" title="${esc(o.libelle)}">${esc(shortLib(o.libelle))}${o.indivisaire?` <span class="muted">· ${esc(o.indivisaire)}</span>`:""}</span><span class="a ${o.sens==="in"?"pos":"neg"}">${o.sens==="in"?"+":"−"}${eur(+o.montant).replace("-","")}</span></div>`).join("")}</div>`:`<p class="muted" style="margin:0">Aucune opération passée pour l'instant.</p>`}
@@ -1222,10 +1781,12 @@ const shortLib=l=>String(l||"").replace(/^Injection de fonds persos/i,"Apport").
 function opRow(o,sub){ return `<tr class="op ${o.prevision?"prev":""} ${sub?"subrow":""}" data-row="${esc(o.id)}"><td class="date">${sub?"":fmtDc(o.date)}</td>
     <td class="lib"><span class="one" title="${esc([o.libelle,o.indivisaire,o.note].filter(Boolean).join(" · "))}">${sub?`<span class="muted" aria-hidden="true">└ </span>`:""}${esc(shortLib(o.libelle))}${(o.indivisaire||"")&&!sub?` <span class="muted">· ${esc(o.indivisaire)}</span>`:""}${o.regul&&o.regul.parts?` <span class="regtag" title="Appel de ${esc(eur(+o.regul.base))}, ajusté par la régularisation de charges">régul ${(()=>{const d=Object.values(o.regul.parts).reduce((a,v)=>a+(+v),0);return (d<0?"−":"+")+eur(Math.abs(d));})()}</span>`:""}</span></td>
     <td class="cat">${sub?"":`<span class="chip">${esc(o.categorie)}</span>`}</td><td class="bien">${sub?"":bienChip(o.bien)}</td>
-    <td class="amt ${o.sens==="in"?"pos":"neg"}">${+o.montant===0?"":o.sens==="in"?"+":"−"}${eur(+o.montant).replace("-","")}</td>
+    <td class="amt ${o.sens==="in"?"pos":"neg"}">${+o.montant===0?"":o.sens==="in"?"+":"−"}${eur(+o.montant).replace("-","")}${regulCovered(o)?`<small class="est-tag">couvert par la régul. · pas de prélèvement</small>`:""}${o.prevision&&o.revalBase!=null&&Math.abs(+o.montant-+o.revalBase)>0.004?`<small class="est-tag" title="Montant estimé avec le taux de revalorisation, à confirmer">estimé</small>`:""}</td>
     <td class="pt">${sub?"":o.prevision?`<button class="sm w" data-a="valider" data-id="${esc(o.id)}" title="L'opération est passée sur le compte">Valider</button>`:`<span class="done-mark" title="Passée sur le compte">✓ Passée</span>${o.validee?`<button class="ghost sm w" data-a="annuler-valid" data-ids="${esc(o.id)}" title="Annuler la validation : repasser en prévu" aria-label="Annuler la validation">↶</button>`:""}`}</td>
     <td class="act w">${sub&&o.prevision&&ANNUELS.some(a=>a.re.test(o.libelle||""))?`<button class="ghost sm" data-a="reporter" data-id="${esc(o.id)}" title="Pas arrivée ce mois-ci : reporter au versement du mois suivant">Reporter ›</button>`:""}<button class="ghost sm" data-a="edit-op" data-id="${esc(o.id)}" title="Modifier" aria-label="Modifier">Modifier</button>${sub?"":`<button class="ghost sm dup" data-a="dup-op" data-id="${esc(o.id)}" title="Dupliquer" aria-label="Dupliquer">Dupliquer</button>`}${sub?"":`<button class="ghost sm danger" data-a="del-op" data-id="${esc(o.id)}" title="Supprimer" aria-label="Supprimer">✕</button>`}</td></tr>`; }
 const AGENCE_GRP="Versement de l'agence";
+const agLabel=()=>cfg().agenceLabel||"Versement de l'agence Citya Béziers";
+const gName=n=>n===AGENCE_GRP?agLabel():n;
 const GROUP_MODE="bulle"; // "bulle" (ⓘ) ou "deroulant" (▸)
 const groupOf=o=>o.groupe||(inVersementAgence(o)?AGENCE_GRP:"");
 function groupRows(list){
@@ -1238,9 +1799,9 @@ function groupRow(g){
   const rk=o=>{ const i=ORD.findIndex(re=>re.test(o.libelle||"")); return i<0?50:i; };
   const it=g.name===AGENCE_GRP?[...g.items].sort((a,b)=>rk(a)-rk(b)):g.items, f=it[0], tot=it.reduce((a,o)=>a+sg(o),0), open=S.ui.open&&S.ui.open.has(g.k), prev=it.some(o=>o.prevision);
   const head=`<tr class="op ${prev?"prev":""} grp" data-row="${esc(g.k)}"><td class="date">${fmtDc(f.date)}</td>
-    <td class="lib" style="position:relative">${GROUP_MODE==="bulle"?`<span style="font-weight:600">${esc(g.name)}</span> <button class="info-btn" data-a="pop" data-k="${esc(g.k)}" aria-label="Voir le détail" aria-expanded="${S.ui.pop===g.k}">i</button>
-      ${S.ui.pop===g.k?popHTML(g,it,prev,tot,f):""}`
-      :`<button class="ghost sm" data-a="toggle-grp" data-k="${esc(g.k)}" aria-expanded="${open}" style="padding:2px 6px;font-weight:600;color:var(--ink)"><span aria-hidden="true">${open?"▾":"▸"}</span> ${esc(g.name)}</button>`}</td>
+    <td class="lib" style="position:relative">${GROUP_MODE==="bulle"?`<span style="font-weight:600">${esc(gName(g.name))}</span> <button class="info-btn" data-a="pop" data-k="${esc(g.k)}" aria-label="Voir le détail" aria-expanded="${S.ui.pop===g.k}">i</button>
+      ${S.ui.pop===g.k?'<div class="pop-bd" aria-hidden="true"></div>'+popHTML(g,it,prev,tot,f):""}`
+      :`<button class="ghost sm" data-a="toggle-grp" data-k="${esc(g.k)}" aria-expanded="${open}" style="padding:2px 6px;font-weight:600;color:var(--ink)"><span aria-hidden="true">${open?"▾":"▸"}</span> ${esc(gName(g.name))}</button>`}</td>
     <td class="cat"><span class="chip">${g.name===AGENCE_GRP?"Compte rendu de gestion":esc(f.categorie)}</span></td><td class="bien">${bienChip(f.bien)}</td>
     <td class="amt ${tot>=0?"pos":"neg"}">${tot>=0?"+":"−"}${eur(Math.abs(tot))}</td><td class="pt">${prev?`<button class="sm w" data-a="valider-grp" data-k="${esc(g.k)}">Valider</button>`:`<span class="done-mark">✓ Passée</span>${it.some(o=>o.validee)?`<button class="ghost sm w" data-a="annuler-valid" data-ids="${esc(it.filter(o=>o.validee).map(o=>o.id).join(","))}" title="Annuler la validation" aria-label="Annuler la validation">↶</button>`:""}`}</td><td class="act w"></td></tr>`;
   if(GROUP_MODE==="bulle"||!open) return head;
@@ -1288,7 +1849,7 @@ function popHTML(g,it,prev,tot,f){
     if(S.canWrite) an+=`<div class="pop-r"><label class="sr" for="an_${esc(g.k)}">Ajouter une ligne annuelle</label><select id="an_${esc(g.k)}" class="annuel-sel" data-k="${esc(g.k)}"><option value="">+ Ajouter une ligne annuelle…</option>${ANNUELS.map(a=>`<option value="${a.k}">${esc(a.lab)}</option>`).join("")}</select></div>`;
     body+=`<div class="pop-an">${an}</div>`;
   } else it.forEach(o=>body+=popLine(o,{lab:o.personne||shortLib(o.libelle)}));
-  return `<div class="pop" role="dialog" aria-label="Détail"><div class="pop-t">${esc(g.name)} · ${fmtD(f.date)}<button class="pop-link" data-a="pop" data-k="${esc(g.k)}" aria-label="Fermer" style="float:right">✕</button></div>${body}<div class="pop-r pop-tot"><span>${tot>=0?"Total versé":"Total prélevé"}</span><span>${eur(Math.abs(tot))}</span></div></div>`;
+  return `<div class="pop" role="dialog" aria-label="Détail"><div class="pop-t">${esc(gName(g.name))} · ${fmtD(f.date)}<button class="pop-link" data-a="pop" data-k="${esc(g.k)}" aria-label="Fermer" style="float:right">✕</button></div>${body}<div class="pop-r pop-tot"><span>${tot>=0?"Total versé":"Total prélevé"}</span><span>${eur(Math.abs(tot))}</span></div></div>`;
 }
 async function popSave(id,kind){
   const n=parseNum($("#popAmt").value); if(!(n>=0)){ toast("Indiquez un montant."); return; }
@@ -1296,7 +1857,7 @@ async function popSave(id,kind){
   if(kind){ const k=S.ui.pop, gdate=k.split("|")[1], [y,m]=gdate.split("-"), it=S.ops.filter(o=>groupOf(o)&&(groupOf(o)+"|"+o.date)===k), prev=it.some(o=>o.prevision), imp=kind==="impaye";
     if(v>0){ try{ await S.db.collection("operations").add({date:gdate,montant:v,categorie:imp?"Autre dépense":"Autre recette",sens:imp?"out":"in",bien:"locatif",libelle:`${imp?"Impayé locataire":"Régularisation impayés locataire"} – ${MOIS_L[+m-1]} ${y}`,indivisaire:"",pointe:!prev,prevision:prev,note:"",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}); ok=true; }catch(e){ writeErr(e); } }
     else ok=true; month=gdate.slice(0,7); }
-  else { const o=byId("ops",id); if(!o) return; ok=await patch("operations",id,{montant:v,updatedAt:new Date().toISOString()}); month=o.bien==="locatif"&&!isHono(o)?o.date.slice(0,7):null; }
+  else { const o=byId("ops",id); if(!o) return; const old=+o.montant, snap={...o}; ok=await patch("operations",id,{montant:v,updatedAt:new Date().toISOString()}); month=o.bien==="locatif"&&!isHono(o)?o.date.slice(0,7):null; if(ok) setTimeout(()=>revalOffer(snap,old,v),700); }
   if(!ok) return; S.ui.popEdit=null; rerenderOps(); if(month) setTimeout(()=>majHonoraires([month],true),400);
 }
 function opsTable(list,withFoot){
@@ -1420,9 +1981,9 @@ function notList(){
     <div class="row" style="margin-top:10px">${n.lien?`<a href="${esc(n.lien)}" target="_blank" rel="noopener">Ouvrir la notice en ligne</a>`:""}${n.dateAchat?`<small>Acheté le ${fmtD(n.dateAchat)}</small>`:""}
     <span style="flex:1"></span><button class="ghost sm w" data-a="edit-not" data-id="${esc(n.id)}">Modifier</button><button class="ghost sm danger w" data-a="del-not" data-id="${esc(n.id)}" aria-label="Supprimer">✕</button></div></details>`;}).join("")}</div>`;
 }
-function infosCard(noAddr){
+function infosCard(noAddr,ro){
   const M=cfg().biens.secondaire, facts=[["Adresse",noAddr?"":M.adresse],["Infos pratiques",M.pratique],["Contacts utiles",M.contacts],["Notes",M.notes]].filter(f=>f[1]);
-  return facts.length?`<dl class="facts">${facts.map(f=>`<dt>${esc(f[0])}</dt><dd>${esc(f[1])}${f[0]==="Adresse"?`<br><a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(String(f[1]).replace(/\n/g,", "))}" target="_blank" rel="noopener" style="font-size:.85rem">Voir sur la carte ↗</a>`:""}</dd>`).join("")}</dl>`:`<div class="empty">Adresse, compteurs, disjoncteur, jours de poubelles, ouverture et fermeture de la maison, contacts utiles…<button class="w" data-a="edit-sec">Compléter les infos pratiques</button></div>`;
+  return facts.length?`<dl class="facts">${facts.map(f=>`<dt>${esc(f[0])}</dt><dd>${esc(f[1])}${f[0]==="Adresse"?`<br><a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(String(f[1]).replace(/\n/g,", "))}" target="_blank" rel="noopener" style="font-size:.85rem">Voir sur la carte ↗</a>`:""}</dd>`).join("")}</dl>`:`<div class="empty">Adresse, compteurs, disjoncteur, jours de poubelles, ouverture et fermeture de la maison, contacts utiles…${ro?`<a href="#maison-guide">Compléter dans le Guide de la maison</a>`:`<button class="w" data-a="edit-sec">Compléter les infos pratiques</button>`}</div>`;
 }
 /* ---------- Espace Maison : travaux & entretien / guide / sorties ---------- */
 function tacheItems(){
@@ -1460,12 +2021,12 @@ function vMaisonTaches(){
   const nT=items.filter(i=>i.kind==="t").length, nE=items.filter(i=>i.kind==="e").length, faits=S.travaux.filter(t=>t.statut==="Fait").sort((a,b)=>(b.dateFait||"").localeCompare(a.dateFait||""));
   const urg=items.filter(i=>i.rank===0).length, budget=S.travaux.filter(t=>t.statut!=="Fait").reduce((a,t)=>a+(+t.budget||0),0);
   let body;
-  if(!S.travaux.length&&!S.entretiens.length) body=`<div class="empty">Notez ici ce qu'il faudra faire à la maison : petits travaux à faire une fois (réparations, achats, bricolage) et entretiens qui reviennent (ramonage, chaudière, détecteurs…).<div class="row" style="justify-content:center"><button class="primary w" data-a="add-trav">+ Petit travail</button><button class="w" data-a="add-ent">+ Entretien récurrent</button><button class="w" data-a="ent-modeles">Liste type d'entretiens</button></div></div>`;
-  else if(f==="faits") body=faits.length?`<div class="list">${faits.map(t=>`<div class="item done"><div class="grow"><div class="title">${esc(t.titre)}</div><div class="meta"><span class="chip good">Terminé</span>${t.dateFait?`<span>le ${fmtD(t.dateFait)}</span>`:""}${t.qui?`<span>par ${esc(t.qui)}</span>`:""}${t.budget?`<span class="num">≈ ${eur0(+t.budget)}</span>`:""}</div></div><div class="row w" style="gap:2px"><button class="ghost sm" data-a="edit-trav" data-id="${esc(t.id)}">Modifier</button><button class="ghost sm danger" data-a="del-trav" data-id="${esc(t.id)}" aria-label="Supprimer">✕</button></div></div>`).join("")}</div>`:`<p class="muted" style="margin:0">Aucun petit travail terminé pour l'instant.</p>`;
+  if(!S.travaux.length&&!S.entretiens.length) body=`<div class="empty">Notez ici ce qu'il faudra faire à la maison : petits travaux à faire une fois (réparations, achats, bricolage) et entretiens qui reviennent (ramonage, chaudière, détecteurs…).<div class="row" style="justify-content:center"><button class="primary w" data-a="add-trav">+ Petits travaux</button><button class="w" data-a="add-ent">+ Entretien récurrent</button><button class="w" data-a="ent-modeles">Liste type d'entretiens</button></div></div>`;
+  else if(f==="faits") body=faits.length?`<div class="list">${faits.map(t=>`<div class="item done"><div class="grow"><div class="title">${esc(t.titre)}</div><div class="meta"><span class="chip good">Terminé</span>${t.dateFait?`<span>le ${fmtD(t.dateFait)}</span>`:""}${t.qui?`<span>par ${esc(t.qui)}</span>`:""}${t.budget?`<span class="num">≈ ${eur0(+t.budget)}</span>`:""}</div></div><div class="row w" style="gap:2px"><button class="ghost sm" data-a="edit-trav" data-id="${esc(t.id)}">Modifier</button><button class="ghost sm danger" data-a="del-trav" data-id="${esc(t.id)}" aria-label="Supprimer">✕</button></div></div>`).join("")}</div>`:`<p class="muted" style="margin:0">Pas encore de petits travaux terminés.</p>`;
   else { const l=items.filter(i=>f==="tout"||(f==="une"&&i.kind==="t")||(f==="rec"&&i.kind==="e"));
     body=l.length?`<div class="list">${l.map(tacheHTML).join("")}</div>`:`<p class="muted" style="margin:0">${f==="rec"?"Aucun entretien récurrent. <button class=\"ghost sm w\" data-a=\"ent-modeles\">Partir d'une liste type</button>":"Rien à faire pour l'instant."}</p>`; }
   return `${maisonHead("Petits travaux & entretien",`Tout ce qu'il y a à faire à la maison, du plus urgent au moins pressé.${urg?` <strong class="neg">${urg} en retard ou urgent${urg>1?"s":""}.</strong>`:""}${budget?` Budget estimé : <strong class="num">${eur0(budget)}</strong>.`:""}`,
-    `<button class="w" data-a="add-ent">+ Entretien récurrent</button><button class="primary w" data-a="add-trav">+ Petit travail</button>`)}
+    `<button class="w" data-a="add-ent">+ Entretien récurrent</button><button class="primary w" data-a="add-trav">+ Petits travaux</button>`)}
   <div class="card">${fchips("tf",[["tout","Tout",items.length],["une","Une fois",nT],["rec","Récurrents",nE],["faits","Terminés",faits.length]])}${body}</div>`;
 }
 function alertesAll(){
@@ -1514,21 +2075,22 @@ function vMaison(){
   const aFaire=S.entretiens.filter(e=>entState(e).k!=="good").length;
   const proch=[...S.entretiens].filter(e=>entNext(e)).sort((a,b)=>entNext(a).localeCompare(entNext(b)))[0];
   const al=alertesAll(), top=tacheItems().slice(0,5);
-  return `${maisonHead(M.nom,"Le carnet de la maison : ce qu'il faut faire, entretenir, savoir sur place et où sortir.",`<button class="w" data-a="add-ent">+ Entretien</button><button class="primary w" data-a="add-trav">+ Petit travail</button>`)}
+  const so=S.sorties||[], coeur=so.filter(x=>x.avis==="Coup de cœur").length;
+  return `${maisonHead(M.nom,"Le carnet de la maison en un coup d'œil : ce qu'il y a à faire, à entretenir et où sortir.")}
   ${ficheMaison()}
   <div class="grid g4">
     <a class="tile" href="#maison-taches" style="text-decoration:none;color:inherit"><span class="k">Petits travaux à faire</span><span class="v">${ouverts.length}</span><span class="s">${urg?`dont ${urg} prioritaire${urg>1?"s":""}`:"aucun prioritaire"}</span></a>
-    <a class="tile" href="#maison-taches" style="text-decoration:none;color:inherit"><span class="k">Entretiens à planifier</span><span class="v ${aFaire?"neg":"pos"}">${aFaire}</span><span class="s">en retard, proches ou jamais faits</span></a>
-    <a class="tile" href="#maison-taches" style="text-decoration:none;color:inherit"><span class="k">Prochain entretien</span><span class="v" style="font-size:1.15rem">${proch?esc(proch.titre):"—"}</span><span class="s">${proch?`le ${fmtD(entNext(proch))}`:"Aucune date connue"}</span></a>
+    <a class="tile" href="#maison-taches" style="text-decoration:none;color:inherit"><span class="k">Entretiens à prévoir</span><span class="v ${aFaire?"neg":"pos"}">${aFaire}</span><span class="s">${proch?`prochain : ${esc(proch.titre)}, le ${fmtD(entNext(proch))}`:"aucune date connue"}</span></a>
     <a class="tile" href="#maison-guide" style="text-decoration:none;color:inherit"><span class="k">Guides et notices</span><span class="v">${S.notices.length}</span><span class="s">équipements documentés</span></a>
+    <a class="tile" href="#maison-sorties" style="text-decoration:none;color:inherit"><span class="k">Sorties & activités</span><span class="v">${so.length}</span><span class="s">${coeur?`dont ${coeur} coup${coeur>1?"s":""} de cœur`:"adresses notées"}</span></a>
   </div>
   <div class="grid g-main">
-    <div class="card"><div class="card-head"><h3>À faire en priorité</h3><a href="#maison-taches">Tout voir</a></div>${top.length?`<div class="list">${top.map(tacheHTML).join("")}</div>`:`<div class="empty">Rien à faire pour l'instant.<div class="row" style="justify-content:center"><button class="primary w" data-a="add-trav">+ Petit travail</button><button class="w" data-a="ent-modeles">Liste type d'entretiens</button></div></div>`}</div>
+    <div class="card"><div class="card-head"><h3>À faire en priorité</h3><a href="#maison-taches">Tout voir</a></div>${top.length?`<div class="list">${top.map(tacheHTML).join("")}</div>`:`<div class="empty">Rien à faire pour l'instant.<div class="row" style="justify-content:center"><a href="#maison-taches">Ouvrir Petits travaux & entretien</a></div></div>`}</div>
     <div class="card"><div class="card-head"><h3>À surveiller</h3></div>
       ${al.length?`<div class="alerts">${al.slice(0,8).map(x=>`<a class="alert ${x.k}" href="${x.h}"><span class="dot"></span><span>${esc(x.t)}</span></a>`).join("")}</div>`:`<p class="muted" style="margin:0">Rien en attente pour la maison.</p>`}
     </div>
   </div>
-  <div class="card"><div class="card-head"><h3>Infos pratiques</h3><a href="#maison-guide">Guide de la maison</a></div>${infosCard(true)}</div>`;
+  <div class="card"><div class="card-head"><h3>Infos pratiques</h3><a href="#maison-guide">Guide de la maison</a></div>${infosCard(true,true)}</div>`;
 }
 function vMaisonGuide(){
   const al=alertesMaison();
@@ -1578,6 +2140,9 @@ function vMaisonSorties(){
 
 function indivRow(i={}){ return `<div class="indiv-row"><input aria-label="Nom" class="in-nom" value="${esc(i.nom||"")}" placeholder="Prénom Nom"><input aria-label="Quote-part en %" class="in-qp" inputmode="decimal" value="${esc(i.quotePart??"")}" placeholder="%"><button type="button" class="ghost danger w" data-a="del-indiv" aria-label="Retirer">✕</button></div>`; }
 /* ---------- Régularisations de charges de copropriété ---------- */
+const regulCovered=o=>!!(o.regul&&+o.montant===0);
+const regulMois=()=>+cfg().regulMois||1;
+const regulDebut=ex=>`${+ex+1}-${pad(regulMois())}-01`;
 const isCoproCall=o=>o.categorie==="Charges de copropriété"&&/^pr[ée]l[èe]vement charges de copro/i.test(o.libelle||"");
 const r2=n=>Math.round(n*100)/100;
 function regulPlan(){
@@ -1599,46 +2164,50 @@ function regulPlan(){
   return {regs,calls,cur,parts,plan,base};
 }
 async function applyReguls(){
-  const P=regulPlan(); let n=0;
+  const P=regulPlan(); let n=0; const W=[];
   for(const o of P.calls){ if(!o.prevision) continue;
     const b=P.base(o), m=P.cur[o.id], pr=P.parts[o.id], has=Object.keys(pr).length;
-    if(has){ if(Math.abs(m-(+o.montant))>0.004||JSON.stringify(o.regul?.parts||{})!==JSON.stringify(pr)){ await S.db.collection("operations").doc(o.id).update({montant:m,regul:{base:b,parts:pr}}); n++; } }
-    else if(o.regul){ await S.db.collection("operations").doc(o.id).update({montant:b,regul:null}); n++; }
+    if(has){ if(Math.abs(m-(+o.montant))>0.004||JSON.stringify(o.regul?.parts||{})!==JSON.stringify(pr)){ W.push(S.db.collection("operations").doc(o.id).update({montant:m,regul:{base:b,parts:pr}})); n++; } }
+    else if(o.regul){ W.push(S.db.collection("operations").doc(o.id).update({montant:b,regul:null})); n++; }
   }
-  return n;
+  await Promise.all(W); return n;
 }
+function rgDebutUpd(){ const el=$("#rgDebut"), ex=$("#f_exercice"); if(!el||!ex) return; const v=ex.value.trim(); if(!/^\d{4}$/.test(v)){ el.textContent="—"; return; } const d=regulDebut(v); const call=S.ops.filter(isCoproCall).map(o=>o.date).filter(x=>x>=d).sort()[0]; el.textContent=`Appel de ${MOIS_L[+d.slice(5,7)-1]} ${d.slice(0,4)}${call&&call.slice(0,7)===d.slice(0,7)?` (le ${+call.slice(8,10)})`:call?` · premier appel : ${fmtD(call)}`:""}`; }
+document.addEventListener("input",ev=>{ if(ev.target.id==="f_exercice") rgDebutUpd(); });
 function regulForm(r={}){
   const y=new Date().getFullYear();
   openForm({title:r.id?"Modifier la régularisation":"Régularisation de charges de copropriété",
-    intro:"Le décompte annuel du syndic (exercice clos au 30 juin). Un trop-perçu est déduit des prochains appels trimestriels jusqu'à épuisement ; un complément s'ajoute au premier appel.",
-    values:{exercice:String(y-(new Date().getMonth()<6?1:0)),sens:"trop",debut:`${y+1}-01-01`,...r},fields:[
+    intro:"Le décompte annuel du syndic (exercice clos au 30 juin). Un trop-perçu est déduit des appels suivants jusqu'à épuisement : si l'appel ne suffit pas, le reste passe automatiquement sur les suivants. Un complément s'ajoute au premier appel.",
+    values:{exercice:String(y-(new Date().getMonth()<6?1:0)),sens:"trop",...r},fields:[
     {id:"exercice",label:"Exercice clos le 30/06/",type:"text",half:true,required:true,placeholder:String(y)},
     {id:"sens",label:"Résultat",type:"select",half:true,options:[{value:"trop",label:"Trop-perçu (en notre faveur)"},{value:"comp",label:"Complément à payer"}]},
     {id:"montant",label:"Montant (€)",type:"number",half:true,required:true},
-    {id:"debut",label:"Imputé à partir de",type:"date",half:true,required:true,hint:"Premier appel concerné, en général janvier."},
+    {id:"_debut",type:"html",label:"Imputé à partir de",half:true,html:`<span class="rg-debut" id="rgDebut"></span><small class="muted" style="display:block">Réglable dans la fenêtre « Prélèvement charges de copropriété ».</small>`},
     {id:"note",label:"Note",type:"text",placeholder:"ex. Décompte reçu le 20/10, lettre du syndic"}
   ],onSubmit:async x=>{
     if(!(x.montant>0)) return "Le montant doit être positif.";
     if(!/^\d{4}$/.test(x.exercice)) return "Indiquez l'année de clôture de l'exercice (ex. 2026).";
     const list=[...(cfg().regulsCopro||[])].filter(z=>z.id!==r.id);
-    list.push({id:r.id||("rc-"+Date.now().toString(36)),exercice:x.exercice,sens:x.sens,montant:r2(x.montant),debut:x.debut,note:x.note||""});
+    list.push({id:r.id||("rc-"+Date.now().toString(36)),exercice:x.exercice,sens:x.sens,montant:r2(x.montant),debut:regulDebut(x.exercice),note:x.note||""});
     if(!(await saveConfig({regulsCopro:list}))) return false;
     setTimeout(async()=>{ const n=await applyReguls(); if(n) toast(`${n} appel${n>1?"s":""} de charges ajusté${n>1?"s":""}`); },400);
   }});
+  rgDebutUpd();
 }
 /* ---------- Connexion Google Sheets & sauvegardes ---------- */
 function openSetup(msg){
   const c=window.GAS?.conf||{};
   openForm({title:"Connexion à la base Google Sheets",intro:(msg?msg+" ":"")+"Collez l'URL de l'application Web Apps Script (elle se termine par /exec) et la clé secrète enregistrée dans les propriétés du script. Ces informations restent sur cet appareil.",
-    values:{url:c.url||"",key:c.key||""},fields:[
+    values:{url:c.url||"",key:c.key||"",name:c.name||""},fields:[
     {id:"url",label:"URL de l'application Web",type:"url",required:true,placeholder:"https://script.google.com/macros/s/…/exec"},
-    {id:"key",label:"Clé secrète",type:"text",required:true}
+    {id:"key",label:"Clé secrète",type:"text",required:true},
+    {id:"name",label:"Votre prénom",type:"text",placeholder:"ex. Yann",hint:"Affiché dans l'historique d'activité."}
   ],submitLabel:"Se connecter",onSubmit:async v=>{
-    const url=v.url.trim(), key=v.key.trim();
+    const url=v.url.trim(), key=v.key.trim(), name=(v.name||"").trim();
     if(!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url)) return "L'URL doit être celle de l'application Web Apps Script (script.google.com…/exec).";
     try{ const r=await fetch(url+"?action=ping&key="+encodeURIComponent(key)); const j=await r.json(); if(!j.ok) return j.code==="denied"?"Clé refusée par le script. Vérifiez la propriété KEY.":(j.error||"Le script a répondu une erreur."); }
     catch(e){ return "Impossible de joindre le script. Vérifiez l'URL et que le déploiement est accessible à « Tout le monde »."; }
-    window.GAS.save({url,key}); location.reload(); return true;
+    window.GAS.save({url,key,name}); location.reload(); return true;
   }});
 }
 function backupData(){
@@ -1659,7 +2228,254 @@ async function importJSON(file){
     catch(e){ toast("Échec de l'envoi : "+(e.message||e)); if(z) z.textContent="Échec : "+(e.message||e); }
   });
 }
+document.addEventListener("keydown",ev=>{ if((ev.key==="Enter"||ev.key===" ")&&ev.target.matches&&ev.target.matches("tr.cal-click")){ ev.preventDefault(); ev.target.click(); } });
+document.addEventListener("change",ev=>{ if(ev.target.dataset&&ev.target.dataset.f==="ag-add"&&ev.target.value){ moveGroup(ev.target.value,true); } });
 document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.files[0]) importJSON(ev.target.files[0]); });
+/* ---------- Historique d'activité ---------- */
+const ACT={create:["＋","Ajout"],update:["✎","Modification"],delete:["✕","Suppression"],bulk:["⇄","Mise à jour groupée"],restore:["↺","Restauration"]};
+/* ---------- Version et nouveautés ---------- */
+const APP_VERSION="1.0.0";
+const CHANGELOG=[
+  {v:"1.0.0",d:"2026-11-13",t:"Première version",items:[
+    "Trois espaces : Finances (tableau de bord, opérations bancaires, réglages), Béziers et Soullans.",
+    "Données partagées dans Google Sheets, photos dans Google Drive, sauvegarde et import JSON.",
+    "Écran d'accueil à code : un code par couple, prénom mémorisé sur chaque appareil, décor qui change selon l'heure.",
+    "Tableau de bord : solde, prévisionnel avec point haut, simulation du solde à une date, alertes (découvert à 20 jours, apports déséquilibrés, grosses échéances à 30 jours, loyer manquant…).",
+    "Opérations récurrentes : blocs « Versement de l'agence » et « Assurance crédit », réglage de chaque ligne (montant, jour, mois, revalorisation annuelle).",
+    "Revalorisations : montant estimé dans le prévisionnel, puis question au mois prévu pour saisir le montant réel.",
+    "Copropriété : régularisation annuelle imputée automatiquement, appels de fonds travaux en une ou plusieurs fois.",
+    "Historique d'activité avec restauration, confirmations avant suppression ou modification.",
+    "Soullans : vue d'ensemble, petits travaux & entretien, guide de la maison, sorties & activités.",
+    "Compatible téléphone, tablette et PC."]}
+];
+function versionCard(){
+  const L=CHANGELOG.map((c,i)=>`<details class="cl" ${i===0?"open":""}><summary><strong>v${esc(c.v)}</strong> <span class="muted">· ${fmtD(c.d)}</span> · ${esc(c.t)}</summary><ul>${c.items.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`).join("");
+  return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Version de l'application</h3><span class="chip good">v${APP_VERSION}</span></div>
+    <p class="muted" style="margin:0 0 10px">Numérotation majeure.mineure.correctif : le dernier chiffre pour une correction, celui du milieu pour une nouveauté, le premier pour une refonte.</p>${L}</div>`;
+}
+function whatsNew(){
+  let seen=""; try{ seen=localStorage.getItem("indiv-ver")||""; localStorage.setItem("indiv-ver",APP_VERSION); }catch(e){ return; }
+  if(!seen||seen===APP_VERSION) return;
+  const cmp=(a,b)=>{ const x=a.split(".").map(Number), y=b.split(".").map(Number); for(let i=0;i<3;i++){ if((x[i]||0)!==(y[i]||0)) return (x[i]||0)-(y[i]||0); } return 0; };
+  const nv=CHANGELOG.filter(c=>cmp(c.v,seen)>0); if(!nv.length) return;
+  openForm({title:`Nouveautés · v${APP_VERSION}`,intro:nv.map(c=>`<p style="margin:8px 0 4px"><strong>v${esc(c.v)}</strong> · ${esc(c.t)}</p><ul class="cl-ul">${c.items.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`).join(""),fields:[],submitLabel:"J'ai compris",onSubmit:async()=>true});
+  const c=$("#modalRoot [data-close]"); if(c) c.remove();
+}
+function journalCard(){
+  const J=[...(S.journal||[])].sort((a,b)=>(b.at||"").localeCompare(a.at||"")), n=S.ui.jn||25, f=S.ui.jf||"tout";
+  const list=J.filter(e=>f==="tout"||(f==="del"&&e.act==="delete"));
+  const nDel=J.filter(e=>e.act==="delete"&&!e.restored).length;
+  let day="", rows="";
+  for(const e of list.slice(0,n)){ const d=(e.at||"").slice(0,10); if(d!==day){ day=d; rows+=`<div class="j-day">${d===todayStr()?"Aujourd'hui":fmtD(d)}</div>`; }
+    const [ic,lab]=ACT[e.act]||["•",e.act];
+    rows+=`<div class="j-row ${e.act}${e.restored?" done":""}"><span class="j-ic" aria-hidden="true">${ic}</span><div class="grow"><div><strong>${esc(lab)}</strong> · ${esc(e.kind||"")}${e.who?` <span class="muted">par ${esc(e.who)}</span>`:""}</div><div class="j-l">${esc(e.label||"")}</div></div>
+      <span class="j-t muted">${new Date(e.at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</span>${e.act==="delete"&&e.before&&!e.restored?`<button type="button" class="sm w" data-a="j-restore" data-id="${esc(e.id)}">Restaurer</button>`:e.restored?`<span class="chip good">restauré</span>`:""}</div>`; }
+  return `<div class="card" style="grid-column:1/-1" id="journalCard"><div class="card-head"><h3>Historique d'activité</h3>${nDel?`<span class="chip warn">${nDel} suppression${nDel>1?"s":""} restaurable${nDel>1?"s":""}</span>`:""}</div>
+    ${fchips("jf",[["tout","Tout",J.length],["del","Suppressions",J.filter(e=>e.act==="delete").length]])}
+    ${rows?`<div class="j-list">${rows}</div>${list.length>n?`<div class="row" style="justify-content:center;margin-top:8px"><button type="button" class="ghost sm" data-a="j-more">Afficher plus</button></div>`:""}`:`<p class="muted" style="margin:0">Aucune activité enregistrée pour l'instant.</p>`}
+    <small>Les 300 dernières actions sont conservées. Une opération supprimée peut être restaurée telle qu'elle était.</small></div>`;
+}
+async function journalRestore(id){
+  const e=(S.journal||[]).find(x=>x.id===id); if(!e||!e.before) return;
+  const exists=(e.col==="operations"?S.ops:S[e.col]||[]).some(x=>x.id===e.id);
+  if(!(await askConfirm("Restaurer ?",`${esc(e.kind||"")} : « ${esc(e.label||"")} ».<br><br>${e.col==="operations"?IMPACT:""}${exists?"<br><br>Un élément avec le même identifiant existe déjà : il sera remplacé.":""}`,"Restaurer"))) return;
+  try{ await S.db.collection(e.col).doc(e.id).set(e.before); await S.db.collection("journal").doc(id).update({restored:true}); toast("Élément restauré");
+    if(e.col==="operations"&&e.before.bien==="locatif"&&!isHono(e.before)) setTimeout(()=>majHonoraires([(e.before.date||"").slice(0,7)]),400); }
+  catch(err){ writeErr(err); }
+}
+/* ---------- Verrouillage par mot de passe ---------- */
+async function pwHash(pw){ const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("indivision:"+pw)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
+function unlockedFor(h){ try{ if(sessionStorage.getItem("indiv-unlock")===h) return true; const u=JSON.parse(localStorage.getItem("indiv-unlock")||"null"); return !!u&&u.h===h&&u.until>Date.now(); }catch(e){ return false; } }
+function lockHello(){ const n=((window.GAS&&window.GAS.conf&&window.GAS.conf.name)||"").trim(), h=new Date().getHours(); return `<p class="lock-hi">${h>=18||h<5?"Bonsoir":"Bonjour"}${n?` ${esc(n)}`:""}</p>`; }
+/* ---------- Écran à code (4 chiffres) ---------- */
+async function pinHash(c){ return pwHash("pin:"+c); }
+const pinCodes=()=>Array.isArray(cfg().pinCodes)?cfg().pinCodes.filter(x=>x&&x.hash):[];
+const pinOn=()=>!!(cfg().pinHash||pinCodes().length);
+function pinMatch(h){ const c=pinCodes().find(x=>x.hash===h); if(c) return c.nom; if(cfg().pinHash&&cfg().pinHash===h) return ""; return null; }
+function pinUnlocked(){ try{ const h=sessionStorage.getItem("indiv-pin"); return !!h&&pinMatch(h)!==null; }catch(e){ return false; } }
+function pinScene(){ const q=(location.search.match(/[?&]scene=(day|eve|night)/)||[])[1]; if(q) return q; const h=new Date().getHours(); return h>=6&&h<17?"day":h>=17&&h<20?"eve":"night"; }
+const SKY_SVG=`<svg class="pin-city" viewBox="0 0 300 140" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+<circle class="pin-sun" cx="128" cy="128" r="58"/><circle class="pin-sun2" cx="128" cy="128" r="36"/>
+<g class="pin-bld"><rect x="18" y="38" width="62" height="102"/><rect x="12" y="30" width="74" height="9"/><path d="M150 140 V 92 L 196 54 L 242 92 V 140 Z"/><rect x="250" y="90" width="34" height="50"/><rect x="96" y="82" width="40" height="58"/></g>
+<g class="pin-win"><rect x="28" y="50" width="8" height="8"/><rect x="48" y="50" width="8" height="8"/><rect x="62" y="66" width="8" height="8"/><rect x="28" y="82" width="8" height="8"/><rect x="48" y="98" width="8" height="8"/><rect x="62" y="114" width="8" height="8"/><rect x="164" y="104" width="12" height="10"/><rect x="216" y="104" width="12" height="10"/><rect x="104" y="96" width="7" height="7"/></g></svg>`;
+const TOP_SVG={day:`<svg class="pin-ray" viewBox="-130 -130 260 260" aria-hidden="true"><circle r="92" fill="#F7D58A" opacity=".35"/><circle r="70" fill="#F7D58A" opacity=".35"/>${[-80,-60,-40,-20,0,20,40,60,80].map(a=>`<rect x="-3" y="-128" width="6" height="22" rx="3" fill="#F2B53A" opacity=".35" transform="rotate(${a})"/>`).join("")}</svg>`,
+  night:`<svg class="pin-stars" viewBox="0 0 300 400" preserveAspectRatio="xMidYMin slice" aria-hidden="true"><g fill="#F2B53A" opacity=".55"><circle cx="40" cy="60" r="1.6"/><circle cx="250" cy="44" r="1.4"/><circle cx="268" cy="150" r="1.2"/><circle cx="24" cy="190" r="1.3"/><circle cx="60" cy="300" r="1"/><circle cx="276" cy="330" r="1.2"/><circle cx="210" cy="96" r="1"/><circle cx="90" cy="28" r="1.1"/><circle cx="160" cy="18" r="1"/></g><circle cx="236" cy="64" r="16" fill="#F2B53A" opacity=".9"/><circle cx="244" cy="58" r="14" fill="#3A220F"/></svg>`,eve:""};
+function pinScreen(L){
+  const sc=pinScene(), n=(meStored()||(window.GAS&&window.GAS.conf&&window.GAS.conf.name)||"").trim(), h=new Date().getHours();
+  L.innerHTML=`<div class="pin pin-${sc}">${sc==="night"?TOP_SVG.night:""}<div class="pin-c">
+    <div class="pin-logo">${sc==="day"?TOP_SVG.day:""}<img src="icon-180.png" alt="Indivision"></div>
+    <p class="pin-hi">${h>=18||h<6?"Bonsoir":"Bonjour"}${n?` ${esc(n)}`:""}</p><p class="pin-sub" id="pinSub">Saisissez votre code</p>
+    <div class="pin-dots" id="pinDots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="pin-pad" role="group" aria-label="Clavier du code">${[1,2,3,4,5,6,7,8,9].map(d=>`<button type="button" data-pin="${d}">${d}</button>`).join("")}<span></span><button type="button" data-pin="0">0</button><button type="button" class="pin-del" data-pin="del" aria-label="Effacer">⌫</button></div>
+  </div><div class="pin-sky">${SKY_SVG}</div><div class="pin-ground"></div></div>`;
+  S.pin="";
+}
+function meStored(){ try{ return localStorage.getItem("indiv-me")||""; }catch(e){ return ""; } }
+function couplePrenoms(nom){ const c=pinCodes().find(x=>x.nom===nom); const P=c&&Array.isArray(c.prenoms)?c.prenoms.filter(Boolean):[]; return P.length?P:String(nom||"").split(/\s*(?:&|\bet\b|\/|,)\s*/i).map(x=>x.trim()).filter(Boolean); }
+function pinChoose(hh,nom,P){
+  const c=$("#lockRoot .pin-c"); if(!c) return;
+  c.querySelector(".pin-hi").textContent="Qui êtes-vous ?";
+  $("#pinSub").textContent=`Code de ${nom}. L'appareil s'en souviendra.`; $("#pinSub").classList.remove("neg");
+  $("#pinDots").remove(); const pad=c.querySelector(".pin-pad");
+  pad.outerHTML=`<div class="pin-who">${P.map(n=>`<button type="button" data-who="${esc(n)}">${esc(n)}</button>`).join("")}</div>`;
+  c.querySelectorAll("[data-who]").forEach(b=>b.addEventListener("click",()=>{ try{ localStorage.setItem("indiv-me",b.dataset.who); }catch(e){} pinFinish(hh,nom,b.dataset.who); }));
+}
+function pinFinish(hh,nom,prenom){
+  try{ sessionStorage.setItem("indiv-pin",hh); if(nom){ sessionStorage.setItem("indiv-couple",nom); sessionStorage.setItem("indiv-who",prenom||nom); } else { sessionStorage.removeItem("indiv-couple"); sessionStorage.removeItem("indiv-who"); } }catch(e){}
+  const L=$("#lockRoot"); const pn=L.querySelector(".pin"); if(pn) pn.classList.add("pin-ok"); if(prenom) setTimeout(()=>toast(`Bienvenue ${prenom}`),300);
+  setTimeout(()=>{ S.pinBusy=false; document.body.classList.remove("locked"); L.hidden=true; L.innerHTML=""; L.dataset.s=""; render(true); },260);
+}
+function pinPaint(){ document.querySelectorAll("#pinDots i").forEach((d,i)=>d.classList.toggle("f",i<S.pin.length)); }
+async function pinPress(k){
+  if(!$("#pinDots")||S.pinBusy) return;
+  if(k==="del"){ S.pin=S.pin.slice(0,-1); pinPaint(); return; }
+  if(S.pin.length>=4) return; S.pin+=k; pinPaint();
+  if(S.pin.length<4) return;
+  S.pinBusy=true; const hh=await pinHash(S.pin);
+  const who=pinMatch(hh);
+  if(who!==null){
+    const P=who?couplePrenoms(who):[], me=meStored();
+    if(who&&P.length>1&&!P.includes(me)){ S.pinBusy=false; return pinChoose(hh,who,P); }
+    pinFinish(hh,who,who?(P.includes(me)?me:P[0]||who):""); }
+  else { const D=$("#pinDots"); D.classList.add("pin-shake"); $("#pinSub").textContent="Code incorrect"; $("#pinSub").classList.add("neg"); if(navigator.vibrate) navigator.vibrate(120);
+    setTimeout(()=>{ D.classList.remove("pin-shake"); S.pin=""; pinPaint(); S.pinBusy=false; },450); }
+}
+document.addEventListener("click",ev=>{ const b=ev.target.closest("[data-pin]"); if(b) pinPress(b.dataset.pin); });
+document.addEventListener("keydown",ev=>{ if(!$("#pinDots")) return; if(/^[0-9]$/.test(ev.key)){ ev.preventDefault(); pinPress(ev.key); } else if(ev.key==="Backspace"){ ev.preventDefault(); pinPress("del"); } });
+// Re-verrouillage après 5 minutes en arrière-plan
+document.addEventListener("visibilitychange",()=>{ if(!S.config||!pinOn()) return;
+  if(document.hidden){ S.hiddenAt=Date.now(); return; }
+  if(S.hiddenAt&&Date.now()-S.hiddenAt>5*60e3){ try{ sessionStorage.removeItem("indiv-pin"); }catch(e){} document.body.classList.add("locked"); $("#lockRoot").dataset.s=""; checkLock(); } S.hiddenAt=0; });
+function checkLock(){
+  if(!document.body.classList.contains("locked")) return;
+  const L=$("#lockRoot"); L.hidden=false;
+  if(!S.config){ if(!L.dataset.s){ L.dataset.s="wait"; L.innerHTML=`<div class="lock"><div class="lock-box"><div class="lock-logo"><img src="icon-180.png" alt=""></div><h1>Indivision</h1><p class="muted">Chargement…</p><button type="button" class="ghost sm" data-a="gas-setup" style="width:auto">Paramètres de connexion</button></div></div>`; } return; }
+  if(pinOn()){ if(pinUnlocked()){ document.body.classList.remove("locked"); L.hidden=true; L.innerHTML=""; L.dataset.s=""; return; } if(L.dataset.s!=="pin"){ L.dataset.s="pin"; pinScreen(L); } return; }
+  const h=cfg().lockHash;
+  if(!h||unlockedFor(h)){ document.body.classList.remove("locked"); L.hidden=true; L.innerHTML=""; return; }
+  if(L.dataset.s==="form") return; L.dataset.s="form";
+  L.innerHTML=`<div class="lock"><form class="lock-box" id="lockForm" novalidate><div class="lock-logo"><img src="icon-180.png" alt=""></div><h1>Indivision</h1><p class="muted">Béziers · Soullans</p>${lockHello()}
+    <label for="lockPw" class="sr-only">Mot de passe</label><input id="lockPw" type="password" autocomplete="current-password" placeholder="Mot de passe" required>
+    <label class="lock-rem"><input type="checkbox" id="lockRem" checked> Rester connecté 30 jours sur cet appareil</label>
+    <button type="submit" class="primary">Entrer</button><p class="lock-err neg" id="lockErr" role="alert"></p></form></div>`;
+  $("#lockForm").addEventListener("submit",async ev=>{ ev.preventDefault(); const pw=$("#lockPw").value; if(!pw){ $("#lockErr").textContent="Saisissez le mot de passe."; return; }
+    const hh=await pwHash(pw); if(hh!==cfg().lockHash){ $("#lockErr").textContent="Mot de passe incorrect."; $("#lockPw").select(); return; }
+    try{ sessionStorage.setItem("indiv-unlock",hh); if($("#lockRem").checked) localStorage.setItem("indiv-unlock",JSON.stringify({h:hh,until:Date.now()+30*864e5})); }catch(e){}
+    document.body.classList.remove("locked"); L.hidden=true; L.innerHTML=""; L.dataset.s=""; });
+}
+function lockCard(){
+  const C=cfg(), couples=(C.indivisaires||[]).map(i=>i.nom).filter(Boolean), codes=pinCodes(), on=pinOn(), old=!on&&!!C.lockHash;
+  let me="",mc=""; try{ me=sessionStorage.getItem("indiv-who")||""; mc=sessionStorage.getItem("indiv-couple")||""; }catch(e){}
+  const rows=couples.map(n=>{ const has=codes.some(x=>x.nom===n);
+    return `<div class="pc-row"><span><strong>${esc(n)}</strong> <small class="muted">${couplePrenoms(n).map(esc).join(" · ")}</small>${n===mc?` <span class="muted">· connecté : ${esc(me)}</span>`:""}</span><span class="chip ${has?"good":"warn"}">${has?"code défini":"pas de code"}</span><span class="row" style="gap:4px;margin-left:auto"><button type="button" class="sm ${has?"ghost":"primary"}" data-a="pin-set" data-n="${esc(n)}">${has?"Changer":"Définir"}</button>${has?`<button type="button" class="ghost sm danger" data-a="pin-del" data-n="${esc(n)}" aria-label="Supprimer le code de ${esc(n)}">✕</button>`:""}</span></div>`; }).join("");
+  const missing=couples.filter(n=>!codes.some(x=>x.nom===n));
+  return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Codes d'accès</h3><span class="chip ${on?"good":""}">${on?"activé":old?"mot de passe (ancien)":"désactivé"}</span></div>
+    <p class="muted" style="margin:0 0 10px">Un code à 4 chiffres par couple, demandé à chaque ouverture de l'app et après 5 minutes en arrière-plan. Le code saisi indique qui fait les modifications dans l'historique.</p>
+    ${couples.length?rows:`<p class="muted">Ajoutez d'abord les indivisaires.</p>`}
+    ${C.pinHash?`<p class="muted" style="margin:10px 0 0;font-size:.85rem">Code commun provisoire actif${missing.length?` : il reste valable tant que ${missing.map(esc).join(" et ")} n'${missing.length>1?"ont":"a"} pas son code`:""}.</p>`:""}
+    ${on?`<div class="row w" style="margin-top:12px"><button type="button" class="ghost" data-a="lock-now">Verrouiller maintenant</button>${mc?`<button type="button" class="ghost" data-a="pin-switch">Changer de personne</button>`:""}<button type="button" class="ghost" data-a="lock-off">Désactiver les codes</button></div>`:old?`<div class="row w" style="margin-top:12px"><button type="button" class="ghost" data-a="lock-off">Supprimer l'ancien mot de passe</button></div>`:""}</div>`;
+}
+function pinSetForm(nom){
+  const has=pinCodes().some(x=>x.nom===nom), P=couplePrenoms(nom);
+  openForm({title:`Accès de ${nom}`,intro:has?"Laissez le code vide pour garder l'actuel.":"4 chiffres, différent du code de l'autre couple. Il remplace l'ancien mot de passe.",
+    values:{p1:P[0]||"",p2:P[1]||""},fields:[
+    {id:"p1",label:"Prénom 1",type:"text",required:true,half:true},{id:"p2",label:"Prénom 2",type:"text",half:true},
+    {id:"pw",label:has?"Nouveau code (facultatif)":"Code",type:"password",required:!has,half:true,placeholder:"••••"},{id:"pw2",label:"Confirmer",type:"password",required:!has,half:true,placeholder:"••••"}],submitLabel:"Enregistrer",
+    onSubmit:async v=>{ const prenoms=[v.p1,v.p2].map(x=>(x||"").trim()).filter(Boolean); if(!prenoms.length) return "Indiquez au moins un prénom.";
+      let h=(pinCodes().find(x=>x.nom===nom)||{}).hash;
+      if(v.pw||!has){ if(!/^\d{4}$/.test(v.pw||"")) return "Le code doit faire exactement 4 chiffres."; if(v.pw!==v.pw2) return "Les deux saisies ne correspondent pas.";
+        h=await pinHash(v.pw); if(pinCodes().some(x=>x.nom!==nom&&x.hash===h)) return "Ce code est déjà utilisé par l'autre couple. Choisissez-en un autre."; }
+      const L=pinCodes().filter(x=>x.nom!==nom).concat([{nom,hash:h,prenoms}]);
+      const couples=(cfg().indivisaires||[]).map(i=>i.nom).filter(Boolean), all=couples.every(n=>L.some(x=>x.nom===n));
+      const Pp={pinCodes:L,lockHash:""}; if(all) Pp.pinHash="";
+      const ok=await saveConfig(Pp); if(ok){ let mc=""; try{ mc=sessionStorage.getItem("indiv-couple")||""; }catch(e){} if(!mc||mc===nom){ try{ sessionStorage.setItem("indiv-pin",h); sessionStorage.setItem("indiv-couple",nom); if(!prenoms.includes(sessionStorage.getItem("indiv-who"))) sessionStorage.setItem("indiv-who",prenoms.includes(meStored())?meStored():prenoms[0]); }catch(e){} } toast(`Accès de ${nom} enregistré`); render(true); } return ok; }});
+  ["#f_pw","#f_pw2"].forEach(q=>{ const i=$(q); if(i){ i.inputMode="numeric"; i.maxLength=4; i.autocomplete="off"; } });
+}
+/* ---------- Revalorisation annuelle des prévisions ---------- */
+const REVAL_OK=r=>!/cr[ée]dit|apport|injection|honoraires|impay|r[ée]gul|tenue de compte|frais (bancaires|administratifs|carte)|option web|archivage|aide/i.test(r.label)&&/loyer|charges|taxe|copro|assurance|pno|lectricit|edf|gaz|eau|saur|internet|free|box|gmf|ordures|abonnement/i.test(r.label);
+const REVAL_HINT=l=>/loyer/i.test(l)?"Révision du loyer selon l'IRL, à la date anniversaire du bail (≈ 2 à 3,5 %/an)":/taxe fonci/i.test(l)?"Hausse votée chaque année (≈ 3 à 5 %/an), appliquée à l'avis d'octobre":/taxe d.habitation|ordures/i.test(l)?"Hausse annuelle des bases (≈ 2 à 4 %/an)":/copro/i.test(l)?"Budget voté en AG (≈ 2 à 5 %/an)":/lectricit|edf|gaz/i.test(l)?"Évolution des tarifs de l'énergie (souvent en février et août)":/eau|saur/i.test(l)?"Tarifs de l'eau, révisés en janvier (≈ 2 à 4 %/an)":"Indexation annuelle du contrat";
+function revalTag(key){ const r=recurTypes().find(x=>x.key===key); if(!r||!REVAL_OK(r)||!hasFuture(key)) return `<span class="muted rv-none">—</span>`; const R=(cfg().reval||{})[key];
+  return R&&+R.taux?`<button type="button" class="rv on w" data-a="reval" data-key="${esc(key)}" title="Modifier la revalorisation annuelle">+${(+R.taux).toLocaleString("fr-FR")} %/an <small>en ${MOIS_L[(+R.mois||1)-1]}</small></button>`
+    :`<button type="button" class="rv w" data-a="reval" data-key="${esc(key)}" title="Prévoir une hausse annuelle de ce montant">+ Définir</button>`; }
+function revalForm(key){
+  const r=recurTypes().find(x=>x.key===key); if(!r) return; const R=(cfg().reval||{})[key]||{};
+  const fut=S.ops.filter(o=>keyOf(o)===key&&o.prevision&&o.date>=todayStr());
+  openForm({title:`Revalorisation : ${r.label}`,intro:`${esc(REVAL_HINT(r.label))}.<br>Chaque année, au mois choisi, le montant prévu augmente du taux indiqué. Seules les ${fut.length} opérations prévues à venir sont recalculées ; le passé ne bouge pas.`,
+    values:{taux:R.taux??"",mois:String(R.mois||(/loyer/i.test(r.label)?1:/taxe fonci/i.test(r.label)?10:1))},fields:[
+    {id:"taux",label:"Taux annuel (%)",type:"number",half:true,placeholder:"ex. 3",hint:"0 ou vide pour désactiver"},
+    {id:"mois",label:"Appliqué chaque année en",type:"select",half:true,options:MOIS_L.map((m,i)=>({value:String(i+1),label:m[0].toUpperCase()+m.slice(1)}))}
+  ],submitLabel:"Appliquer",onSubmit:async v=>{
+    const t=v.taux===""||v.taux==null?0:+v.taux; if(!(t>=0&&t<=30)) return "Taux entre 0 et 30 %.";
+    const all={...(cfg().reval||{})}; if(t) all[key]={taux:t,mois:+v.mois}; else delete all[key];
+    if(!(await saveConfig({reval:all}))) return false;
+    setTimeout(async()=>{ const n=await applyReval(key); toast(n?`${n} prévision${n>1?"s":""} recalculée${n>1?"s":""}`:"Revalorisation enregistrée"); },300);
+  }});
+}
+function revalCount(dateStr,mois,from,shift){ const t=from||todayStr(); let n=0; for(let y=+t.slice(0,4);y<=+dateStr.slice(0,4);y++){ let d=`${y}-${String(mois).padStart(2,"0")}-01`; if(d>t&&shift&&shift[d]) d=shift[d]; if(d>t&&d<=dateStr) n++; } return n; }
+const monthStart=d=>d.slice(0,7)+"-01";
+const addMonth=(d,n=1)=>{ const y=+d.slice(0,4), m=+d.slice(5,7)-1+n; return `${y+Math.floor(m/12)}-${pad(((m%12)+12)%12+1)}-01`; };
+function revalInfo(key){
+  const R=(cfg().reval||{})[key]; if(!R||!+R.taux) return null;
+  const t=todayStr(), mo=pad(+R.mois||1), y=+t.slice(0,4);
+  const D=`${t.slice(5,7)>=mo?y:y-1}-${mo}-01`;
+  const st=(cfg().revalState||{})[key]||{};
+  const fut=S.ops.filter(o=>keyOf(o)===key&&o.prevision&&(o.date||"")>=t).sort((a,b)=>a.date.localeCompare(b.date));
+  const nx=fut[0]; const from=nx&&nx.revalFrom||"";
+  const ack=[st.ack||"",from].sort().pop();
+  const pending=ack<D;
+  const E=pending&&st.delay&&st.delay>D?st.delay:D;
+  const base=nx?(nx.revalBase!=null?+nx.revalBase:+nx.montant):null;
+  return {R,taux:+R.taux,mois:+R.mois||1,D,E,pending,due:pending&&t>=E,base,shift:pending&&E!==D?{[D]:E}:null,st};
+}
+function revalDue(){ return recurTypes().filter(r=>hasFuture(r.key)&&!isHonoKey(r)).map(r=>({r,i:revalInfo(r.key)})).filter(x=>x.i&&x.i.due); }
+async function applyReval(key){
+  const R=(cfg().reval||{})[key], t=R?+R.taux:0, mois=R?+R.mois||1:1, now=todayStr(), RI=revalInfo(key); let n=0; const months=new Set(); let copro=false; const P=[];
+  for(const o of S.ops.filter(o=>keyOf(o)===key&&o.prevision&&(o.date||"")>=now)){
+    const cur=o.regul?+o.regul.base:+o.montant, base=o.revalBase!=null?+o.revalBase:cur;
+    const from=o.revalFrom||now;
+    const m=t?Math.round(base*Math.pow(1+t/100,revalCount(o.date,mois,from,RI&&RI.shift))*100)/100:base;
+    const patchD=t?{revalBase:base,revalFrom:from}:{revalBase:null,revalFrom:null};
+    if(o.regul){ if(Math.abs(+o.regul.base-m)>0.004||!!t!==(o.revalBase!=null)||(t&&!o.revalFrom)){ P.push(patch("operations",o.id,{...patchD,regul:{...o.regul,base:m}})); n++; copro=true; } }
+    else if(Math.abs(+o.montant-m)>0.004||!!t!==(o.revalBase!=null)||(t&&!o.revalFrom)){ P.push(patch("operations",o.id,{...patchD,montant:m})); n++; }
+    if(o.bien==="locatif") months.add(o.date.slice(0,7));
+  }
+  await Promise.all(P);
+  if(copro) await applyReguls(); if(months.size) await majHonoraires([...months],true);
+  return n;
+}
+/* ---------- Nouvelle opération récurrente ---------- */
+function newRecurKey(){ const used=new Set(S.ops.map(keyOf).filter(Boolean)); const L="ABCDEFGHIJKLMNOPQRSTUVWXYZ"; for(const a of L) for(const b of L){ const k="U"+a+b; if(!used.has(k)) return k; } return "UZZ"; }
+const FREQS=[["1","Tous les mois"],["3","Tous les trimestres"],["6","Tous les semestres"],["12","Une fois par an"]];
+function recurNewForm(){
+  const t=todayStr(), lastP=S.ops.filter(o=>o.prevision).map(o=>o.date).sort().pop()||`${+t.slice(0,4)+2}-12-31`;
+  const nm=new Date(); nm.setMonth(nm.getMonth()+1,1);
+  openForm({title:"Nouvelle opération récurrente",intro:"Crée les échéances prévues jusqu'à la fin de la période. Elles apparaîtront dans Opérations bancaires et dans ce tableau, où vous pourrez ensuite changer le montant, le jour ou la revalorisation.",
+    values:{categorie:"Assurance",bien:"commun",freq:"1",debut:ds(nm),fin:lastP,jour:"5"},fields:[
+    {id:"libelle",label:"Libellé",type:"text",required:true,placeholder:"ex. Contrat d'entretien chaudière"},
+    {id:"categorie",label:"Catégorie",type:"select",half:true,options:[...CATS.in,...CATS.out]},
+    {id:"bien",label:"Bien concerné",type:"select",half:true,options:[{value:"locatif",label:cfg().biens.locatif.nom},{value:"secondaire",label:cfg().biens.secondaire.nom},{value:"commun",label:"Commun aux deux biens"}]},
+    {id:"montant",label:"Montant (€)",type:"number",required:true,half:true,hint:"Toujours positif : le sens vient de la catégorie"},
+    {id:"freq",label:"Fréquence",type:"select",half:true,options:FREQS.map(([v,l])=>({value:v,label:l}))},
+    {id:"debut",label:"Première échéance",type:"date",required:true,half:true},
+    {id:"fin",label:"Jusqu'au",type:"date",required:true,half:true},
+    {id:"jour",label:"Jour du mois",type:"number",half:true,hint:"Ignoré si la ligne est rattachée au versement de l'agence"},
+    {id:"agence",label:"Rattacher au versement de l'agence (Béziers)",type:"checkbox"}
+  ],submitLabel:"Créer les échéances",onSubmit:async v=>{
+    if(!(v.montant>0)) return "Le montant doit être positif."; if(v.fin<v.debut) return "La date de fin doit suivre la première échéance.";
+    const j=Math.round(+v.jour||0); if(!v.agence&&!(j>=1&&j<=31)) return "Indiquez un jour entre 1 et 31.";
+    if(v.agence&&v.bien!=="locatif") return "Seules les lignes de Béziers peuvent être rattachées au versement de l'agence.";
+    const key=newRecurKey(), step=+v.freq, sens=sensOf(v.categorie);
+    const cfgP={jours:{...(cfg().jours||{}),[key]:v.agence?undefined:j}}; if(v.agence) cfgP.groupeAgence=[...groupeAgence(),key];
+    if(!(await saveConfig(cfgP))) return false;
+    const P=[]; let d=new Date(+v.debut.slice(0,4),+v.debut.slice(5,7)-1,1); const end=v.fin; let n=0;
+    while(n<240){ const y=d.getFullYear(), m=pad(d.getMonth()+1); const date=dayFor(key,String(y),m)||`${y}-${m}-${pad(Math.min(j||1,new Date(y,+m,0).getDate()))}`; if(date>end) break;
+      if(date>=v.debut) { P.push(S.db.collection("operations").doc(`imp-${y}-${m}-${key}`).set({date,montant:Math.round(v.montant*100)/100,categorie:v.categorie,sens,bien:v.bien,libelle:`${v.libelle.trim()} – ${MOIS_L[+m-1]} ${y}`,prevision:true,pointe:false,createdAt:new Date().toISOString()})); n++; }
+      d.setMonth(d.getMonth()+step); }
+    try{ await Promise.all(P); }catch(e){ writeErr(e); return false; }
+    if(v.bien==="locatif"&&v.agence) setTimeout(()=>majHonoraires([...new Set(S.ops.filter(o=>keyOf(o)===key).map(o=>o.date.slice(0,7)))],true),400);
+    toast(`${n} échéance${n>1?"s":""} créée${n>1?"s":""}`);
+  }});
+}
 function regulRow(){
   const P=regulPlan(), M=d=>MOIS_L[+d.slice(5,7)-1]+" "+d.slice(0,4);
   const items=P.regs.map(r=>{ const pl=P.plan[r.id]||[];
@@ -1708,6 +2524,9 @@ function vParametres(){
       <p style="margin:0 0 10px" class="muted">Les données sont enregistrées dans votre Google Sheet. Pour reprendre les données de la version claude.ai, exportez-y une sauvegarde (.json) puis chargez-la ici.</p>
       <div class="row w"><button type="button" class="primary" data-a="bk-pick">Charger une sauvegarde (.json)</button><input type="file" id="bkIn" accept="application/json,.json" hidden><button type="button" data-a="export-json">Exporter une sauvegarde</button><button type="button" class="ghost" data-a="gas-setup">Changer la connexion</button></div>
       <small id="bkMsg"></small></div>
+    ${lockCard()}
+    ${journalCard()}
+    ${versionCard()}
     <div class="card" style="grid-column:1/-1"><div class="row" style="justify-content:space-between">
       <small style="max-width:70ch">Les données sont partagées entre toutes les personnes qui ont accès à cette page. Pour que vos co-indivisaires puissent saisir, partagez-la avec eux au niveau Contributeur. N'y mettez ni identifiants bancaires ni codes d'accès.</small>
       <span class="form-err" id="paramErr"></span><button type="submit" class="primary w">Enregistrer les paramètres</button></div></div>
@@ -1738,6 +2557,8 @@ function fitMiniOps(){
 }
 window.addEventListener("resize",()=>{ clearTimeout(fitMiniOps._t); fitMiniOps._t=setTimeout(fitMiniOps,120); });
 function render(force){
+  checkLock();
+  if(!S._wn&&S.config&&!document.body.classList.contains("locked")){ S._wn=true; setTimeout(whatsNew,800); }
   const r=route(), c=cfg();
   // Ne pas écraser un formulaire de paramètres en cours d'édition
   if(r==="parametres" && lastRoute==="parametres" && !force && document.activeElement && ($("#paramForm")?.contains(document.activeElement)||$("#calCard")?.contains(document.activeElement))) return;
@@ -1749,7 +2570,8 @@ function render(force){
   const tabs=space==="maison"?[["maison","Vue d'ensemble"],["maison-taches","Petits travaux & entretien"],["maison-guide","Guide de la maison"],["maison-sorties","Sorties & activités"]]
     :space==="locatif"?[["locatif",c.biens.locatif.nom]]
     :[["tableau","Tableau de bord"],["tresorerie","Opérations bancaires"],["parametres","Paramètres"]];
-  $("#tabs").innerHTML=tabs.map(([h,l])=>`<a href="#${h}">${esc(l)}</a>`).join("");
+  const nDue=S.ops&&S.ops.length?revalDue().length:0;
+  $("#tabs").innerHTML=tabs.map(([h,l])=>`<a href="#${h}">${esc(l)}${h==="tableau"&&nDue?` <span class="nbadge" title="${nDue} revalorisation(s) à vérifier">${nDue}</span>`:""}</a>`).join("");
   const short={tableau:"Accueil",tresorerie:"Opérations bancaires",locatif:c.biens.locatif.nom,parametres:"Réglages",maison:"Accueil","maison-taches":"Travaux & entretien","maison-guide":"Guide","maison-sorties":"Sorties"};
   $("#bnav").innerHTML=tabs.map(([h])=>`<a href="#${h}" ${h===r?'aria-current="page"':""}>${ICONS[h]||""}<span>${esc(short[h])}</span></a>`).join("");
   document.title=c.nom&&c.nom!==DEFAULT_CONFIG.nom?c.nom:"Suivi de l'indivision";
@@ -1809,7 +2631,7 @@ let rq=0; function scheduleRender(){ if(S.importing) return; if(rq) return; rq=r
 /* ---------- Événements ---------- */
 const byId=(coll,id)=>S[coll].find(x=>x.id===id);
 document.addEventListener("click",ev=>{ if(S.ui.pop&&!ev.target.closest(".pop")&&!ev.target.closest("[data-a=pop]")&&!ev.target.closest(".overlay")){ S.ui.pop=null; S.ui.popEdit=null; S.ui.inline=null; rerenderOps(); } },true);
-document.addEventListener("click",ev=>{ if(!matchMedia("(max-width:640px)").matches) return; const tr=ev.target.closest("table.ops tr.op"); if(!tr||ev.target.closest("button,a,select,input,.pop")) return; const was=tr.classList.contains("open"); document.querySelectorAll("table.ops tr.op.open").forEach(x=>x.classList.remove("open")); if(!was) tr.classList.add("open"); });
+document.addEventListener("click",ev=>{ if(!matchMedia("(max-width:640px)").matches) return; const tr=ev.target.closest("table.ops tr.op"); if(!tr||ev.target.closest("button,a,select,input,.pop,.pop-bd")) return; const was=tr.classList.contains("open"); document.querySelectorAll("table.ops tr.op.open").forEach(x=>x.classList.remove("open")); if(!was) tr.classList.add("open"); });
 document.addEventListener("click",async ev=>{
   if(ev.target.matches("[data-overlay]")||ev.target.closest("[data-close]")){ closeModal(); return; }
   const el=ev.target.closest("[data-a]"); if(!el) return;
@@ -1820,7 +2642,7 @@ document.addEventListener("click",async ev=>{
     case "add-op-sec": return opForm({}, {bien:"secondaire",categorie:"Travaux & entretien"});
     case "edit-op": return opForm(byId("ops",id));
     case "dup-op": { const {id:_,createdAt,updatedAt,...rest}=byId("ops",id)||{}; return opForm({}, {...rest,date:todayStr(),pointe:false}); }
-    case "del-op": { const o=byId("ops",id); return openConfirm(`Supprimer « ${esc(o?.libelle)} » (${eur(+o?.montant)}) du ${fmtD(o?.date)} ?`,"Supprimer",async()=>{ await remove("operations",id); if(o&&o.bien==="locatif"&&!isHono(o)) setTimeout(()=>majHonoraires([(o.date||"").slice(0,7)]),400); }); }
+    case "del-op": { const o=byId("ops",id); return openConfirm(`Supprimer « ${esc(o?.libelle)} » (${eur(+o?.montant)}) du ${fmtD(o?.date)} ?<br><br>${IMPACT}<br><small class="muted">Une suppression peut être annulée depuis Réglages › Historique.</small>`,"Supprimer",async()=>{ await remove("operations",id); if(o&&o.bien==="locatif"&&!isHono(o)) setTimeout(()=>majHonoraires([(o.date||"").slice(0,7)]),400); }); }
     case "pointe": { await patch("operations",id,{pointe:el.checked}); return; }
     case "toggle-grp": { const k=el.dataset.k; S.ui.open=S.ui.open||new Set(); S.ui.open.has(k)?S.ui.open.delete(k):S.ui.open.add(k); const z=$("#opsZone"); if(z) z.innerHTML=opsZone(); else render(true); return; }
     case "valider": { const o=byId("ops",id); if(!o) return; await validerOps([o]); return; }
@@ -1872,8 +2694,29 @@ document.addEventListener("click",async ev=>{
     case "add-regul": return regulForm();
     case "export-json": return exportJSON();
     case "gas-setup": return openSetup();
+    case "j-restore": return journalRestore(id);
+    case "reval": return revalForm(el.dataset.key);
+    case "grp-in": return moveGroup(el.dataset.key,true);
+    case "grp-out": return moveGroup(el.dataset.key,false);
+    case "grp-toggle": ev.stopPropagation(); S.ui.gOpen={...(S.ui.gOpen||{}),[el.dataset.g]:!(S.ui.gOpen||{})[el.dataset.g]}; return render(true);
+    case "line-set": return lineSet(el.dataset.key);
+    case "grp-set": return grpSet(el.dataset.g);
+    case "af-set": return afSet();
+    case "af-edit": return afForm(el.dataset.id?afList().find(x=>x.id===el.dataset.id)||{}:{});
+    case "af-del": return afDelete(el.dataset.id);
+    case "rv-ask": return revalAsk(el.dataset.key);
+    case "rv-later": return revalLater(el.dataset.key);
+    case "rv-none": { const I=revalInfo(el.dataset.key); closeModal(); return I&&revalResolve(el.dataset.key,I,null,false); }
+    case "grp-out": { $("#modalRoot").innerHTML=""; return moveGroup(el.dataset.key,false); }
+    case "recur-new": return recurNewForm();
+    case "lock-set": case "pin-set": return pinSetForm(el.dataset.n||((cfg().indivisaires||[])[0]||{}).nom||"Indivision");
+    case "pin-del": { const n=el.dataset.n; return openConfirm(`Supprimer le code de ${n} ? Ce couple ne pourra plus ouvrir l'app tant qu'un nouveau code n'est pas défini.`,"Supprimer",()=>saveConfig({pinCodes:pinCodes().filter(x=>x.nom!==n)})); }
+    case "lock-off": return openConfirm("Désactiver le code d'accès ? L'app s'ouvrira directement sur tous les appareils.","Désactiver",()=>saveConfig({lockHash:"",pinHash:"",pinCodes:[]}));
+    case "pin-switch": try{ localStorage.removeItem("indiv-me"); }catch(e){} /* falls through */
+    case "lock-now": try{ sessionStorage.removeItem("indiv-unlock"); sessionStorage.removeItem("indiv-pin"); sessionStorage.removeItem("indiv-who"); sessionStorage.removeItem("indiv-couple"); localStorage.removeItem("indiv-unlock"); }catch(e){} document.body.classList.add("locked"); $("#lockRoot").dataset.s=""; return checkLock();
+    case "j-more": S.ui.jn=(S.ui.jn||25)+50; return render(true);
     case "bk-pick": { const i=$("#bkIn"); if(i){ i.value=""; i.click(); } return; }
-    case "recur-amount": return recurAmountForm(el.dataset.key);
+    case "recur-amount": return el.id==="lsAmt"?recurAmountFromLine(el.dataset.key):recurAmountForm(el.dataset.key);
     case "edit-regul": return regulForm((cfg().regulsCopro||[]).find(x=>x.id===id)||{});
     case "del-regul": return openConfirm("Supprimer cette régularisation ? Les appels de charges prévus reviennent à leur montant d'origine.","Supprimer",async()=>{ if(await saveConfig({regulsCopro:(cfg().regulsCopro||[]).filter(x=>x.id!==id)})) setTimeout(async()=>{ const n=await applyReguls(); if(n) toast(`${n} appel${n>1?"s":""} de charges rétabli${n>1?"s":""}`); },400); });
     case "add-photo": { const i=$("#photoIn"); if(i){ i.value=""; i.click(); } return; }
@@ -1890,7 +2733,7 @@ document.addEventListener("click",async ev=>{
 });
 function openNotice(){ notForm(); }
 document.addEventListener("change",ev=>{ if(ev.target.id==="photoIn"){ uploadPhotos([...ev.target.files]); } });
-document.addEventListener("change",ev=>{ if(!ev.target.classList.contains("grp")) return; const i=ev.target.closest("tr").querySelector(".jour"); i.classList.toggle("jour-ag",ev.target.checked); i.value=ev.target.checked?$("#jourAgence").value:""; });
+
 document.addEventListener("input",ev=>{ const t=ev.target; if(t.id==="jourAgence"||t.classList.contains("jour-ag")){ const v=t.value; const ja=$("#jourAgence"); if(ja&&ja!==t) ja.value=v; document.querySelectorAll("#calCard .jour-ag").forEach(i=>{ if(i!==t) i.value=v; }); } });
 document.addEventListener("input",ev=>{
   const f=ev.target.dataset.f;
@@ -2005,6 +2848,7 @@ render(true);
   [["operations","ops"],["travaux","travaux"],["entretiens","entretiens"],["notices","notices"],["sorties","sorties"]].forEach(([coll,key])=>{
     db.collection(coll).onSnapshot(s=>{ S[key]=s.docs.map(d=>({id:d.id,...d.data()})); arrived(coll,s); },onErr);
   });
+  db.collection("journal").onSnapshot(s=>{ S.journal=s.docs.map(d=>({id:d.id,...d.data()})); if(route()==="parametres") scheduleRender(); },()=>{});
 })();
 </script>
 </body>
