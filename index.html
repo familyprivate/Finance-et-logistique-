@@ -1587,7 +1587,7 @@ function calendrierCard(){
   const out=types.filter(r=>!inAny(r));
   const all=types.filter(r=>!(r.key==="Y"&&!hasFuture("Y")));
   const need=all.filter(r=>hasFuture(r.key)), done=need.filter(r=>dayOf(r)).length;
-  return `<div class="card" id="calCard"><div class="card-head"><h3>Opérations récurrentes</h3><span class="row" style="gap:8px">${done<need.length?`<span class="chip warn">${need.length-done} jour${need.length-done>1?"s":""} à régler</span>`:""}<button type="button" class="sm w" data-a="recur-new">+ Nouvelle</button></span></div>
+  return `<div class="card" id="calCard"><div class="card-head"><h3>Opérations récurrentes</h3><span class="row" style="gap:8px">${done<need.length?`<span class="chip warn">${need.length-done} jour${need.length-done>1?"s":""} à régler</span>`:""}${(()=>{ const P=genPlan(); return P?`<button type="button" class="sm w" data-a="gen-year" title="Créer les opérations récurrentes de ${P.T}">+ Année ${P.T}</button>`:""; })()}<button type="button" class="sm w" data-a="recur-new">+ Nouvelle</button></span></div>
     <p style="margin:0 0 12px" class="muted">Touchez une ligne pour voir et régler son jour de prélèvement, sa revalorisation annuelle et son montant. Les blocs regroupés partagent le même jour.</p>
     <div class="table-wrap cal-wrap"><table class="cal-t"><thead><tr><th>Opération</th><th>Bien</th><th>Quand</th><th class="amt">Prochain montant</th><th style="width:24px"></th></tr></thead><tbody>
     ${G.map(g=>grpBlock(g,types.filter(r=>g.keys(r.key)))).join("")}${out.map(r=>calRow(r)+(COPRO_RE.test(r.label)?afRow():"")).join("")}
@@ -1609,6 +1609,36 @@ async function recurAmountFromLine(key){
     if(!same){ if(!(t>=0&&t<=30)) return toast("Taux entre 0 et 30 %."); const all={...(cfg().reval||{})}; if(t) all[key]={taux:t,mois:m}; else delete all[key];
       if(!(await saveConfig({reval:all}))) return; await applyReval(key); } }
   recurAmountForm(key);
+}
+/* ---------- Générer une nouvelle année d'opérations récurrentes ---------- */
+function genPlan(){
+  const by={}; for(const o of S.ops){ const mm=IMP_RE.exec(o.id||""); if(!mm||isHono(o)) continue; const y=+(o.date||mm[1]+"-").slice(0,4); (by[mm[3]]=by[mm[3]]||{})[y]=(by[mm[3]][y]||[]).concat(o); }
+  const cy=new Date().getFullYear(), nk=y=>Object.values(by).filter(Y=>Y[y]).length;
+  let T0=cy+1; while(T0<cy+30&&nk(T0)>=Math.max(1,nk(T0-1)*0.5)) T0++;
+  for(let T=T0;T<=cy+30;T++){ const lines=[];
+    for(const [k,Y] of Object.entries(by)){ const prev=Y[T-1]; if(!prev) continue; const months=[...new Set(prev.map(o=>+o.date.slice(5,7)))].sort((a,b)=>a-b); const have=new Set((Y[T]||[]).map(o=>+o.date.slice(5,7))); const miss=months.filter(m=>!have.has(m)); if(miss.length) lines.push({k,miss,src:prev.sort((a,b)=>a.date.localeCompare(b.date))}); }
+    if(lines.length) return {T,lines,n:lines.reduce((a,l)=>a+l.miss.length,0)}; }
+  return null;
+}
+async function genYear(){
+  const P=genPlan(); if(!P){ toast("Toutes les années sont déjà générées"); return; }
+  const lab=k=>((recurTypes().find(r=>r.key===k)||{}).label)||k;
+  if(!(await askConfirm(`Créer l'année ${P.T} ?`,`${P.n} opérations prévues seront créées pour ${P.lines.length} lignes récurrentes, sur le modèle de ${P.T-1} (mêmes mois, même jour, même montant que l'échéance de l'année précédente ou dernier montant pour les lignes mensuelles, revalorisation appliquée si elle est réglée) :<br><small>${P.lines.map(l=>esc(lab(l.k))).join(" · ")}</small>`,`Créer ${P.T}`))) return;
+  const ids=new Set(S.ops.map(o=>o.id)), now=new Date().toISOString(), W=[], months=new Set(), RV=cfg().reval||{};
+  for(const l of P.lines){ const last=l.src[l.src.length-1];
+    for(const m of l.miss){ const src=[...l.src].reverse().find(o=>+o.date.slice(5,7)===m)||last; const y=String(P.T), id=`imp-${y}-${pad(m)}-${l.k}`; if(ids.has(id)) continue;
+      const dd=dayFor(l.k,y,pad(m))||`${y}-${pad(m)}-${String(Math.min(+src.date.slice(8,10)||1,new Date(+y,m,0).getDate())).padStart(2,"0")}`;
+      const ref=l.src.length>=12?last:src, base=ref.regul?+ref.regul.base:+ref.montant, lib=(src.libelle||"").split(" – ")[0];
+      const o={date:dd,categorie:src.categorie,sens:src.sens,bien:src.bien,libelle:`${lib} – ${MOIS_L[m-1]} ${y}`,indivisaire:src.indivisaire||"",pointe:false,prevision:true,note:"",montant:base,createdAt:now,updatedAt:now};
+      if(RV[l.k]&&+RV[l.k].taux){ o.revalBase=ref.revalBase!=null?+ref.revalBase:base; o.revalFrom=ref.revalFrom||ref.date; }
+      W.push(S.db.collection("operations").doc(id).set(o)); if(o.bien==="locatif") months.add(dd.slice(0,7)); } }
+  toast(`Création de ${W.length} opérations ${P.T}…`);
+  for(let i=0;i<W.length;i+=200) await Promise.all(W.slice(i,i+200).map(p=>p.catch(writeErr)));
+  for(let k=0;k<20&&S.ops.filter(o=>(o.date||"").startsWith(String(P.T))).length<W.length;k++) await new Promise(r=>setTimeout(r,150));
+  for(const k of Object.keys(RV)) if(+RV[k].taux&&P.lines.some(l=>l.k===k)) await applyReval(k);
+  if(months.size) await majHonoraires([...months],true);
+  try{ await applyReguls(); }catch(e){}
+  toast(`Année ${P.T} créée : ${W.length} opérations`); render(true);
 }
 function projYear(){ const d=S.ops.filter(o=>o.prevision).map(o=>o.date||"").sort().pop(); return Math.max(+(d||"0").slice(0,4),new Date().getFullYear()+2); }
 function lineSet(key){
@@ -2009,7 +2039,7 @@ function vTresorerie(){
   const u=S.ui;
   const years=[...new Set([String(new Date().getFullYear()),...S.ops.map(o=>(o.date||"").slice(0,4)).filter(Boolean)])].sort().reverse();
   return `<div class="view-head"><div><h2>Opérations bancaires</h2><p>Solde actuel : <strong class="num">${eur(soldeActuel())}</strong></p></div>
-    <div class="row"><button data-a="copy-csv">Copier en CSV</button></div></div>
+    <div class="row">${(()=>{ const P=genPlan(); return P?`<button data-a="gen-year" title="Créer les opérations récurrentes de ${P.T}">+ Créer ${P.T}</button>`:""; })()}<button data-a="copy-csv">Copier en CSV</button></div></div>
   <button type="button" class="fab w" data-a="add-op" aria-label="Nouvelle opération">+</button>
   <div class="card">
     <div class="filters">
@@ -2357,8 +2387,12 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.fil
 /* ---------- Historique d'activité ---------- */
 const ACT={create:["＋","Ajout"],update:["✎","Modification"],delete:["✕","Suppression"],bulk:["⇄","Mise à jour groupée"],restore:["↺","Restauration"]};
 /* ---------- Version et nouveautés ---------- */
-const APP_VERSION="1.4.0";
+const APP_VERSION="1.5.0";
 const CHANGELOG=[
+  {v:"1.5.0",d:"2026-11-13",t:"Générer une nouvelle année",items:[
+    "Bouton « + Créer 2028 » (Opérations bancaires) et « + Année 2028 » (Réglages) : crée toutes les opérations récurrentes de l'année suivante sur le modèle de l'année précédente.",
+    "Mêmes mois et même jour, dernier montant connu, revalorisation appliquée ; honoraires de l'agence et régularisations recalculés.",
+    "À refaire autant de fois que nécessaire : le bouton propose ensuite l'année d'après."]},
   {v:"1.4.0",d:"2026-11-13",t:"Montant fixe ou variable",items:[
     "Chaque opération récurrente peut passer de « Variable » à « Fixe » (et inversement) dans sa fenêtre.",
     "En fixe, les échéances sont créées dans le prévisionnel jusqu'à la fin de l'horizon, avec revalorisation si besoin.",
@@ -2860,6 +2894,7 @@ document.addEventListener("click",async ev=>{
     case "grp-toggle": ev.stopPropagation(); S.ui.gOpen={...(S.ui.gOpen||{}),[el.dataset.g]:!(S.ui.gOpen||{})[el.dataset.g]}; return render(true);
     case "line-set": return lineSet(el.dataset.key);
     case "grp-set": return grpSet(el.dataset.g);
+    case "gen-year": return genYear();
     case "av-delai": return openForm({title:"Délai de remboursement des avances",values:{d:avDelai()},fields:[{id:"d",label:"Délai par défaut (mois)",type:"number",required:true,hint:"Utilisé quand aucun remboursement n'est prévu"}],submitLabel:"Enregistrer",onSubmit:async x=>{ const d=Math.round(+x.d); if(!(d>=1&&d<=36)) return "Entre 1 et 36 mois."; const ok=await saveConfig({avanceDelaiMois:d}); if(ok) render(true); return ok; }});
     case "md-edit": return modeleForm(el.dataset.id?modeles().find(m=>m.id===el.dataset.id)||{}:{});
     case "md-del": { const m=modeles().find(z=>z.id===el.dataset.id); if(!m) return; return openConfirm(`Supprimer le modèle « ${m.nom} » ? Les opérations déjà saisies ne changent pas.`,"Supprimer",()=>saveConfig({modeles:modeles().filter(z=>z.id!==m.id)})); }
