@@ -1176,6 +1176,7 @@ function opForm(op={},preset={},intro){
     const data={...(modId?{modele:modId}:{}),date:x.date,montant:Math.round(x.montant*100)/100,categorie:x.categorie,sens:sensOf(x.categorie),libelle:lib,
       bien:x.bien||"commun",indivisaire:x.indivisaire||"",...(op.groupe?{groupe:op.groupe}:{}),...(op.personne?{personne:op.personne}:{}),pointe:false,prevision:op.id?!!op.prevision:(preset._forcePrev!==undefined?!!preset._forcePrev:x.date>todayStr()),note:x.note||"",createdAt:op.createdAt||now,updatedAt:now};
     if(op.id && !(await askConfirm("Enregistrer la modification ?",`« ${esc(shortLib(lib))} » · ${eur(data.montant)} le ${fmtD(data.date)}.<br><br>${IMPACT}`,"Enregistrer"))) return false;
+    if(op.id){ const {id:_i,_oldDate:_d,...keep}=op; Object.assign(data,{...keep,...data}); if(data.date!==op.date&&IMP_RE.test(op.id)) data.dateFixe=true; }
     const ok=await save("operations",op.id,data);
     if(ok&&op.id) setTimeout(()=>revalOffer({...op,date:data.date},+op.montant,data.montant),700);
     if(ok&&!op.id&&data.categorie===AV_IN) setTimeout(()=>prevoirRemboursement(data),400);
@@ -1580,7 +1581,7 @@ function calendrierCard(){
 }
 async function redateKeys(keys){
   const K=new Set(keys), W=[]; let n=0;
-  for(const o of S.ops){ const mm=IMP_RE.exec(o.id||""); if(!mm||!K.has(mm[3])) continue; const nd=dayFor(mm[3],(o.date||"").slice(0,4)||mm[1],(o.date||"").slice(5,7)||mm[2]); if(nd&&nd!==o.date){ W.push(S.db.collection("operations").doc(o.id).update({date:nd})); n++; } }
+  for(const o of S.ops){ const mm=IMP_RE.exec(o.id||""); if(!mm||!K.has(mm[3])||o.dateFixe||!o.prevision) continue; const nd=dayFor(mm[3],(o.date||"").slice(0,4)||mm[1],(o.date||"").slice(5,7)||mm[2]); if(nd&&nd!==o.date){ W.push(S.db.collection("operations").doc(o.id).update({date:nd})); n++; } }
   for(let i=0;i<W.length;i+=200) await Promise.all(W.slice(i,i+200));
   return n;
 }
@@ -1737,7 +1738,7 @@ async function applyCalendrier(){
   const msg=$("#calMsg"); if(bad){ msg.textContent=`${bad} jour${bad>1?"s":""} invalide${bad>1?"s":""} : mettez un nombre entre 1 et 31.`; msg.className="neg"; return; }
   const btn=document.querySelector('[data-a="cal-apply"]'); btn.disabled=true;
   if(!await saveConfig({jours,groupeAgence:groupe,jourAgence})){ btn.disabled=false; return; }
-  const todo=[]; for(const o of S.ops){ const mm=IMP_RE.exec(o.id||""); if(!mm) continue; const oy=(o.date||"").slice(0,4)||mm[1], om=(o.date||"").slice(5,7)||mm[2]; const nd=dayFor(mm[3],oy,om)||`${oy}-${om}-01`; if(nd!==o.date) todo.push([o.id,nd]); }
+  const todo=[]; for(const o of S.ops){ const mm=IMP_RE.exec(o.id||""); if(!mm||o.dateFixe||!o.prevision) continue; const oy=(o.date||"").slice(0,4)||mm[1], om=(o.date||"").slice(5,7)||mm[2]; const nd=dayFor(mm[3],oy,om)||`${oy}-${om}-01`; if(nd!==o.date) todo.push([o.id,nd]); }
   const prog=$("#calProg"), bar=prog.firstElementChild; prog.style.display=""; S.importing=true; let i=0;
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   try{
@@ -2315,8 +2316,12 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.fil
 /* ---------- Historique d'activité ---------- */
 const ACT={create:["＋","Ajout"],update:["✎","Modification"],delete:["✕","Suppression"],bulk:["⇄","Mise à jour groupée"],restore:["↺","Restauration"]};
 /* ---------- Version et nouveautés ---------- */
-const APP_VERSION="1.2.1";
+const APP_VERSION="1.2.2";
 const CHANGELOG=[
+  {v:"1.2.2",d:"2026-11-13",t:"Correctifs dates",items:[
+    "Une opération récurrente déplacée à la main garde sa date, même si on change ensuite le jour de prélèvement de la ligne dans Réglages.",
+    "Changer le jour d'une ligne ne modifie plus les opérations déjà validées.",
+    "Modifier une opération conserve ses informations de revalorisation, de régularisation ou d'appel de fonds."]},
   {v:"1.2.1",d:"2026-11-13",t:"Avances non remboursées",items:[
     "Une avance non remboursée à la date prévue (ou dans les 3 mois) compte comme un apport dans l'équilibre entre indivisaires, jusqu'à son remboursement.",
     "Alerte rouge dans « À surveiller » pour une avance échue ; délai réglable dans Réglages."]},
