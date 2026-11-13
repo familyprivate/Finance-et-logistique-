@@ -910,9 +910,11 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 "use strict";
 /* ---------- Constantes ---------- */
 const CATS = {
-  in: ["Loyer","Charges récupérées","Apport indivisaire","Remboursement / indemnité","Autre recette"],
-  out: ["Crédit immobilier","Taxe foncière","Assurance","Charges de copropriété","Eau / électricité / gaz","Internet / abonnements","Travaux & entretien","Frais de gestion / agence","Frais bancaires","Impôts","Autre dépense"]
+  in: ["Loyer","Charges récupérées","Apport indivisaire","Avance d'un indivisaire","Remboursement / indemnité","Autre recette"],
+  out: ["Crédit immobilier","Taxe foncière","Assurance","Charges de copropriété","Eau / électricité / gaz","Internet / abonnements","Travaux & entretien","Frais de gestion / agence","Frais bancaires","Impôts","Remboursement d'avance","Autre dépense"]
 };
+const AV_IN="Avance d'un indivisaire", AV_OUT="Remboursement d'avance";
+const isAvance=o=>o&&(o.categorie===AV_IN||o.categorie===AV_OUT);
 const sensOf = c => CATS.in.includes(c) ? "in" : "out";
 const MOIS = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 const MOIS_L = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
@@ -979,21 +981,21 @@ function writeErr(e){
   else toast("L'enregistrement a échoué. Vérifiez la connexion et réessayez.");
   console.warn(e);
 }
+/* Écriture optimiste : l'affichage est mis à jour tout de suite, l'envoi au Google Sheet se termine en arrière-plan.
+   On n'attend que l'échec immédiat (≤ 80 ms) ; une erreur plus tardive est signalée par writeErr. */
+async function optimistic(p){ let failed=false; p.catch(e=>{ failed=true; writeErr(e); }); await Promise.race([p.catch(()=>{}),new Promise(r=>setTimeout(r,80))]); return !failed; }
 async function save(coll,id,data){
   if(!S.db){ toast("Données indisponibles : vérifiez la connexion à la base."); return false; }
-  try{ if(id) await S.db.collection(coll).doc(id).set(data); else await S.db.collection(coll).add(data); toast("Enregistré"); return true; }
-  catch(e){ writeErr(e); return false; }
+  const ok=await optimistic(id?S.db.collection(coll).doc(id).set(data):S.db.collection(coll).add(data)); if(ok) toast("Enregistré"); return ok;
 }
-async function patch(coll,id,data){
-  try{ await S.db.collection(coll).doc(id).update(data); return true; } catch(e){ writeErr(e); return false; }
-}
+async function patch(coll,id,data){ return optimistic(S.db.collection(coll).doc(id).update(data)); }
 async function remove(coll,id){
   try{ await S.db.collection(coll).doc(id).delete(); toast("Supprimé"); } catch(e){ writeErr(e); }
 }
 async function saveConfig(p){
   if(!S.db){ toast("Données indisponibles : vérifiez la connexion à la base."); return false; }
   const next={...cfg(),...p,updatedAt:new Date().toISOString()};
-  try{ await S.db.doc("config/main").set(next); toast("Paramètres enregistrés"); return true; } catch(e){ writeErr(e); return false; }
+  const ok=await optimistic(S.db.doc("config/main").set(next)); if(ok) toast("Paramètres enregistrés"); return ok;
 }
 
 /* ---------- Validation en un clic ---------- */
@@ -1007,6 +1009,7 @@ async function validerOps(list){
   const r=$("#toastRoot"); clearTimeout(toast._t);
   r.innerHTML=`<div class="toast" role="status">${ok.length>1?`${ok.length} opérations validées`:`« ${esc((ok[0].libelle||"").split(" – ")[0])} » validée`} <button class="sm" data-a="annuler-valid" data-ids="${esc(ok.map(o=>o.id).join(","))}" style="margin-left:10px;background:transparent;color:inherit;border-color:currentColor">Annuler</button></div>`;
   toast._t=setTimeout(()=>r.innerHTML="",6000);
+  const mo=ok.find(o=>o.modele&&modeles().some(m=>m.id===o.modele)); if(mo&&ok.length===1) setTimeout(()=>prevoirSuivante(byId("ops",mo.id)||mo),500);
 }
 
 /* ---------- Modales ---------- */
@@ -1045,7 +1048,7 @@ function openForm({title,intro,fields,values={},submitLabel="Enregistrer",onSubm
   </form></div>`;
   const form=root.querySelector("form");
   const t=form.querySelector("#mTitle"); if(t){ t.tabIndex=-1; t.focus({preventScroll:true}); }
-  const syncShow=()=>form.querySelectorAll("[data-show]").forEach(w=>{ const [k,val]=w.dataset.show.split("="); const el=form.elements[k]; w.hidden=!(el&&el.value===val); });
+  const syncShow=()=>form.querySelectorAll("[data-show]").forEach(w=>{ const [k,val]=w.dataset.show.split("="); const el=form.elements[k]; const v=el&&el.type==="checkbox"?(el.checked?"1":""):el&&el.value; w.hidden=!(el&&v===val); });
   syncShow(); form.addEventListener("change",syncShow);
   form.addEventListener("submit",async ev=>{
     ev.preventDefault();
@@ -1085,26 +1088,97 @@ function openConfirm(msg,yesLabel,onYes){
 }
 
 /* ---------- Formulaires métier ---------- */
+/* ---------- Modèles d'opérations ---------- */
+const modeles=()=>Array.isArray(cfg().modeles)?cfg().modeles:[];
+document.addEventListener("change",ev=>{ if(ev.target.id!=="f_modele") return; const m=modeles().find(x=>x.id===ev.target.value); if(!m) return; const f=ev.target.form;
+  const set=(n,v)=>{ const el=f.elements[n]; if(el&&v!=null&&v!=="") el.value=v; };
+  set("categorie",m.categorie); set("libelle",m.libelle); set("bien",m.bien); set("indivisaire",m.indivisaire); set("note",m.note); if(m.montant) set("montant",String(m.montant).replace(".",",")); });
+function modelesCard(){
+  const L=modeles();
+  return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Modèles d'opérations</h3><button type="button" class="sm w" data-a="md-edit">+ Nouveau modèle</button></div>
+    <p class="muted" style="margin:0 0 10px">Pour les opérations qui reviennent sans date fixe (entretien, dépannage, apport exceptionnel…). Dans « + Opération », « Depuis un modèle » remplit tout le formulaire. À la validation, l'app propose de prévoir la suivante.</p>
+    ${L.length?L.map(m=>`<div class="pc-row"><span><strong>${esc(m.nom)}</strong> <small class="muted">${esc(m.categorie)} · ${esc(bienLabel(m.bien))}${m.montant?` · ${sensOf(m.categorie)==="in"?"+":"−"}${eur(+m.montant)}`:""}</small></span><span class="row" style="gap:4px;margin-left:auto"><button type="button" class="ghost sm" data-a="md-edit" data-id="${esc(m.id)}">Modifier</button><button type="button" class="ghost sm danger" data-a="md-del" data-id="${esc(m.id)}" aria-label="Supprimer le modèle ${esc(m.nom)}">✕</button></span></div>`).join(""):`<p class="muted" style="margin:0">Aucun modèle pour l'instant. Cochez « Enregistrer comme modèle » en créant une opération, ou ajoutez-en un ici.</p>`}</div>`;
+}
+function modeleForm(m={}){
+  openForm({title:m.id?"Modifier le modèle":"Nouveau modèle",values:{bien:"commun",categorie:"Autre dépense",...m,montant:m.montant||""},fields:[
+    {id:"nom",label:"Nom du modèle",type:"text",required:true,placeholder:"ex. Entretien chaudière"},
+    {id:"categorie",label:"Catégorie",type:"select",required:true,options:[{group:"Entrées sur le compte",items:CATS.in},{group:"Sorties du compte",items:CATS.out}]},
+    {id:"libelle",label:"Libellé de l'opération",type:"text",required:true},
+    {id:"bien",label:"Bien concerné",type:"select",half:true,options:BIEN_OPTS()},
+    {id:"montant",label:"Montant habituel (€)",type:"number",half:true,hint:"Facultatif"},
+    {id:"indivisaire",label:"Indivisaire concerné",type:"select",half:true,options:[{value:"",label:"—"},...(cfg().indivisaires||[]).map(i=>i.nom)]},
+    {id:"note",label:"Note",type:"textarea",rows:2}],submitLabel:"Enregistrer",
+    onSubmit:async x=>{ const id=m.id||("md-"+Date.now().toString(36)); const L=modeles().filter(z=>z.id!==id).concat([{id,nom:x.nom,categorie:x.categorie,libelle:x.libelle,bien:x.bien||"commun",indivisaire:x.indivisaire||"",note:x.note||"",montant:x.montant>0?Math.round(x.montant*100)/100:0}]); const ok=await saveConfig({modeles:L}); if(ok) render(true); return ok; }});
+}
+function prevoirSuivante(o){
+  const add=n=>{ const d=new Date(o.date); d.setMonth(d.getMonth()+n); return ds(d); };
+  const r=$("#confirmRoot");
+  r.innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-labelledby="pvT"><div class="modal"><h3 id="pvT">La prévoir à nouveau ?</h3><p class="muted">« ${esc(shortLib(o.libelle))} » ${sensOf(o.categorie)==="in"?"+":"−"}${eur(+o.montant)}. Une opération prévue apparaîtra dans le prévisionnel ; vous pourrez la décaler ou la supprimer.</p>
+    <div class="row w" style="flex-wrap:wrap;gap:8px;margin-top:10px">${[1,2,3,6,12].map(n=>`<button type="button" class="sm" data-pv="${add(n)}">Dans ${n} mois</button>`).join("")}</div>
+    <div class="row" style="gap:8px;margin-top:12px;align-items:center"><label for="pvD" class="muted" style="font-size:.85rem">Ou le</label><input type="date" id="pvD" value="${add(2)}" style="width:auto"><button type="button" class="sm primary" data-pv="date">Prévoir</button></div>
+    <div class="row" style="justify-content:flex-end;margin-top:14px"><button type="button" class="ghost" data-pv="">Non merci</button></div></div></div>`;
+  r.querySelectorAll("[data-pv]").forEach(b=>b.addEventListener("click",async()=>{ let d=b.dataset.pv; if(d==="date") d=$("#pvD").value; r.innerHTML=""; if(!d) return;
+    const {id,_oldDate,validee,pointe,prevision,createdAt,updatedAt,...rest}=o; const now=new Date().toISOString();
+    const lib=(rest.libelle||"").replace(/(\s+[–-]\s+)(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+\d{4}$/i,(_,sep)=>`${sep}${MOIS_L[+d.slice(5,7)-1]} ${d.slice(0,4)}`);
+    if(await save("operations",null,{...rest,libelle:lib,date:d,prevision:true,pointe:false,createdAt:now,updatedAt:now})) toast(`Prévue le ${fmtD(d)}`); }));
+}
+/* ---------- Avances d'un indivisaire ---------- */
+const avDelai=()=>+cfg().avanceDelaiMois||3;
+function avanceSolde(){
+  const t=todayStr(), R={}, by={};
+  for(const o of S.ops){ if(!isAvance(o)||!o.indivisaire) continue; (by[o.indivisaire]=by[o.indivisaire]||[]).push(o); }
+  for(const [nom,L] of Object.entries(by)){
+    const av=L.filter(o=>real(o)&&o.categorie===AV_IN).sort((a,b)=>a.date.localeCompare(b.date)).map(o=>({o,reste:+o.montant}));
+    let rb=L.filter(o=>real(o)&&o.categorie===AV_OUT).reduce((a,o)=>a+(+o.montant||0),0);
+    for(const x of av){ const u=Math.min(x.reste,rb); x.reste-=u; rb-=u; }
+    const prev=L.filter(o=>o.prevision&&o.categorie===AV_OUT).sort((a,b)=>a.date.localeCompare(b.date));
+    const r={du:0,prevu:prev.reduce((a,o)=>a+(+o.montant||0),0),next:prev[0]?prev[0].date:"",echu:0,limite:""};
+    for(const x of av){ if(x.reste<0.005) continue; r.du+=x.reste;
+      const pl=prev.find(o=>o.date>=x.o.date); const d=new Date(x.o.date); d.setMonth(d.getMonth()+avDelai()); const lim=pl?pl.date:ds(d);
+      if(lim<t) r.echu+=x.reste; if(!r.limite||lim<r.limite) r.limite=lim; }
+    R[nom]=r; }
+  return R;
+}
+/* Apports pris en compte dans l'équilibre : apports validés + avances échues non remboursées */
+function apportsEquilibre(){ const AS=avanceSolde(), m={}; for(const o of S.ops) if(real(o)&&o.categorie==="Apport indivisaire"&&o.indivisaire) m[o.indivisaire]=(m[o.indivisaire]||0)+(+o.montant||0);
+  for(const [n,v] of Object.entries(AS)) if(v.echu>0.004) m[n]=(m[n]||0)+v.echu; return {m,av:AS}; }
+function prevoirRemboursement(av){
+  const add=n=>{ const d=new Date(av.date); d.setMonth(d.getMonth()+n); return ds(d); };
+  const r=$("#confirmRoot");
+  r.innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-labelledby="pvT"><div class="modal"><h3 id="pvT">Prévoir le remboursement ?</h3><p class="muted">Avance ${esc(av.indivisaire)} : ${eur(+av.montant)}. Le remboursement apparaîtra dans le prévisionnel ; vous pourrez le décaler ou modifier le montant.</p>
+    <div class="row w" style="flex-wrap:wrap;gap:8px;margin-top:10px">${[1,2,3,6].map(n=>`<button type="button" class="sm" data-pv="${add(n)}">Dans ${n} mois</button>`).join("")}</div>
+    <div class="row" style="gap:8px;margin-top:12px;align-items:center"><label for="pvD" class="muted" style="font-size:.85rem">Ou le</label><input type="date" id="pvD" value="${add(2)}" style="width:auto"><button type="button" class="sm primary" data-pv="date">Prévoir</button></div>
+    <div class="row" style="justify-content:flex-end;margin-top:14px"><button type="button" class="ghost" data-pv="">Plus tard</button></div></div></div>`;
+  r.querySelectorAll("[data-pv]").forEach(b=>b.addEventListener("click",async()=>{ let d=b.dataset.pv; if(d==="date") d=$("#pvD").value; r.innerHTML=""; if(!d) return; const now=new Date().toISOString();
+    if(await save("operations",null,{date:d,montant:+av.montant,categorie:AV_OUT,sens:"out",libelle:`Remboursement avance ${av.indivisaire}`,bien:av.bien||"commun",indivisaire:av.indivisaire,pointe:false,prevision:true,note:"",createdAt:now,updatedAt:now})) toast(`Remboursement prévu le ${fmtD(d)}`); }));
+}
 function opForm(op={},preset={},intro){
   const c=cfg(); const v={date:todayStr(),bien:"commun",categorie:"Autre dépense",pointe:false,...preset,...op};
-  openForm({title:op.id?"Modifier l'opération":"Nouvelle opération", intro:intro?esc(intro):"", values:v, fields:[
+  const MD=modeles();
+  openForm({title:op.id?"Modifier l'opération":"Nouvelle opération", intro:intro?esc(intro):"", values:{...v,modele:op.modele||preset.modele||""}, fields:[
+    ...(!op.id&&MD.length?[{id:"modele",label:"Depuis un modèle",type:"select",options:[{value:"",label:"— aucun —"},...MD.map(m=>({value:m.id,label:m.nom}))],hint:"Remplit le formulaire ; il ne reste que la date et le montant à vérifier."}]:[]),
     {id:"date",label:"Date",type:"date",required:true,half:true},
     {id:"montant",label:"Montant (€)",type:"number",required:true,half:true,placeholder:"0,00",hint:"Toujours positif : le sens vient de la catégorie."},
     {id:"categorie",label:"Catégorie",type:"select",required:true,options:[{group:"Entrées sur le compte",items:CATS.in},{group:"Sorties du compte",items:CATS.out}]},
     {id:"libelle",label:"Libellé",type:"text",required:true,placeholder:"ex. Taxe foncière 2026"},
     {id:"bien",label:"Bien concerné",type:"select",half:true,options:BIEN_OPTS()},
     {id:"indivisaire",label:"Indivisaire concerné",type:"select",half:true,options:[{value:"",label:"—"},...c.indivisaires.map(i=>i.nom)],hint:"Pour un apport d'un indivisaire."},
-    {id:"note",label:"Note",type:"textarea",rows:2}
+    {id:"note",label:"Note",type:"textarea",rows:2},
+    ...(op.modele&&MD.some(m=>m.id===op.modele)?[]:[{id:"asmodel",label:"Enregistrer comme modèle (pour la ressaisir facilement)",type:"checkbox"},{id:"mnom",label:"Nom du modèle",type:"text",show:"asmodel=1",placeholder:"ex. Entretien chaudière"}])
   ], onSubmit: async x=>{
     if(!(x.montant>0)) return "Indiquez un montant supérieur à zéro.";
     if(x.categorie==="Apport indivisaire" && !x.indivisaire && c.indivisaires.length) return "Choisissez l'indivisaire qui fait l'apport.";
+    if((x.categorie===AV_IN||x.categorie===AV_OUT) && !x.indivisaire && c.indivisaires.length) return "Choisissez l'indivisaire concerné par l'avance.";
     const now=new Date().toISOString();
     const lib=x.libelle.replace(/(\s+[–-]\s+)(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+\d{4}$/i,(_,sep)=>`${sep}${MOIS_L[+x.date.slice(5,7)-1]} ${x.date.slice(0,4)}`);
-    const data={date:x.date,montant:Math.round(x.montant*100)/100,categorie:x.categorie,sens:sensOf(x.categorie),libelle:lib,
+    let modId=op.modele||x.modele||"";
+    if(x.asmodel){ const nom=(x.mnom||"").trim()||shortLib(lib); modId="md-"+Date.now().toString(36); const L=modeles().concat([{id:modId,nom,categorie:x.categorie,libelle:shortLib(lib),bien:x.bien||"commun",indivisaire:x.indivisaire||"",note:x.note||"",montant:Math.round(x.montant*100)/100}]); if(!(await saveConfig({modeles:L}))) return false; }
+    const data={...(modId?{modele:modId}:{}),date:x.date,montant:Math.round(x.montant*100)/100,categorie:x.categorie,sens:sensOf(x.categorie),libelle:lib,
       bien:x.bien||"commun",indivisaire:x.indivisaire||"",...(op.groupe?{groupe:op.groupe}:{}),...(op.personne?{personne:op.personne}:{}),pointe:false,prevision:op.id?!!op.prevision:(preset._forcePrev!==undefined?!!preset._forcePrev:x.date>todayStr()),note:x.note||"",createdAt:op.createdAt||now,updatedAt:now};
     if(op.id && !(await askConfirm("Enregistrer la modification ?",`« ${esc(shortLib(lib))} » · ${eur(data.montant)} le ${fmtD(data.date)}.<br><br>${IMPACT}`,"Enregistrer"))) return false;
     const ok=await save("operations",op.id,data);
     if(ok&&op.id) setTimeout(()=>revalOffer({...op,date:data.date},+op.montant,data.montant),700);
+    if(ok&&!op.id&&data.categorie===AV_IN) setTimeout(()=>prevoirRemboursement(data),400);
     if(ok && !isHono(data) && (data.bien==="locatif"||op.bien==="locatif")) setTimeout(()=>majHonoraires([data.date.slice(0,7),(op.date||"").slice(0,7),(op._oldDate||"").slice(0,7)]),400);
     return ok;
   }});
@@ -1278,14 +1352,17 @@ function alertes(){
     L.forEach((o,i)=>{ sol+=sg(o); if(L[i+1]&&L[i+1].date===o.date) return; if(sol<-0.004&&!first) first=o.date; if(sol<low){ low=sol; lowD=o.date; } });
     if(first){ const j=daysBetween(t0,first<t0?t0:first), at=soldePrevu(first<t0?t0:first); a.push({k:"bad",t:`Découvert prévu le ${fmtD(first<t0?t0:first)} : ${eur(at).replace("-","−")}`,s:`${j<=0?"Dès aujourd'hui":`Dans ${j} jour${j>1?"s":""}`}${lowD!==first?` · point bas ${eur(low).replace("-","−")} le ${fmtD(lowD)}`:""} · prévoir un apport`,h:"#tableau"}); } }
   // Apports déséquilibrés (sans montant plancher)
-  if(c.indivisaires&&c.indivisaires.length>1){ const noms=c.indivisaires.map(i=>i.nom), ap=S.ops.filter(o=>real(o)&&o.categorie==="Apport indivisaire"&&noms.includes(o.indivisaire)), tot=sum(ap);
-    for(const i of c.indivisaires){ const v=sum(ap.filter(o=>o.indivisaire===i.nom)), d=v-tot*(+i.quotePart||0)/100;
-      if(d<=-0.5) a.push({k:"warn",t:`Apports déséquilibrés : ${i.nom} ${eur(d).replace("-","−")}`,s:`Écart par rapport à sa quote-part de ${(+i.quotePart||0).toLocaleString("fr-FR")} %, depuis le début`,h:"#tableau"}); } }
+  if(c.indivisaires&&c.indivisaires.length>1){ const noms=c.indivisaires.map(i=>i.nom), {m:AQ,av:AS}=apportsEquilibre(), tot=noms.reduce((a,n)=>a+(AQ[n]||0),0);
+    for(const i of c.indivisaires){ const v=AQ[i.nom]||0, d=v-tot*(+i.quotePart||0)/100;
+      if(d<=-0.5) a.push({k:"warn",t:`Apports déséquilibrés : ${i.nom} ${eur(d).replace("-","−")}`,s:`Écart par rapport à sa quote-part de ${(+i.quotePart||0).toLocaleString("fr-FR")} %, depuis le début${Object.values(AS).some(x=>x.echu>0.5)?" (avances échues comprises)":""}`,h:"#tableau"}); } }
   // Grosse échéance dans les 30 jours
   { const lim=plus(+c.alerteEcheanceJours||30), seuil=+c.alerteEcheanceSeuil||300;
     for(const o of S.ops.filter(o=>o.prevision&&o.sens==="out"&&o.date>=t0&&o.date<=lim&&+o.montant>=seuil).sort((x,y)=>x.date.localeCompare(y.date))){
       const j=daysBetween(t0,o.date), apres=soldePrevu(o.date);
       a.push({k:"warn",t:`${j===0?"Aujourd'hui":`Dans ${j} jour${j>1?"s":""}`} : ${shortLib(o.libelle)} −${eur(+o.montant)}`,s:`Le ${fmtD(o.date)} · solde prévu ce jour-là : ${eur(apres).replace("-","−")}`,h:"#tresorerie"}); } }
+  for(const [nom,v] of Object.entries(avanceSolde())) if(v.du>0.5){
+    if(v.echu>0.5) a.push({k:"bad",t:`Avance ${nom} : ${eur(v.echu)} non remboursés depuis le ${fmtD(v.limite)}`,s:"Comptés comme apport dans l'équilibre entre indivisaires tant qu'ils ne sont pas remboursés",h:"#tresorerie"});
+    if(v.du-v.echu>0.5) a.push({k:"warn",t:`Avance ${nom} : ${eur(v.du-v.echu)} à rembourser`,s:`${v.next?`Remboursement prévu le ${fmtD(v.next)}`:"Aucun remboursement prévu"} · au-delà du ${fmtD(v.limite)}, comptés comme apport`,h:"#tresorerie"}); }
   const pp=S.ops.filter(o=>o.prevision && o.date && o.date<=todayStr() && !regulCovered(o)).length;
   if(pp) a.push({k:"warn",t:`${pp} opération${pp>1?"s":""} prévue${pp>1?"s":""} dont la date est passée : à valider ou corriger`,h:"#tresorerie"});
 
@@ -1713,7 +1790,7 @@ function simHTML(){
 /* ---------- Vues ---------- */
 function vTableau(){
   const c=cfg(), y=new Date().getFullYear(), ys=String(y);
-  const yo=S.ops.filter(o=>real(o)&&(o.date||"").startsWith(ys));
+  const yo=S.ops.filter(o=>real(o)&&(o.date||"").startsWith(ys)&&!isAvance(o));
   const rec=sum(yo.filter(o=>o.sens==="in")), dep=sum(yo.filter(o=>o.sens==="out"));
   const fut=S.ops.filter(o=>o.prevision).map(o=>o.date).sort(); const lastF=fut[fut.length-1]||"";
   const locNet=yo.filter(o=>o.bien==="locatif").reduce((a,o)=>a+sg(o),0);
@@ -1739,7 +1816,7 @@ function vTableau(){
     ${prevYears.map(p=>`<tr><td>${p.yy}</td><td class="amt ${p.fin<0?"neg":""}">${eur0(p.fin)}</td><td class="amt ${p.lo<0?"neg":""}">${p.lo===Infinity?"—":`${eur0(p.lo)}<br><small class="muted">le ${esc(p.lom)}</small>`}</td><td class="amt">${p.hi===-Infinity?"—":`${eur0(p.hi)}<br><small class="muted">le ${esc(p.him)}</small>`}</td></tr>`).join("")}
     </tbody></table></div><small>Point bas négatif : le compte passerait à découvert ce jour-là sans apport supplémentaire. Point haut : le solde le plus élevé prévu dans l'année.</small></div>`:"");
   const apports=S.ops.filter(o=>real(o)&&o.categorie==="Apport indivisaire");
-  const totAp=sum(apports);
+  const EQ=apportsEquilibre(), totAp=c.indivisaires.reduce((a,i)=>a+(EQ.m[i.nom]||0),0), echus=Object.entries(EQ.av).filter(([,v])=>v.echu>0.5);
   const apAtt=S.ops.filter(o=>o.prevision&&o.categorie==="Apport indivisaire"&&(o.date||"")<=todayStr()).sort((a,b)=>a.date.localeCompare(b.date));
   const recents=groupRows(sortedOps().filter(o=>real(o)&&(o.date||"")<=todayStr()).slice(0,60)).slice(0,14).map(r=>r.o?r.o:{date:r.g.items[0].date,libelle:gName(r.g.name),montant:Math.abs(r.g.items.reduce((a,o)=>a+sg(o),0)),sens:r.g.items.reduce((a,o)=>a+sg(o),0)>=0?"in":"out"});
   return `
@@ -1770,9 +1847,9 @@ function vTableau(){
     <div class="card card-fill cat-card"><h3>Dépenses ${y} par catégorie</h3><p class="card-sub">Part de chaque poste dans les ${eur0(dep)} de sorties réelles.</p>${compo(catRows,dep)}</div>
     <div class="card card-fill ap-card"><div class="card-head"><h3>Apports des indivisaires</h3><small>depuis le début</small></div>
       ${c.indivisaires.length?`<div class="table-wrap"><table><thead><tr><th>Indivisaire</th><th class="amt">Versé</th><th class="amt">Attendu</th><th class="amt">Écart</th></tr></thead><tbody>
-      ${c.indivisaires.map(i=>{const v=sum(apports.filter(o=>o.indivisaire===i.nom)), att=totAp*(+i.quotePart||0)/100, d=v-att;
+      ${c.indivisaires.map(i=>{const v=EQ.m[i.nom]||0, att=totAp*(+i.quotePart||0)/100, d=v-att;
         return `<tr><td>${esc(i.nom)} <span class="sub">${(+i.quotePart||0).toLocaleString("fr-FR")} %</span></td><td class="amt">${eur0(v)}</td><td class="amt muted">${eur0(att)}</td><td class="amt ${Math.abs(d)<0.5?"muted":d>0?"pos":"neg"}">${Math.abs(d)<0.5?"—":(d>0?"+":"−")+eur0(Math.abs(d))}</td></tr>`;}).join("")}
-      </tbody></table></div><small>« Attendu » répartit le total versé (${eur0(totAp)}) selon les quotes-parts. Seuls les apports validés comptent.</small>
+      </tbody></table></div><small>« Attendu » répartit le total versé (${eur0(totAp)}) selon les quotes-parts. Seuls les apports validés comptent${echus.length?`, plus les avances non remboursées à temps (${echus.map(([n,v])=>`${esc(n)} ${eur0(v.echu)}`).join(", ")})`:""}.</small>
       ${apAtt.length?`<div class="ap-wait">${apAtt.map(o=>`<div class="row" style="gap:8px;justify-content:space-between;flex-wrap:nowrap"><span>En attente : <strong>${eur0(+o.montant)}</strong> de ${esc(o.indivisaire||"?")}, prévu le ${fmtD(o.date)}</span><button class="sm w" data-a="valider" data-id="${esc(o.id)}">Valider</button></div>`).join("")}</div>`:""}`
       :`<div class="empty">Ajoutez les indivisaires et leurs quotes-parts pour suivre qui a versé quoi.<a class="btn w" href="#parametres">Paramètres</a></div>`}
     </div>
@@ -2238,8 +2315,21 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.fil
 /* ---------- Historique d'activité ---------- */
 const ACT={create:["＋","Ajout"],update:["✎","Modification"],delete:["✕","Suppression"],bulk:["⇄","Mise à jour groupée"],restore:["↺","Restauration"]};
 /* ---------- Version et nouveautés ---------- */
-const APP_VERSION="1.0.1";
+const APP_VERSION="1.2.1";
 const CHANGELOG=[
+  {v:"1.2.1",d:"2026-11-13",t:"Avances non remboursées",items:[
+    "Une avance non remboursée à la date prévue (ou dans les 3 mois) compte comme un apport dans l'équilibre entre indivisaires, jusqu'à son remboursement.",
+    "Alerte rouge dans « À surveiller » pour une avance échue ; délai réglable dans Réglages."]},
+  {v:"1.2.0",d:"2026-11-13",t:"Avances d'un indivisaire",items:[
+    "Nouvelles catégories « Avance d'un indivisaire » (entrée) et « Remboursement d'avance » (sortie).",
+    "Elles comptent dans le solde du compte, mais pas dans les entrées et sorties de l'année, les catégories ni l'équilibre des apports.",
+    "À l'enregistrement d'une avance, l'app propose de prévoir son remboursement.",
+    "Alerte « À surveiller » tant qu'une avance n'est pas remboursée."]},
+  {v:"1.1.0",d:"2026-11-13",t:"Modèles d'opérations",items:[
+    "Modèles pour les opérations qui reviennent sans date fixe : « Depuis un modèle » dans « + Opération » remplit tout le formulaire.",
+    "Case « Enregistrer comme modèle » à la création d'une opération, et liste des modèles dans Réglages.",
+    "À la validation d'une opération issue d'un modèle, l'app propose de prévoir la suivante (dans 1, 2, 3, 6, 12 mois ou à une date).",
+    "Correctif : la fenêtre se ferme tout de suite après « Enregistrer », sans attendre la réponse du Google Sheet."]},
   {v:"1.0.1",d:"2026-11-13",t:"Correctif validation",items:[
     "Sur téléphone, une opération déjà validée affiche un ✓ vert : le toucher permet de la repasser en prévu (avec confirmation).",
     "Annulation possible aussi pour le versement de l'agence et pour les opérations importées déjà passées.",
@@ -2533,6 +2623,8 @@ function vParametres(){
       <div class="row w"><button type="button" class="primary" data-a="bk-pick">Charger une sauvegarde (.json)</button><input type="file" id="bkIn" accept="application/json,.json" hidden><button type="button" data-a="export-json">Exporter une sauvegarde</button><button type="button" class="ghost" data-a="gas-setup">Changer la connexion</button></div>
       <small id="bkMsg"></small></div>
     ${lockCard()}
+    ${modelesCard()}
+    <div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Avances d'un indivisaire</h3><button type="button" class="sm ghost w" data-a="av-delai">Modifier</button></div><p class="muted" style="margin:0">Une avance doit être remboursée à la date du remboursement prévu, ou sinon dans les <strong>${avDelai()} mois</strong>. Passé ce délai, la somme non remboursée compte comme un apport dans l'équilibre entre indivisaires, jusqu'à son remboursement.</p></div>
     ${journalCard()}
     ${versionCard()}
     <div class="card" style="grid-column:1/-1"><div class="row" style="justify-content:space-between">
@@ -2711,6 +2803,9 @@ document.addEventListener("click",async ev=>{
     case "grp-toggle": ev.stopPropagation(); S.ui.gOpen={...(S.ui.gOpen||{}),[el.dataset.g]:!(S.ui.gOpen||{})[el.dataset.g]}; return render(true);
     case "line-set": return lineSet(el.dataset.key);
     case "grp-set": return grpSet(el.dataset.g);
+    case "av-delai": return openForm({title:"Délai de remboursement des avances",values:{d:avDelai()},fields:[{id:"d",label:"Délai par défaut (mois)",type:"number",required:true,hint:"Utilisé quand aucun remboursement n'est prévu"}],submitLabel:"Enregistrer",onSubmit:async x=>{ const d=Math.round(+x.d); if(!(d>=1&&d<=36)) return "Entre 1 et 36 mois."; const ok=await saveConfig({avanceDelaiMois:d}); if(ok) render(true); return ok; }});
+    case "md-edit": return modeleForm(el.dataset.id?modeles().find(m=>m.id===el.dataset.id)||{}:{});
+    case "md-del": { const m=modeles().find(z=>z.id===el.dataset.id); if(!m) return; return openConfirm(`Supprimer le modèle « ${m.nom} » ? Les opérations déjà saisies ne changent pas.`,"Supprimer",()=>saveConfig({modeles:modeles().filter(z=>z.id!==m.id)})); }
     case "af-set": return afSet();
     case "af-edit": return afForm(el.dataset.id?afList().find(x=>x.id===el.dataset.id)||{}:{});
     case "af-del": return afDelete(el.dataset.id);
