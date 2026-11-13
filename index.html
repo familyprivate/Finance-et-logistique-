@@ -1021,7 +1021,7 @@ function optsHTML(options,v){
   }).join("");
 }
 function fieldHTML(f,v){
-  const h=fieldHTML0(f,v); return f.show?h.replace(/^<div class="field/,`<div data-show="${esc(f.show)}" class="field`):h;
+  const h=fieldHTML0(f,v); return f.show?h.replace(/^<(div|fieldset) class="field/,(_,t)=>`<${t} data-show="${esc(f.show)}" class="field`):h;
 }
 function fieldHTML0(f,v){
   const id="f_"+f.id, req=f.required?" required":"", half=f.half?" half":"";
@@ -1610,6 +1610,7 @@ async function recurAmountFromLine(key){
       if(!(await saveConfig({reval:all}))) return; await applyReval(key); } }
   recurAmountForm(key);
 }
+function projYear(){ const d=S.ops.filter(o=>o.prevision).map(o=>o.date||"").sort().pop(); return Math.max(+(d||"0").slice(0,4),new Date().getFullYear()+2); }
 function lineSet(key){
   const r=recurTypes().find(x=>x.key===key); if(!r) return;
   const G=calGroups().find(g=>g.keys(key)), t=todayStr(), hono=isHonoKey(r), fixe=hasFuture(key)&&!hono;
@@ -1617,22 +1618,23 @@ function lineSet(key){
   const fut=S.ops.filter(o=>keyOf(o)===key&&o.prevision&&(o.date||"")>=t).sort((a,b)=>a.date.localeCompare(b.date));
   const cur=fut.length?(fut[0].revalBase!=null?+fut[0].revalBase:fut[0].regul?+fut[0].regul.base:+fut[0].montant):r.last;
   const mensuel=r.months.size>=12;
-  const isTF=fixe&&r.bien==="locatif"&&/taxe fonci/i.test(r.label), tfLast=isTF?S.ops.filter(o=>keyOf(o)===key&&!o.prevision).map(o=>o.date).sort().pop():"", tfNext=isTF?(tfLast||(fut[0]?fut[0].date:"")):"", tom1=tfNext?tomFor(tfNext):null;
+  const isTF=!hono&&r.bien==="locatif"&&/taxe fonci/i.test(r.label), tfLast=isTF?S.ops.filter(o=>keyOf(o)===key&&!o.prevision).map(o=>o.date).sort().pop():"", tfNext=isTF?(tfLast||(fut[0]?fut[0].date:"")):"", tom1=tfNext?tomFor(tfNext):null;
   const F=[];
-  if(fixe) F.push({id:"montant",label:"Montant (€)",type:"number",required:true,half:true,hint:RI?"Montant actuel, avant la prochaine revalorisation":"S'applique aux prochaines échéances"});
-  else F.push({id:"_m",type:"html",label:"Montant",half:true,html:hono?`Calculé automatiquement (${(tauxTTC()/1.2*100).toLocaleString("fr-FR",{maximumFractionDigits:2})} % HT des encaissements)`:`<em>Variable</em> : saisi à chaque opération`});
+  if(hono) F.push({id:"_m",type:"html",label:"Montant",half:true,html:`Calculé automatiquement (${(tauxTTC()/1.2*100).toLocaleString("fr-FR",{maximumFractionDigits:2})} % HT des encaissements)`});
+  else { F.push({id:"mtype",label:"Montant",type:"radio",options:[{value:"fixe",label:"Fixe (prévu d'avance)"},{value:"variable",label:"Variable"}],hint:"Fixe : les échéances sont créées dans le prévisionnel. Variable : rien n'est prévu, le montant est saisi à chaque opération."});
+    F.push({id:"montant",label:"Montant (€)",type:"number",half:true,show:"mtype=fixe",hint:RI?"Montant actuel, avant la prochaine revalorisation":fixe?"S'applique aux prochaines échéances":`Échéances créées jusqu'à fin ${projYear()}`}); }
   if(G) F.push({id:"_j",type:"html",label:"Jour de prélèvement",half:true,html:`Le <strong>${esc(G.day()||"—")}</strong>, comme tout le bloc « ${esc(G.label)} »`});
   else F.push({id:"jour",label:"Jour de prélèvement",type:"number",half:true,placeholder:"1 à 31",hint:"31 = dernier jour du mois"});
   if(!mensuel) F.push({id:"mois",label:"Mois de prélèvement",type:"months",hint:"Cochez les mois où l'opération a lieu"});
   else F.push({id:"_q",type:"html",label:"Mois de prélèvement",html:"Tous les mois"});
   if(fixe&&R.lie) F.push({id:"_lie",type:"html",label:"Revalorisation",html:`Suit la taxe foncière : +${(+R.taux).toLocaleString("fr-FR")} %/an. Le montant réel se saisit avec la taxe foncière.`});
-  else if(fixe){
-    F.push({id:"rv",label:"Cette ligne est-elle susceptible d'être revalorisée chaque année ?",type:"radio",options:[{value:"non",label:"Non"},{value:"oui",label:"Oui"}]});
+  else if(!hono){
+    F.push({id:"rv",label:"Cette ligne est-elle susceptible d'être revalorisée chaque année ?",type:"radio",show:"mtype=fixe",options:[{value:"non",label:"Non"},{value:"oui",label:"Oui"}]});
     F.push({id:"taux",label:"Taux de revalorisation (%)",type:"number",half:true,placeholder:"ex. 3",show:"rv=oui",hint:REVAL_HINT(r.label)});
     F.push({id:"rmois",label:"Mois où elle intervient",type:"select",half:true,show:"rv=oui",options:MOIS_L.map((m,i)=>({value:String(i+1),label:m[0].toUpperCase()+m.slice(1)}))});
   }
-  const v0={teom:tom1?+tom1.montant:"",rgmois:String(regulMois()),montant:cur,jour:(cfg().jours||{})[key]||"",mois:[...r.months],rv:RI?"oui":"non",taux:RI?RI.taux:"",rmois:String(+R.mois||(/taxe fonci/i.test(r.label)?10:1))};
-  if(isTF&&tom1) F.splice(1,0,{id:"teom",label:"Dont ordures ménagères (TEOM) (€)",type:"number",half:true,hint:`Taxe foncière ${tfNext.slice(0,4)} : reportée sur le remboursement de janvier ${+tfNext.slice(0,4)+1}, puis ${RI?"revalorisée comme la taxe foncière":"reprise"} les années suivantes.`});
+  const v0={mtype:fixe?"fixe":"variable",teom:tom1?+tom1.montant:"",rgmois:String(regulMois()),montant:fixe?cur:"",jour:(cfg().jours||{})[key]||"",mois:[...r.months],rv:RI?"oui":"non",taux:RI?RI.taux:"",rmois:String(+R.mois||(/taxe fonci/i.test(r.label)?10:1))};
+  if(isTF&&tom1) F.splice(2,0,{id:"teom",show:"mtype=fixe",label:"Dont ordures ménagères (TEOM) (€)",type:"number",half:true,hint:`Taxe foncière ${tfNext.slice(0,4)} : reportée sur le remboursement de janvier ${+tfNext.slice(0,4)+1}, puis ${RI?"revalorisée comme la taxe foncière":"reprise"} les années suivantes.`});
   if(COPRO_RE.test(r.label)){ F.push({id:"_rg",type:"html",html:regulBox()}); F.push({id:"rgmois",label:"Les régularisations sont imputées à partir de l'appel de",type:"select",half:true,options:MOIS_L.map((m,i)=>({value:String(i+1),label:m[0].toUpperCase()+m.slice(1)}))}); }
   openForm({title:r.label,intro:G&&G.id==="agence"?`<button type="button" class="ghost sm w" data-a="grp-out" data-key="${esc(key)}">Retirer du versement de l'agence</button>`:"",
     values:v0,fields:F,submitLabel:"Enregistrer",
@@ -1645,8 +1647,12 @@ function lineSet(key){
       let addM=[],delM=[];
       if(!mensuel){ if(!v.mois.length) return "Cochez au moins un mois."; addM=v.mois.filter(m=>!r.months.has(m)); delM=[...r.months].filter(m=>!v.mois.includes(m)); }
       // reval
+      const wantFixe=!hono&&v.mtype==="fixe", toFixe=wantFixe&&!fixe, toVar=fixe&&!wantFixe;
+      if(wantFixe&&!(+v.montant>0)) return "Indiquez le montant fixe.";
+      if(toVar){ if(!(await askConfirm("Passer en montant variable ?",`Les ${fut.length} échéance${fut.length>1?"s":""} prévue${fut.length>1?"s":""} de « ${esc(r.label)} » ser${fut.length>1?"ont":"a"} retirée${fut.length>1?"s":""} du prévisionnel. Les opérations passées sont conservées.`,"Passer en variable",true))) return false; }
       let rvChg=false;
-      if(fixe&&!R.lie){
+      if(toVar&&(C.reval||{})[key]){ const all={...(C.reval||{})}; delete all[key]; P.reval=all; }
+      if(wantFixe&&!R.lie){
         const all={...(C.reval||{})}, before=JSON.stringify(all[key]||null);
         if(v.rv==="oui"){ const tx=+v.taux; if(!(tx>0&&tx<=30)) return "Indiquez un taux de revalorisation entre 0 et 30 %."; all[key]={taux:tx,mois:+v.rmois}; }
         else delete all[key];
@@ -1657,19 +1663,27 @@ function lineSet(key){
           P.revalState=RS; }
       }
       let rgChg=false; if(v.rgmois&&+v.rgmois!==regulMois()){ P.regulMois=+v.rgmois; P.regulsCopro=(C.regulsCopro||[]).map(z=>({...z,debut:`${+z.exercice+1}-${pad(+v.rgmois)}-01`})); rgChg=true; }
-      const amtChg=fixe&&v.montant!=null&&Math.abs(+v.montant-cur)>0.004; if(fixe&&!(+v.montant>=0)) return "Montant invalide.";
+      const amtChg=fixe&&wantFixe&&v.montant!=null&&Math.abs(+v.montant-cur)>0.004;
       const tomChg=!!(tom1&&v.teom>0&&Math.abs(v.teom-(+tom1.montant))>0.004);
       if(tomChg) setTimeout(async()=>{ await setTom(tfNext,Math.round(v.teom*100)/100,true); toast(`Ordures ménagères : ${eur(v.teom)} reporté sur le remboursement`); },900);
-      if(!Object.keys(P).length&&!addM.length&&!delM.length&&!amtChg) return true;
+      if(!Object.keys(P).length&&!addM.length&&!delM.length&&!amtChg&&!toFixe&&!toVar) return true;
       if(delM.length){ const n=fut.filter(o=>delM.includes(+o.date.slice(5,7))).length; if(n&&!(await askConfirm("Retirer des mois ?",`${n} échéance${n>1?"s":""} prévue${n>1?"s":""} en ${delM.map(m=>MOIS_L[m-1]).join(", ")} ser${n>1?"ont":"a"} supprimée${n>1?"s":""}. Les opérations passées sont conservées. ${IMPACT}`,"Supprimer",true))) return false; }
       if(Object.keys(P).length&&!(await saveConfig(P))) return false;
       setTimeout(async()=>{
         const W=[]; let n=0; const months=new Set();
         const tpl=fut[0]||S.ops.filter(o=>keyOf(o)===key).sort((a,b)=>b.date.localeCompare(a.date))[0];
+        // passer en variable : retirer les échéances prévues
+        if(toVar) for(const o of fut){ W.push(S.db.collection("operations").doc(o.id).delete()); n++; if(o.bien==="locatif") months.add(o.date.slice(0,7)); }
+        // passer en fixe : créer les échéances jusqu'à l'horizon du prévisionnel
+        if(toFixe&&tpl){ const ids=new Set(S.ops.map(o=>o.id)), lib=(tpl.libelle||"").split(" – ")[0], MM=mensuel?[1,2,3,4,5,6,7,8,9,10,11,12]:(v.mois&&v.mois.length?v.mois:[...r.months]), amt=Math.round(+v.montant*100)/100, rv=(P.reval||C.reval||{})[key];
+          for(let y=+t.slice(0,4);y<=projYear();y++) for(const m of MM){ const id=`imp-${y}-${pad(m)}-${key}`; const d=dayFor(key,String(y),pad(m))||`${y}-${pad(m)}-01`; if(d<t||ids.has(id)) continue;
+            const o={date:d,categorie:tpl.categorie,sens:tpl.sens,bien:tpl.bien,libelle:`${lib} – ${MOIS_L[m-1]} ${y}`,indivisaire:tpl.indivisaire||"",pointe:false,prevision:true,note:"",montant:amt,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+            if(rv){ o.revalBase=amt; o.revalFrom=t; }
+            W.push(S.db.collection("operations").doc(id).set(o)); n++; if(o.bien==="locatif") months.add(d.slice(0,7)); } }
         // supprimer mois
-        for(const o of fut) if(delM.includes(+o.date.slice(5,7))){ W.push(S.db.collection("operations").doc(o.id).delete()); n++; if(o.bien==="locatif") months.add(o.date.slice(0,7)); }
+        if(!toVar&&!toFixe) for(const o of fut) if(delM.includes(+o.date.slice(5,7))){ W.push(S.db.collection("operations").doc(o.id).delete()); n++; if(o.bien==="locatif") months.add(o.date.slice(0,7)); }
         // ajouter mois
-        if(addM.length&&tpl){ const lastY=+(S.ops.filter(o=>keyOf(o)===key).map(o=>o.date).sort().pop()||t).slice(0,4); const ids=new Set(S.ops.map(o=>o.id)); const lib=(tpl.libelle||"").split(" – ")[0];
+        if(addM.length&&tpl&&!toFixe&&!toVar){ const lastY=Math.max(+(S.ops.filter(o=>keyOf(o)===key).map(o=>o.date).sort().pop()||t).slice(0,4),projYear()); const ids=new Set(S.ops.map(o=>o.id)); const lib=(tpl.libelle||"").split(" – ")[0];
           for(let y=+t.slice(0,4);y<=lastY;y++) for(const m of addM){ const id=`imp-${y}-${pad(m)}-${key}`; const d=dayFor(key,String(y),pad(m))||`${y}-${pad(m)}-01`; if(d<t||ids.has(id)) continue;
             const amt=fixe?+v.montant:(+tpl.montant||0);
             const o={date:d,categorie:tpl.categorie,sens:tpl.sens,bien:tpl.bien,libelle:`${lib} – ${MOIS_L[m-1]} ${y}`,indivisaire:tpl.indivisaire||"",pointe:false,prevision:true,note:"",montant:amt,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
@@ -1683,7 +1697,8 @@ function lineSet(key){
         if(redo&&COPRO_RE.test(r.label)) for(const a of afList().filter(x=>!x.jour)) await afGenerate(a);
         if(rvChg&&!RI&&!amtChg&&(P.reval||{})[key]){ const lr=S.ops.filter(o=>keyOf(o)===key&&!o.prevision).sort((a,b)=>a.date.localeCompare(b.date)).pop();
           if(lr){ const bm=lr.regul?+lr.regul.base:+lr.montant; await Promise.all(S.ops.filter(o=>keyOf(o)===key&&o.prevision&&o.date>=t).map(o=>patch("operations",o.id,{revalBase:bm,revalFrom:lr.date}))); } }
-        if(rvChg||amtChg||addM.length) n+=await applyReval(key);
+        if(toFixe){ for(let k=0;k<20&&!S.ops.some(o=>keyOf(o)===key&&o.prevision&&o.date>=t);k++) await new Promise(r=>setTimeout(r,150)); if(redo) n+=await redateKeys([key]); }
+        if(rvChg||amtChg||addM.length||toFixe) n+=await applyReval(key);
         if(rvChg&&isTF&&tom1&&!tomChg) await setTom(tfNext,+tom1.montant,true);
         if(fut.some(o=>o.regul)||rgChg) await applyReguls();
         if(months.size) await majHonoraires([...months],true);
@@ -2342,8 +2357,12 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.fil
 /* ---------- Historique d'activité ---------- */
 const ACT={create:["＋","Ajout"],update:["✎","Modification"],delete:["✕","Suppression"],bulk:["⇄","Mise à jour groupée"],restore:["↺","Restauration"]};
 /* ---------- Version et nouveautés ---------- */
-const APP_VERSION="1.3.1";
+const APP_VERSION="1.4.0";
 const CHANGELOG=[
+  {v:"1.4.0",d:"2026-11-13",t:"Montant fixe ou variable",items:[
+    "Chaque opération récurrente peut passer de « Variable » à « Fixe » (et inversement) dans sa fenêtre.",
+    "En fixe, les échéances sont créées dans le prévisionnel jusqu'à la fin de l'horizon, avec revalorisation si besoin.",
+    "Cocher un mois manquant recrée aussi ses échéances jusqu'à la fin de l'horizon."]},
   {v:"1.3.1",d:"2026-11-13",t:"Ordures ménagères revalorisées",items:[
     "La revalorisation de la taxe foncière de Béziers s'applique aussi, au même taux, au remboursement des ordures ménagères dans le prévisionnel.",
     "Au mois de revalorisation, la question « À vérifier » de la taxe foncière demande aussi le montant réel des ordures ménagères.",
