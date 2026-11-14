@@ -338,6 +338,7 @@ svg.chart .end{fill:var(--ink);font-weight:600;font-size:12px}
   .view-head p{font-size:.92rem}
   table.ops tfoot tr{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px;padding-top:10px}
   table.ops tfoot td{display:block;border:0;padding:0}
+  table.ops tfoot td.amt{text-align:left;font-size:1.05rem;padding-bottom:56px} table.ops tfoot .tf-k{display:inline;margin-right:6px}
   .item{flex-wrap:wrap}
   .item>.row{width:100%;justify-content:flex-start}
   .overlay{padding:0;align-items:flex-end}
@@ -437,6 +438,42 @@ html.sk .fab{border:var(--sk-ow2) solid var(--sk-oc2)}
 #calCard tr.cal-grp .cal-l{display:flex;align-items:center;gap:6px}
 #calCard tr.cal-grp .cal-l small{display:block;font-weight:400}
 .m-intro{margin:0}
+.j-scroll{max-height:420px;overflow:auto;padding-right:4px;border:1px solid var(--line);border-radius:14px;padding:4px 10px}
+.float-nav{position:fixed;z-index:30;right:24px;bottom:24px;display:flex;gap:10px;align-items:center;pointer-events:none}
+.float-nav>button{pointer-events:auto}
+.today-btn{display:none;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;border:2px solid #4A2A12;background:#E8672C;color:#FFF;font-weight:700;font-family:inherit;font-size:.95rem;cursor:pointer;box-shadow:0 3px 0 #4A2A12,0 6px 16px rgba(232,103,44,.35)}
+.today-btn.on{display:inline-flex}
+.today-btn .tdot{width:10px;height:10px;border-radius:50%;background:#FFE08A;display:inline-block;box-shadow:0 0 0 3px rgba(255,224,138,.35)}
+.top-btn{display:none;width:46px;height:46px;border-radius:50%;align-items:center;justify-content:center;padding:0;border:2px solid #4E2410;background:#FFF4E0;color:#E8672C;cursor:pointer;box-shadow:0 3px 0 #4E2410,0 6px 16px rgba(74,42,18,.25)}
+.top-btn.on{display:inline-flex}
+.float-nav .today-btn{background:#E8672C!important;color:#fff!important;border:2px solid #4A2A12!important;box-shadow:0 3px 0 #4A2A12,0 6px 16px rgba(232,103,44,.4)!important}
+.float-nav .top-btn{background:#FFF4E0!important;color:#E8672C!important;border:2px solid #4A2A12!important;box-shadow:0 3px 0 #4A2A12,0 6px 16px rgba(74,42,18,.25)!important}
+.today-btn:active,.top-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #4E2410}
+body.locked .float-nav{display:none}
+@media (max-width:640px){ .float-nav{left:16px;right:auto;bottom:calc(84px + env(safe-area-inset-bottom))} .today-btn{padding:10px 15px} }
+.cz>.cz-h{cursor:pointer;user-select:none;position:relative;padding-right:30px;margin-bottom:0}
+.cz>.cz-h::after{content:"";position:absolute;right:6px;top:50%;width:9px;height:9px;border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;transform:translateY(-70%) rotate(45deg);transition:transform .15s;opacity:.6}
+.cz.cz-open>.cz-h{margin-bottom:12px}
+.cz.cz-open>.cz-h::after{transform:translateY(-30%) rotate(-135deg)}
+.cz:not(.cz-open)>:not(.cz-h){display:none!important}
+.cz:not(.cz-open)>.cz-h button,.cz:not(.cz-open)>.cz-h a.btn{display:none!important}
+.cz-h:focus-visible{outline:2px solid #F2B53A;outline-offset:4px;border-radius:8px}
+.modal.guide{max-width:440px;padding-bottom:16px;position:relative;overflow:visible}
+.g-arr{display:none}
+@media (min-width:641px){ .g-arr{display:flex;position:absolute;top:42%;width:44px;height:44px;border-radius:50%;align-items:center;justify-content:center;padding:0!important;font-size:1.7rem!important;line-height:1;background:#FFF4E0!important;color:#E8672C!important;border:2px solid #4A2A12!important;box-shadow:0 3px 0 #4A2A12!important;cursor:pointer;z-index:2}
+  .g-arr.l{left:-62px} .g-arr.r{right:-62px} .g-nav [data-g]{visibility:hidden} .g-arr[disabled]{opacity:.35;cursor:default} }
+.g-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.g-track::-webkit-scrollbar{display:none}
+.g-slide{flex:0 0 100%;scroll-snap-align:center;text-align:center;padding:10px 8px 4px;box-sizing:border-box}
+.g-slide h3{margin:8px 0 6px;font-size:1.3rem}
+.g-slide p{margin:0;line-height:1.55}
+.g-ic{font-size:2.6rem;line-height:1}
+.g-nav{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.g-dots{display:flex;gap:7px}
+.g-dots i{width:8px;height:8px;border-radius:50%;background:#E2CBA0;cursor:pointer}
+.g-dots i.on{background:#7A3A1E;width:20px;border-radius:4px}
+
+tfoot .tf-k{display:block;font-size:.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .pin-who{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;justify-content:center}
 .pin .pin-who button{min-width:130px;text-align:center;justify-content:center;padding:16px 22px;border-radius:999px;border:0!important;background:var(--key)!important;box-shadow:0 3px 0 var(--key-sh)!important;color:var(--key-c)!important;font-family:var(--font-display);font-size:1.35rem;font-weight:600;cursor:pointer}
 .pc-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line)}
@@ -448,6 +485,8 @@ html.sk .fab{border:var(--sk-ow2) solid var(--sk-oc2)}
 .pin-ray{position:absolute;left:50%;top:50%;width:290px;height:290px;transform:translate(-50%,-50%)}
 .pin-hi{margin:4px 0 0;font-family:var(--font-display);font-weight:600;font-size:1.6rem}
 .pin-sub{margin:0;font-size:.92rem;opacity:.8}
+.pin-date{margin:2px 0 6px;font-size:.95rem;font-weight:600;letter-spacing:.01em;opacity:.85}
+.pin-night .pin-date,.pin-eve .pin-date{opacity:.9}
 .pin-dots{display:flex;gap:16px;margin:16px 0 18px}
 .pin-dots i{width:15px;height:15px;border-radius:50%;border:2px solid var(--dot);box-sizing:border-box;transition:background .12s}
 .pin-dots i.f{background:var(--dot)}
@@ -809,6 +848,31 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
  --sk-a-fin:#E8672C;--sk-a-loc:#2F7F86;--sk-a-mai:#F2B53A;--sk-ai:#FFF4E0;--sk-ai-mai:#4A2A12;
  --sk-prim:#7A3B1E;--sk-prim-ink:#FFF4E0;--sk-th:#7A3B1E;--sk-th-ink:#FFF4E0;--sk-msep:#F3E2C0;--sk-pill:#F2B53A;--sk-rule:1px solid #EBD7B0;--sk-rule-d:1.5px dotted #D9BE8C;--sk-link:#B4441A;--sk-kop:.9}
 @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
+@media (min-width:641px) and (max-height:960px){
+  .pin .pin-c{padding:2.2vh 20px 0;gap:.2vh}
+  .pin .pin-logo,.pin .pin-logo img{width:min(104px,14vh);height:min(104px,14vh)} .pin .pin-logo{margin-bottom:.6vh}
+  .pin .pin-hi{font-size:min(1.5rem,3.4vh);margin-top:.4vh} .pin .pin-sub{font-size:min(.92rem,2.2vh)} .pin .pin-date{font-size:min(.95rem,2.2vh);margin:.2vh 0 .6vh}
+  .pin .pin-dots{margin:1.4vh 0 1.8vh}
+  .pin .pin-pad{grid-template-columns:repeat(3,min(64px,8.2vh));gap:1.4vh 20px}
+  .pin .pin-pad button{width:min(64px,8.2vh);height:min(64px,8.2vh);font-size:min(1.5rem,3.4vh)}
+  .pin .pin-sky{height:min(130px,14vh)} .pin .pin-ground{height:min(22px,2.4vh)}
+  .pin .pin-ray{width:min(260px,30vh);height:min(260px,30vh)}
+}
+.st-sel{width:auto!important;min-width:0;padding:4px 28px 4px 10px!important;font-size:.85rem!important;height:auto!important;flex:0 0 auto}
+.card-head .st-sel{margin-left:auto}
+.gy-list{display:flex;flex-direction:column;gap:8px}
+.gy-opt{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:12px 14px!important;border-radius:10px;width:100%}
+.gy-opt small{color:var(--muted);font-weight:500}
+.gy-opt.rec{border-color:var(--accent)!important;box-shadow:inset 0 0 0 1px var(--accent)}
+.cz-sub{margin-top:14px;background:var(--surface-2);box-shadow:none;border:1px solid var(--line)}
+.cz-sub h3{font-size:1rem}
+.guide-cta{display:flex!important;align-items:center;gap:14px;width:100%;text-align:left;margin:0 0 14px;padding:14px 16px!important;border-radius:14px!important;background:#E8672C!important;color:#fff!important;border:2px solid #4A2A12!important;box-shadow:0 3px 0 #4A2A12!important;cursor:pointer;font-family:inherit}
+.guide-cta:hover{filter:brightness(1.06)} .guide-cta:active{transform:translateY(2px);box-shadow:0 1px 0 #4A2A12!important}
+.guide-cta .gc-ic{font-size:1.7rem;line-height:1} .guide-cta .gc-t{display:flex;flex-direction:column;gap:2px;flex:1} .guide-cta strong{font-size:1.02rem} .guide-cta small{color:#FFF4E0!important;opacity:1;font-weight:500}
+.guide-cta .gc-go{font-size:1.8rem;line-height:1;font-weight:700}
+.card-head:has(> .st-sel){flex-wrap:nowrap} .card-head:has(> .st-sel) h3{margin:0;min-width:0}
+.bil-sub td{font-size:.86rem;color:var(--muted);padding-top:2px!important;padding-bottom:6px!important}
+.bil-sub td:first-child{padding-left:22px!important}
 </style>
 </head>
 <body>
@@ -817,7 +881,7 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 <header class="top">
   <div class="top-inner">
     <div class="brand">
-      <div class="brand-l"><h1 id="appName">Notre indivision</h1><nav class="spaces" aria-label="Espaces"><a href="#tableau" id="spFin">Finances</a><a href="#locatif" id="spLoc">Béziers</a><a href="#maison" id="spMai">Soullans</a></nav></div>
+      <div class="brand-l"><h1 id="appName">Indivision</h1><nav class="spaces" aria-label="Espaces"><a href="#tableau" id="spFin">Finances</a><a href="#locatif" id="spLoc">Béziers</a><a href="#maison" id="spMai">Soullans</a></nav></div>
       <span class="row" style="gap:6px;flex-wrap:nowrap"><span class="status" id="status">Connexion…</span></span>
     </div>
     <nav class="tabs" id="tabs" aria-label="Sections"></nav>
@@ -827,6 +891,7 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 <nav class="bnav" id="bnav" aria-label="Sections"></nav>
 <div id="modalRoot"></div><div id="confirmRoot"></div>
 <div id="toastRoot"></div>
+<div class="float-nav" id="floatNav"><button type="button" class="today-btn" id="goToday" data-a="go-today" aria-label="Revenir à aujourd'hui"><span class="tdot" aria-hidden="true"></span>Aujourd'hui</button><button type="button" class="top-btn" id="goTop" data-a="go-top" aria-label="Remonter en haut de la page" title="Haut de page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
 
 <script>
 /* ===== Connexion Google Sheets (Apps Script) : remplace le stockage claude.ai ===== */
@@ -859,7 +924,8 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
     let cw=""; try{ cw=sessionStorage.getItem("indiv-who")||""; }catch(e){} const who=cw||conf.name||"", at=new Date().toISOString(), out=[]; const rnd=()=>Math.random().toString(36).slice(2,6);
     const real=ops.filter(o=>o.col!=="journal"&&!o.nolog);
     const del=real.filter(o=>o.op==="delete"), oth=real.filter(o=>o.op!=="delete");
-    for(const o of del) out.push({act:"delete",col:o.col,id:o.id,label:labelOf(o.col,o._before),before:o._before||null});
+    if(del.length>6) out.push({act:"bulk",col:"operations",label:`${del.length} suppressions groupées (échéances prévues)`});
+    else for(const o of del) out.push({act:"delete",col:o.col,id:o.id,label:labelOf(o.col,o._before),before:o._before||null});
     if(oth.length>6){ const n=oth.filter(o=>o.col==="operations").length; out.push({act:"bulk",col:"operations",label:`${oth.length} modifications groupées${n?` (dont ${n} opérations)`:""}`}); }
     else for(const o of oth) out.push({act:o._existed?"update":"create",col:o.col,id:o.id,label:labelOf(o.col,(store[o.col]||{})[o.id]||o.data)});
     return out.map((e,i)=>({op:"set",col:"journal",id:"j"+Date.now().toString(36)+rnd()+i,data:{...e,at,who,kind:COLN[e.col]||e.col}}));
@@ -926,7 +992,7 @@ const ENT_MODELES = [
   ["Nettoyage des gouttières",12],["Contrôle du chauffe-eau / groupe de sécurité",12],["Nettoyage VMC et bouches d'aération",6],
   ["Vidange / contrôle de la fosse septique",48],["Hivernage : purge des robinets extérieurs",12],["Contrôle de la toiture",24],["Débroussaillage du terrain",12]
 ];
-const DEFAULT_CONFIG = {nom:"Notre indivision",indivisaires:[],soldeInitial:0,dateSoldeInitial:"",
+const DEFAULT_CONFIG = {nom:"Indivision Forveille-Perrier",indivisaires:[],soldeInitial:0,dateSoldeInitial:"",
   biens:{locatif:{nom:"Bien locatif"},secondaire:{nom:"Maison secondaire"}}};
 
 /* ---------- État ---------- */
@@ -1095,7 +1161,7 @@ document.addEventListener("change",ev=>{ if(ev.target.id!=="f_modele") return; c
   set("categorie",m.categorie); set("libelle",m.libelle); set("bien",m.bien); set("indivisaire",m.indivisaire); set("note",m.note); if(m.montant) set("montant",String(m.montant).replace(".",",")); });
 function modelesCard(){
   const L=modeles();
-  return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Modèles d'opérations</h3><button type="button" class="sm w" data-a="md-edit">+ Nouveau modèle</button></div>
+  return `<div class="card cz-sub"><div class="card-head"><h3>Modèles d'opérations</h3><button type="button" class="sm w" data-a="md-edit">+ Nouveau modèle</button></div>
     <p class="muted" style="margin:0 0 10px">Pour les opérations qui reviennent sans date fixe (entretien, dépannage, apport exceptionnel…). Dans « + Opération », « Depuis un modèle » remplit tout le formulaire. À la validation, l'app propose de prévoir la suivante.</p>
     ${L.length?L.map(m=>`<div class="pc-row"><span><strong>${esc(m.nom)}</strong> <small class="muted">${esc(m.categorie)} · ${esc(bienLabel(m.bien))}${m.montant?` · ${sensOf(m.categorie)==="in"?"+":"−"}${eur(+m.montant)}`:""}</small></span><span class="row" style="gap:4px;margin-left:auto"><button type="button" class="ghost sm" data-a="md-edit" data-id="${esc(m.id)}">Modifier</button><button type="button" class="ghost sm danger" data-a="md-del" data-id="${esc(m.id)}" aria-label="Supprimer le modèle ${esc(m.nom)}">✕</button></span></div>`).join(""):`<p class="muted" style="margin:0">Aucun modèle pour l'instant. Cochez « Enregistrer comme modèle » en créant une opération, ou ajoutez-en un ici.</p>`}</div>`;
 }
@@ -1377,8 +1443,8 @@ function alertes(){
       const j=daysBetween(t0,o.date), apres=soldePrevu(o.date);
       a.push({k:"warn",t:`${j===0?"Aujourd'hui":`Dans ${j} jour${j>1?"s":""}`} : ${shortLib(o.libelle)} −${eur(+o.montant)}`,s:`Le ${fmtD(o.date)} · solde prévu ce jour-là : ${eur(apres).replace("-","−")}`,h:"#tresorerie"}); } }
   for(const [nom,v] of Object.entries(avanceSolde())) if(v.du>0.5){
-    if(v.echu>0.5) a.push({k:"bad",t:`Avance ${nom} : ${eur(v.echu)} non remboursés depuis le ${fmtD(v.limite)}`,s:"Comptés comme apport dans l'équilibre entre indivisaires tant qu'ils ne sont pas remboursés",h:"#tresorerie"});
-    if(v.du-v.echu>0.5) a.push({k:"warn",t:`Avance ${nom} : ${eur(v.du-v.echu)} à rembourser`,s:`${v.next?`Remboursement prévu le ${fmtD(v.next)}`:"Aucun remboursement prévu"} · au-delà du ${fmtD(v.limite)}, comptés comme apport`,h:"#tresorerie"}); }
+    if(v.echu>0.5) a.push({k:"bad",t:`Avance de ${nom} non remboursée : ${eur(v.echu)}`,s:`Date limite dépassée (${fmtD(v.limite)}) : la somme compte comme un apport de ${nom} jusqu'à son remboursement.`,h:"#tresorerie"});
+    if(v.du-v.echu>0.5) a.push({k:"warn",t:`L'indivision doit rembourser ${eur(v.du-v.echu)} à ${nom} (avance)`,s:`${v.next?`Remboursement prévu le ${fmtD(v.next)}.`:`À rembourser avant le ${fmtD(v.limite)} — aucun remboursement n'est encore prévu.`} Sans remboursement à cette date, la somme sera comptée comme un apport de ${nom}.`,h:"#tresorerie"}); }
   const pp=S.ops.filter(o=>o.prevision && o.date && o.date<=todayStr() && !regulCovered(o)).length;
   if(pp) a.push({k:"warn",t:`${pp} opération${pp>1?"s":""} prévue${pp>1?"s":""} dont la date est passée : à valider ou corriger`,h:"#tresorerie"});
 
@@ -1581,18 +1647,20 @@ function calGroups(){
       order:list=>list.filter(r=>r.key!=="Y"||hasFuture("Y")).sort((a,b)=>a.key.localeCompare(b.key))}
   ];
 }
+function avancesCard(){ return `<div class="card cz-sub"><div class="card-head"><h3>Avances d'un indivisaire</h3><button type="button" class="sm ghost w" data-a="av-delai">Modifier</button></div><p class="muted" style="margin:0">Une avance doit être remboursée à la date du remboursement prévu, ou sinon dans les <strong>${avDelai()} mois</strong>. Passé ce délai, la somme non remboursée compte comme un apport dans l'équilibre entre indivisaires, jusqu'à son remboursement.</p></div>`; }
 function calendrierCard(){
-  const types=recurTypes(); if(!types.length) return "";
+  const subs=modelesCard()+avancesCard();
+  const types=recurTypes(); if(!types.length) return `<div class="card" id="calCard"><div class="card-head"><h3>Opérations récurrentes</h3></div><p class="muted" style="margin:0">Les lignes récurrentes apparaîtront ici dès qu'il y aura des opérations prévues.</p>${subs}</div>`;
   const G=calGroups(), inAny=r=>G.some(g=>g.keys(r.key));
   const out=types.filter(r=>!inAny(r));
   const all=types.filter(r=>!(r.key==="Y"&&!hasFuture("Y")));
   const need=all.filter(r=>hasFuture(r.key)), done=need.filter(r=>dayOf(r)).length;
-  return `<div class="card" id="calCard"><div class="card-head"><h3>Opérations récurrentes</h3><span class="row" style="gap:8px">${done<need.length?`<span class="chip warn">${need.length-done} jour${need.length-done>1?"s":""} à régler</span>`:""}${(()=>{ const P=genPlan(); return P?`<button type="button" class="sm w" data-a="gen-year">${P.partial?"Compléter":"+ Créer l'année"} ${P.T}</button>`:""; })()}<button type="button" class="sm w" data-a="recur-new">+ Nouvelle</button></span></div>
+  return `<div class="card" id="calCard"><div class="card-head"><h3>Opérations récurrentes</h3><span class="row" style="gap:8px">${done<need.length?`<span class="chip warn">${need.length-done} jour${need.length-done>1?"s":""} à régler</span>`:""}${(()=>{ const P=genPlan(); return P?`<button type="button" class="sm w" data-a="gen-year">Créer une nouvelle année</button>`:""; })()}<button type="button" class="sm w" data-a="recur-new">+ Nouvelle</button></span></div>
     <p style="margin:0 0 12px" class="muted">Touchez une ligne pour voir et régler son jour de prélèvement, sa revalorisation annuelle et son montant. Les blocs regroupés partagent le même jour.</p>
     <div class="table-wrap cal-wrap"><table class="cal-t"><thead><tr><th>Opération</th><th>Bien</th><th>Quand</th><th class="amt">Prochain montant</th><th style="width:24px"></th></tr></thead><tbody>
     ${G.map(g=>grpBlock(g,types.filter(r=>g.keys(r.key)))).join("")}${out.map(r=>calRow(r)+(COPRO_RE.test(r.label)?afRow():"")).join("")}
     </tbody></table></div>
-    <div id="calProg" class="progress" style="display:none"><div></div></div><small id="calMsg"></small></div>`;
+    <div id="calProg" class="progress" style="display:none"><div></div></div><small id="calMsg"></small>${subs}</div>`;
 }
 async function redateKeys(keys){
   const K=new Set(keys), W=[]; let n=0;
@@ -1634,6 +1702,35 @@ function genPlan(target){
   const partial=S.ops.some(o=>IMP_RE.test(o.id||"")&&(o.date||"").startsWith(String(T)));
   return lines.length?{T,lines,n,partial}:null;
 }
+/* Rappel : créer la nouvelle année (à partir du 1er décembre) */
+function yearReminder(tries=0){
+  try{ if(sessionStorage.getItem("indiv-yr")) return; }catch(e){}
+  if(!S.ready||!S.ops||!S.ops.length||document.body.classList.contains("locked")) return;
+  if($("#confirmRoot").innerHTML.trim()||$("#modalRoot").innerHTML.trim()){ if(tries<40) setTimeout(()=>yearReminder(tries+1),1500); return; }
+  const d=new Date(), need=d.getFullYear()+(d.getMonth()===11?2:1), P=genPlan(); if(!P||P.T>need) return;
+  try{ sessionStorage.setItem("indiv-yr","1"); }catch(e){}
+  const r=$("#confirmRoot");
+  r.innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-labelledby="yrT"><div class="modal"><div class="g-ic" aria-hidden="true" style="text-align:center;font-size:2.2rem">📅</div><h3 id="yrT" style="text-align:center">Pensez à créer l'année ${P.T}</h3>
+    <p>${P.partial?`L'année ${P.T} n'est pas complète dans le prévisionnel.`:`Le prévisionnel s'arrête fin ${P.T-1}.`} Pour garder une vue d'au moins un an sur les échéances, créez l'année ${P.T}.</p>
+    <p class="muted" style="font-size:.9rem">Où : Paramètres › Opérations récurrentes › « Créer une nouvelle année ».</p>
+    <div class="row" style="justify-content:flex-end;margin-top:14px"><button type="button" class="primary" data-yr>J'ai compris</button></div></div></div>`;
+  r.querySelector("[data-yr]").addEventListener("click",()=>{ r.innerHTML=""; });
+}
+/* Choix du nombre d'années à créer */
+function genYearsDialog(){
+  const P0=genPlan(); if(!P0) return toast("Le prévisionnel est déjà complet");
+  const F=P0.T, cnt=Y=>{ const P=genPlan(Y); return P?P.n:0; };
+  const opts=[0,1,2].map(i=>({Y:F+i,lab:i===0?(P0.partial?`Compléter ${F}`:`${F}`):i===1?`${P0.partial?"Compléter ":""}${F} et ${F+1}`:`${P0.partial?"Compléter ":""}${F} à ${F+2}`,n:cnt(F+i)}));
+  const r=$("#confirmRoot");
+  r.innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-labelledby="gyT"><div class="modal"><h3 id="gyT">Créer une nouvelle année</h3>
+    <p class="muted" style="margin:0 0 12px">${P0.partial?`L'année ${F} n'est pas complète : elle sera d'abord complétée.`:`Le prévisionnel va aujourd'hui jusqu'à fin ${F-1}.`} Les lignes récurrentes sont reprises avec les mêmes mois, le même jour et le dernier montant connu (revalorisations appliquées, honoraires de l'agence calculés).</p>
+    <div class="gy-list">${opts.map((o,i)=>`<button type="button" class="gy-opt${i===0?" rec":""}" data-gy="${o.Y}"><strong>${esc(o.lab)}</strong><small>${o.n} échéances${i===0?" · suggéré":""}</small></button>`).join("")}</div>
+    <div class="row" style="gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap"><label for="gyY" class="muted" style="font-size:.85rem">Ou jusqu'à fin</label><select id="gyY" style="width:auto">${Array.from({length:10},(_,i)=>F+i).map(y=>`<option>${y}</option>`).join("")}</select><button type="button" class="sm" data-gy="sel">Créer</button></div>
+    <small class="muted" style="display:block;margin-top:10px">Conseil : gardez au moins l'année suivante complète. Au-delà, les montants restent des estimations.</small>
+    <div class="row" style="justify-content:flex-end;margin-top:14px"><button type="button" class="ghost" data-gy="">Annuler</button></div></div></div>`;
+  r.querySelectorAll("[data-gy]").forEach(b=>b.addEventListener("click",async()=>{ let Y=b.dataset.gy; if(Y==="sel") Y=$("#gyY").value; r.innerHTML=""; if(!Y) return;
+    toast(`Création jusqu'à fin ${Y}…`); const n=await genYear(+Y,true); toast(n?`${n} échéances créées, jusqu'à fin ${Y}`:"Rien à créer"); }));
+}
 async function genYear(target,silent){
   const P=genPlan(target); if(!P){ if(!silent) toast("Le prévisionnel est déjà complet"); return 0; }
   const lab=k=>((recurTypes().find(r=>r.key===k)||{}).label)||k, ML=ym=>`${MOIS_L[+ym.slice(5,7)-1]} ${ym.slice(0,4)}`;
@@ -1655,13 +1752,17 @@ async function genYear(target,silent){
   try{ await applyReguls(); }catch(e){}
   if(!silent) toast(`Année ${P.T} ${P.partial?"complétée":"créée"} : ${W.length} échéances`); render(true); return W.length;
 }
-/* Mise à niveau unique : compléter tous les mois manquants jusqu'à la dernière année déjà commencée (au moins l'an prochain) */
+/* Mise à niveau V1 (unique) : prévisionnel limité à 2025-2027 (2027 complet), nom de l'indivision */
+const PROJ_MAX=2027, NOM_DEF="Indivision Forveille-Perrier";
 async function migrProj(){
-  if(S._mig||!S.config||!S.canWrite||cfg().migrProj2||!S.ops.length) return; S._mig=true;
-  const Y=Math.max(new Date().getFullYear()+1,...S.ops.filter(o=>o.prevision&&IMP_RE.test(o.id||"")).map(o=>+(o.date||"0").slice(0,4)));
-  const n=await genYear(Y,true);
-  await optimistic(S.db.doc("config/main").set({...cfg(),migrProj2:true,updatedAt:new Date().toISOString()}));
-  if(n) toast(`Prévisionnel complété jusqu'à fin ${Y} : ${n} échéances ajoutées`);
+  if(S._mig||!S.config||!S.canWrite||cfg().migrV1||!S.ops.length) return; S._mig=true;
+  let n=0; try{ n=await genYear(PROJ_MAX,true)||0; }catch(e){}
+  const del=S.ops.filter(o=>o.prevision&&(o.date||"")>=(PROJ_MAX+1)+"-01-01");
+  if(del.length) await Promise.all(del.map(o=>S.db.collection("operations").doc(o.id).delete()));
+  const c=cfg(), nom=(!c.nom||/^(Indivision succession|Notre indivision)$/i.test(c.nom))?NOM_DEF:c.nom;
+  await optimistic(S.db.doc("config/main").set({...cfg(),nom,migrV1:true,migrProj2:true,updatedAt:new Date().toISOString()}));
+  if(n||del.length) toast(`Prévisionnel ajusté : ${PROJ_MAX} complet${del.length?`, années suivantes à créer depuis Paramètres`:""}`);
+  render(true);
 }
 function projYear(){ const P=genPlan(); if(P) return P.partial?P.T:P.T-1; const d=S.ops.filter(o=>o.prevision&&IMP_RE.test(o.id||"")).map(o=>o.date||"").sort().pop(); return Math.max(+(d||"0").slice(0,4),new Date().getFullYear()); }
 function lineSet(key){
@@ -1755,7 +1856,7 @@ function lineSet(key){
         if(rvChg&&isTF&&tom1&&!tomChg) await setTom(tfNext,+tom1.montant,true);
         if(fut.some(o=>o.regul)||rgChg) await applyReguls();
         if(months.size) await majHonoraires([...months],true);
-        toast(n?`${n} opération${n>1?"s":""} mise${n>1?"s":""} à jour`:"Réglages enregistrés"); render(true);
+        toast(n?`${n} opération${n>1?"s":""} mise${n>1?"s":""} à jour`:"Paramètres enregistrés"); render(true);
       },300);
     }});
 }
@@ -1882,6 +1983,39 @@ function simHTML(){
   </div>${big.length?`<small class="sim-big">Plus grosses sorties : ${big.slice(0,3).map(o=>`${esc(shortLib(o.libelle))} ${eur0(o.montant)}`).join(" · ")}</small>`:""}`;
 }
 
+/* ---------- Filtres d'année des statistiques ---------- */
+const CUR_Y=()=>new Date().getFullYear();
+function stSel(k){ return S.ui[k]||String(CUR_Y()); }
+function stYears(){ const y=CUR_Y(); const f=Math.min(y,Math.max(2025,+((S.ops.filter(real).map(o=>o.date||"").sort()[0]||"").slice(0,4))||2025)); const a=[]; for(let i=y;i>=f;i--) a.push(i); return a; }
+function stSelect(k,prev,label){ const v=stSel(k), y=CUR_Y();
+  const hasPrev=prev&&S.ops.some(o=>o.prevision&&(o.date||"").startsWith(String(y+1)));
+  const opts=[...(hasPrev?[{value:(y+1)+"p",label:`${y+1} (prévu)`}]:[]),...stYears().map(x=>({value:String(x),label:String(x)})),{value:"all",label:"Depuis le début"}];
+  return `<select class="st-sel" data-f="${k}" aria-label="${esc(label||"Période")}">${opts.map(o=>`<option value="${o.value}" ${o.value===v?"selected":""}>${esc(o.label)}</option>`).join("")}</select>`; }
+function stLabel(v){ return v==="all"?"depuis le début":v.endsWith("p")?`${v.slice(0,4)} (prévu)`:v; }
+function stOps(v){ if(v==="all") return S.ops.filter(o=>real(o)&&!isAvance(o));
+  if(v.endsWith("p")){ const ys=v.slice(0,4); return S.ops.filter(o=>o.prevision&&eff(o)&&(o.date||"").startsWith(ys)&&!isAvance(o)); }
+  return S.ops.filter(o=>real(o)&&(o.date||"").startsWith(v)&&!isAvance(o)); }
+function statBiens(yo){ return [...["locatif","secondaire"].map(b=>({l:bienLabel(b),v:sum(yo.filter(o=>o.sens==="out"&&o.bien===b)),k:b==="locatif"?"loc":"sec"})),
+    {l:"Frais bancaires",v:sum(yo.filter(o=>o.sens==="out"&&o.bien==="commun"&&o.categorie==="Frais bancaires")),k:"com"},
+    {l:"Autres dépenses communes",v:sum(yo.filter(o=>o.sens==="out"&&o.bien==="commun"&&o.categorie!=="Frais bancaires")),k:"com"}]; }
+function statCats(yo){ const cats={}; yo.filter(o=>o.sens==="out").forEach(o=>cats[o.categorie]=(cats[o.categorie]||0)+(+o.montant||0));
+  const catAll=Object.entries(cats).map(([l,v])=>({l,v})).sort((a,b)=>b.v-a.v); const r=catAll.slice(0,5); if(catAll.length>5) r.push({l:`Autres (${catAll.length-5} catégories)`,v:catAll.slice(5).reduce((a,x)=>a+x.v,0),det:catAll.slice(5)}); return r; }
+function cardBiens(){ const v=stSel("stBien"), yo=stOps(v), dep=sum(yo.filter(o=>o.sens==="out")), pv=v.endsWith("p");
+  return `<div class="card-head"><h3>Dépenses par bien</h3>${stSelect("stBien",true,"Année des dépenses par bien")}</div><p class="card-sub">${pv?`Sorties prévues en ${v.slice(0,4)} (prévisionnel).`:v==="all"?"Sorties réelles depuis le début.":`Répartition des sorties réelles de ${v}.`}</p>${donutBiens(statBiens(yo).filter(r=>r.v>0),dep)}`; }
+function cardCats(){ const v=stSel("stCat"), yo=stOps(v), dep=sum(yo.filter(o=>o.sens==="out")), pv=v.endsWith("p");
+  return `<div class="card-head"><h3>Dépenses par catégorie</h3>${stSelect("stCat",true,"Année des dépenses par catégorie")}</div><p class="card-sub">Part de chaque poste dans les ${eur0(dep)} de sorties ${pv?"prévues":"réelles"} (${esc(stLabel(v))}).</p>${compo(statCats(yo),dep)}`; }
+function cardApports(){ const c=cfg(), v=stSel("stAp"), all=v==="all";
+  let EQ; if(all) EQ=apportsEquilibre(); else { const m={}; for(const o of S.ops) if(real(o)&&o.categorie==="Apport indivisaire"&&o.indivisaire&&(o.date||"").startsWith(v)) m[o.indivisaire]=(m[o.indivisaire]||0)+(+o.montant||0); EQ={m,av:{}}; }
+  const totAp=c.indivisaires.reduce((a,i)=>a+(EQ.m[i.nom]||0),0), echus=Object.entries(EQ.av).filter(([,x])=>x.echu>0.5);
+  const apAtt=S.ops.filter(o=>o.prevision&&o.categorie==="Apport indivisaire"&&(o.date||"")<=todayStr()).sort((a,b)=>a.date.localeCompare(b.date));
+  return `<div class="card-head"><h3>Apports des indivisaires</h3>${stSelect("stAp",false,"Année des apports")}</div>
+      ${c.indivisaires.length?`<div class="table-wrap"><table><thead><tr><th>Indivisaire</th><th class="amt">Versé</th><th class="amt">Attendu</th><th class="amt">Écart</th></tr></thead><tbody>
+      ${c.indivisaires.map(i=>{const x=EQ.m[i.nom]||0, att=totAp*(+i.quotePart||0)/100, d=x-att;
+        return `<tr><td>${esc(i.nom)} <span class="sub">${(+i.quotePart||0).toLocaleString("fr-FR")} %</span></td><td class="amt">${eur0(x)}</td><td class="amt muted">${eur0(att)}</td><td class="amt ${Math.abs(d)<0.5?"muted":d>0?"pos":"neg"}">${Math.abs(d)<0.5?"—":(d>0?"+":"−")+eur0(Math.abs(d))}</td></tr>`;}).join("")}
+      </tbody></table></div><small>« Attendu » répartit le total versé ${all?"depuis le début":"en "+v} (${eur0(totAp)}) selon les quotes-parts. Seuls les apports validés comptent${echus.length?`, plus les avances non remboursées à temps (${echus.map(([n,x])=>`${esc(n)} ${eur0(x.echu)}`).join(", ")})`:""}.${all?"":" L'équilibre global se lit sur « Depuis le début »."}</small>
+      ${apAtt.length?`<div class="ap-wait">${apAtt.map(o=>`<div class="row" style="gap:8px;justify-content:space-between;flex-wrap:nowrap"><span>En attente : <strong>${eur0(+o.montant)}</strong> de ${esc(o.indivisaire||"?")}, prévu le ${fmtD(o.date)}</span><button class="sm w" data-a="valider" data-id="${esc(o.id)}">Valider</button></div>`).join("")}</div>`:""}`
+      :`<div class="empty">Ajoutez les indivisaires et leurs quotes-parts pour suivre qui a versé quoi.<a class="btn w" href="#parametres">Paramètres</a></div>`}`; }
+
 /* ---------- Vues ---------- */
 function vTableau(){
   const c=cfg(), y=new Date().getFullYear(), ys=String(y);
@@ -1897,11 +2031,6 @@ function vTableau(){
   const prevYears=[]; if(lastF){ const fd=[...new Set(S.ops.filter(o=>o.prevision).map(o=>o.date))].sort();
   for(let yy=y;yy<=+lastF.slice(0,4);yy++){ let lo=Infinity,lom="",hi=-Infinity,him=""; const ds_=[...fd.filter(d=>d.startsWith(String(yy))&&d>=todayStr()), ...Array.from({length:12},(_,m)=>ds(new Date(yy,m+1,0))).filter(d=>d>=todayStr())];
     for(const d of ds_){ const v=soldePrevu(d); if(v<lo){lo=v;lom=fmtD(d).slice(0,5);} if(v>hi){hi=v;him=fmtD(d).slice(0,5);} } prevYears.push({yy,fin:soldePrevu(yy+"-12-31"),lo,lom,hi,him}); } }
-  const parBien=[...["locatif","secondaire"].map(b=>({l:bienLabel(b),v:sum(yo.filter(o=>o.sens==="out"&&o.bien===b)),k:b==="locatif"?"loc":"sec"})),
-    {l:"Frais bancaires",v:sum(yo.filter(o=>o.sens==="out"&&o.bien==="commun"&&o.categorie==="Frais bancaires")),k:"com"},
-    {l:"Autres dépenses communes",v:sum(yo.filter(o=>o.sens==="out"&&o.bien==="commun"&&o.categorie!=="Frais bancaires")),k:"com"}];
-  const cats={}; yo.filter(o=>o.sens==="out").forEach(o=>cats[o.categorie]=(cats[o.categorie]||0)+(+o.montant||0));
-  const catAll=Object.entries(cats).map(([l,v])=>({l,v})).sort((a,b)=>b.v-a.v); const catRows=catAll.slice(0,5); if(catAll.length>5) catRows.push({l:`Autres (${catAll.length-5} catégories)`,v:catAll.slice(5).reduce((a,r)=>a+r.v,0),det:catAll.slice(5)});
   const al=alertes();
   const simCard=`<div class="card"><div class="card-head"><h3>Simuler le solde à une date</h3>
       <div class="row"><label for="simDate" class="muted" style="font-size:.85rem">Au</label><input id="simDate" type="date" data-f="simDate" value="${esc(S.ui.simDate||"")}" style="width:auto"></div></div>
@@ -1910,14 +2039,11 @@ function vTableau(){
     <div class="table-wrap"><table class="prev-t"><thead><tr><th>Année</th><th class="amt">Fin d'année</th><th class="amt">Point bas</th><th class="amt">Point haut</th></tr></thead><tbody>
     ${prevYears.map(p=>`<tr><td>${p.yy}</td><td class="amt ${p.fin<0?"neg":""}">${eur0(p.fin)}</td><td class="amt ${p.lo<0?"neg":""}">${p.lo===Infinity?"—":`${eur0(p.lo)}<br><small class="muted">le ${esc(p.lom)}</small>`}</td><td class="amt">${p.hi===-Infinity?"—":`${eur0(p.hi)}<br><small class="muted">le ${esc(p.him)}</small>`}</td></tr>`).join("")}
     </tbody></table></div><small>Point bas négatif : le compte passerait à découvert ce jour-là sans apport supplémentaire. Point haut : le solde le plus élevé prévu dans l'année.</small></div>`:"");
-  const apports=S.ops.filter(o=>real(o)&&o.categorie==="Apport indivisaire");
-  const EQ=apportsEquilibre(), totAp=c.indivisaires.reduce((a,i)=>a+(EQ.m[i.nom]||0),0), echus=Object.entries(EQ.av).filter(([,v])=>v.echu>0.5);
-  const apAtt=S.ops.filter(o=>o.prevision&&o.categorie==="Apport indivisaire"&&(o.date||"")<=todayStr()).sort((a,b)=>a.date.localeCompare(b.date));
   const recents=groupRows(sortedOps().filter(o=>real(o)&&(o.date||"")<=todayStr()).slice(0,60)).slice(0,14).map(r=>r.o?r.o:{date:r.g.items[0].date,libelle:gName(r.g.name),montant:Math.abs(r.g.items.reduce((a,o)=>a+sg(o),0)),sens:r.g.items.reduce((a,o)=>a+sg(o),0)>=0?"in":"out"});
   return `
   ${!S.config&&S.ready?`<div class="banner"><div><strong>Première visite ?</strong> <span class="muted">Renseignez les indivisaires, leurs quotes-parts et le solde de départ du compte joint.</span></div><a class="btn w" href="#parametres">Ouvrir les paramètres</a></div>`:""}
   <div class="view-head"><div><h2>Situation au ${fmtD(todayStr())}</h2><p>Compte joint de l'indivision, chiffres de l'année ${y}.</p></div>
-    <button class="primary w" data-a="add-op">+ Nouvelle opération</button></div>
+    </div>
   <div class="grid g4">
     <div class="tile hero"><span class="k">Solde du compte joint</span><span class="v">${eur(solde)}</span><span class="s">${c.dateSoldeInitial?`Depuis le ${fmtD(c.dateSoldeInitial)} (départ ${eur0(c.soldeInitial)})`:"Solde de départ à renseigner"}</span></div>
     <div class="tile"><span class="k">Entrées ${y}</span><span class="v pos">${eur0(rec)}</span><span class="s">${yo.filter(o=>o.sens==="in").length} opérations</span></div>
@@ -1938,16 +2064,9 @@ function vTableau(){
     </div>
   </div>
   <div class="grid g3">
-    <div class="card card-fill"><h3>Dépenses ${y} par bien</h3><p class="card-sub">Répartition des sorties réelles de l'année.</p>${donutBiens(parBien.filter(r=>r.v>0),dep)}</div>
-    <div class="card card-fill cat-card"><h3>Dépenses ${y} par catégorie</h3><p class="card-sub">Part de chaque poste dans les ${eur0(dep)} de sorties réelles.</p>${compo(catRows,dep)}</div>
-    <div class="card card-fill ap-card"><div class="card-head"><h3>Apports des indivisaires</h3><small>depuis le début</small></div>
-      ${c.indivisaires.length?`<div class="table-wrap"><table><thead><tr><th>Indivisaire</th><th class="amt">Versé</th><th class="amt">Attendu</th><th class="amt">Écart</th></tr></thead><tbody>
-      ${c.indivisaires.map(i=>{const v=EQ.m[i.nom]||0, att=totAp*(+i.quotePart||0)/100, d=v-att;
-        return `<tr><td>${esc(i.nom)} <span class="sub">${(+i.quotePart||0).toLocaleString("fr-FR")} %</span></td><td class="amt">${eur0(v)}</td><td class="amt muted">${eur0(att)}</td><td class="amt ${Math.abs(d)<0.5?"muted":d>0?"pos":"neg"}">${Math.abs(d)<0.5?"—":(d>0?"+":"−")+eur0(Math.abs(d))}</td></tr>`;}).join("")}
-      </tbody></table></div><small>« Attendu » répartit le total versé (${eur0(totAp)}) selon les quotes-parts. Seuls les apports validés comptent${echus.length?`, plus les avances non remboursées à temps (${echus.map(([n,v])=>`${esc(n)} ${eur0(v.echu)}`).join(", ")})`:""}.</small>
-      ${apAtt.length?`<div class="ap-wait">${apAtt.map(o=>`<div class="row" style="gap:8px;justify-content:space-between;flex-wrap:nowrap"><span>En attente : <strong>${eur0(+o.montant)}</strong> de ${esc(o.indivisaire||"?")}, prévu le ${fmtD(o.date)}</span><button class="sm w" data-a="valider" data-id="${esc(o.id)}">Valider</button></div>`).join("")}</div>`:""}`
-      :`<div class="empty">Ajoutez les indivisaires et leurs quotes-parts pour suivre qui a versé quoi.<a class="btn w" href="#parametres">Paramètres</a></div>`}
-    </div>
+    <div class="card card-fill" id="stBienCard">${cardBiens()}</div>
+    <div class="card card-fill cat-card" id="stCatCard">${cardCats()}</div>
+    <div class="card card-fill ap-card" id="stApCard">${cardApports()}</div>
   </div>
   ${prevCard}
   `;
@@ -2051,7 +2170,7 @@ function opsTable(list,withFoot){
       out+=r.g?groupRow(r.g):opRow(r.o,false); }
     if(!todayDone&&cur===t.slice(0,7)) out+=todayRow();
     return out; })()}
-  </tbody>${withFoot?`<tfoot><tr><td colspan="4">${list.length} opération${list.length>1?"s":""} · entrées <span class="pos">${eur(tin)}</span> · sorties <span class="neg">${eur(tout)}</span></td><td class="amt ${tin-tout>=0?"pos":"neg"}">${eur(tin-tout)}</td><td colspan="2"></td></tr></tfoot>`:""}</table></div>`;
+  </tbody>${withFoot?`<tfoot><tr><td colspan="4">Total des ${list.length} opération${list.length>1?"s":""} affichée${list.length>1?"s":""} (passées et prévues) · entrées <span class="pos">+${eur(tin)}</span> · sorties <span class="neg">−${eur(tout)}</span></td><td class="amt ${tin-tout>=0?"pos":"neg"}"><small class="tf-k">Écart</small>${tin-tout>=0?"+":"−"}${eur(Math.abs(tin-tout))}</td><td colspan="2"></td></tr></tfoot>`:""}</table></div>`;
 }
 function filteredOps(){
   const u=S.ui, q=u.q.toLowerCase();
@@ -2062,7 +2181,7 @@ function vTresorerie(){
   const u=S.ui;
   const years=[...new Set([String(new Date().getFullYear()),...S.ops.map(o=>(o.date||"").slice(0,4)).filter(Boolean)])].sort().reverse();
   return `<div class="view-head"><div><h2>Opérations bancaires</h2><p>Solde actuel : <strong class="num">${eur(soldeActuel())}</strong></p></div>
-    <div class="row">${(()=>{ const P=genPlan(); return P?`<button class="primary" data-a="gen-year">${P.partial?"Compléter l'année":"+ Créer l'année"} ${P.T}</button>`:""; })()}<button data-a="copy-csv">Copier en CSV</button></div></div>
+    <div class="row">${(()=>{ const P=genPlan(); return P?`<button class="primary" data-a="gen-year">Créer une nouvelle année</button>`:""; })()}<button data-a="copy-csv">Copier en CSV</button></div></div>
   <button type="button" class="fab w" data-a="add-op" aria-label="Nouvelle opération">+</button>
   <div class="card">
     <div class="filters">
@@ -2077,10 +2196,7 @@ function vTresorerie(){
 }
 function opsZone(){ const l=filteredOps(); return l.length?opsTable(l,true):`<div class="empty">${S.ops.length?"Aucune opération ne correspond à ces filtres.":"Aucune opération enregistrée."}<button class="primary w" data-a="add-op">+ Nouvelle opération</button></div>`; }
 
-function vLocatif(){
-  const c=cfg(), L=c.biens.locatif, y=S.ui.locYear, ys=String(y);
-  const yo=S.ops.filter(o=>o.bien==="locatif"&&eff(o)&&(o.date||"").startsWith(ys));
-  const hasPrev=yo.some(o=>o.prevision);
+function bilanCalc(yo){
   // Loyers encaissés = loyer − impayés + régularisations d'impayés (l'impayé et sa régul font partie du loyer)
   const isImpL=o=>/^impay/i.test(o.libelle||""), isRegL=o=>/^r[ée]gularisation impay/i.test(o.libelle||"");
   const loyBrut=sum(yo.filter(o=>o.categorie==="Loyer")), impL=sum(yo.filter(isImpL)), regL=sum(yo.filter(isRegL));
@@ -2088,6 +2204,26 @@ function vLocatif(){
   const ins={"Loyers encaissés":loyers},outs={};
   yo.forEach(o=>{ if(o.categorie==="Loyer"||isImpL(o)||isRegL(o)) return; const t=o.sens==="in"?ins:outs; const k=o.categorie==="Charges récupérées"?"Charges payées par le locataire":o.categorie; t[k]=(t[k]||0)+(+o.montant||0); });
   const tin=Object.values(ins).reduce((a,b)=>a+b,0), tout=Object.values(outs).reduce((a,b)=>a+b,0);
+  return {ins,outs,tin,tout,loyers,impL,regL};
+}
+function bilanCard(){
+  const v=S.ui.bilYear||String(S.ui.locYear||CUR_Y()), all=v==="all";
+  const yo=S.ops.filter(o=>o.bien==="locatif"&&eff(o)&&(all?real(o):(o.date||"").startsWith(v)));
+  const hasPrev=yo.some(o=>o.prevision), {ins,outs,tin,tout,impL,regL}=bilanCalc(yo), reste=impL-regL;
+  const ys=[...new Set([CUR_Y(),+S.ui.locYear||CUR_Y(),...S.ops.filter(o=>o.bien==="locatif"&&real(o)).map(o=>+(o.date||"").slice(0,4)).filter(x=>x>=2025&&x<=CUR_Y())])].sort((a,b)=>b-a);
+  const opts=[...ys.map(x=>({value:String(x),label:String(x)})),{value:"all",label:"Depuis le début"}];
+  return `<div class="card-head"><h3>Bilan${hasPrev?` <small>(réel + prévu)</small>`:all?` <small>(réel)</small>`:""}</h3><select class="st-sel" data-f="bilYear" aria-label="Année du bilan">${opts.map(o=>`<option value="${o.value}" ${o.value===v?"selected":""}>${o.label}</option>`).join("")}</select></div>
+      <div class="table-wrap"><table><tbody>
+        ${Object.entries(ins).map(([k,x])=>`<tr><td>${esc(k)}</td><td class="amt pos">+${eur(x)}</td></tr>`+(k==="Loyers encaissés"?`<tr class="bil-sub"><td>dont impayés</td><td class="amt ${impL>0.004?"neg":"muted"}">${impL>0.004?"−"+eur(impL):"aucun"}</td></tr><tr class="bil-sub"><td>dont impayés régularisés</td><td class="amt ${regL>0.004?"pos":"muted"}">${regL>0.004?"+"+eur(regL):"aucun"}</td></tr>${reste>0.004?`<tr class="bil-sub"><td>reste à régulariser</td><td class="amt neg">${eur(reste)}</td></tr>`:""}`:"")).join("")}
+        ${Object.entries(outs).sort((a,b)=>b[1]-a[1]).map(([k,x])=>`<tr><td>${esc(k)}</td><td class="amt neg">−${eur(x)}</td></tr>`).join("")}
+        ${!yo.length?`<tr><td class="muted" colspan="2">Aucune opération sur ce bien ${all?"":"en "+v}.</td></tr>`:""}
+      </tbody><tfoot><tr><td>Résultat${all?" depuis le début":""}</td><td class="amt ${tin-tout>=0?"pos":"neg"}">${eur(tin-tout)}</td></tr></tfoot></table></div>`;
+}
+function vLocatif(){
+  const c=cfg(), L=c.biens.locatif, y=S.ui.locYear, ys=String(y);
+  const yo=S.ops.filter(o=>o.bien==="locatif"&&eff(o)&&(o.date||"").startsWith(ys));
+  const hasPrev=yo.some(o=>o.prevision);
+  const {ins,outs,tin,tout,loyers}=bilanCalc(yo);
   const months=loyersMois(y);
   const attenduMois=(+L.loyerHC||0)+(+L.charges||0);
   const years=[...new Set([new Date().getFullYear(),...S.ops.filter(o=>o.bien==="locatif").map(o=>+(o.date||"").slice(0,4)).filter(Boolean)])].sort((a,b)=>b-a);
@@ -2103,19 +2239,14 @@ function vLocatif(){
     <div class="tile"><span class="k">Rendement brut</span><span class="v">${L.prixAcquisition&&attenduMois?((+L.loyerHC||0)*12/(+L.prixAcquisition)*100).toLocaleString("fr-FR",{maximumFractionDigits:2})+" %":"—"}</span><span class="s">${L.prixAcquisition?"Loyer HC annuel / valeur du bien":"Valeur du bien à renseigner"}</span></div>
   </div>
   <div class="card"><div class="card-head"><h3>Versements de l'agence <small>(net : loyer + charges − frais)</small></h3>
-    <div class="row"><label for="ly" class="muted" style="font-size:.85rem">Année</label><select id="ly" data-f="locYear" style="width:auto">${optsHTML(years,y)}</select></div></div>
+    <div class="row"><label for="ly" class="muted" style="font-size:.85rem">Année</label><select id="ly" data-f="locYear" style="width:auto">${optsHTML(years.map(x=>({value:x,label:x>CUR_Y()?`${x} (prévu)`:String(x)})),y)}</select></div></div>
     <div class="months">${months.map(x=>{const clickable=S.canWrite&&(x.st==="missing"||x.st==="due");
       const lbl=x.st==="ok"?eur(x.net):x.st==="missing"?"Non reçu":x.st==="due"?`En retard${x.netPrev?" · "+eur(x.netPrev):""}`:x.st==="off"?"Hors bail":x.netPrev?`Prévu ${eur(x.netPrev)}`:"À venir";
       return `<${clickable?"button":"div"} class="month ${x.st}" ${clickable?`data-a="loyer" data-key="${x.key}" title="Enregistrer ce loyer"`:""}><span class="m">${MOIS[x.m-1]}</span><span class="a" title="${esc(x.detail)}">${lbl}</span></${clickable?"button":"div"}>`;}).join("")}</div>
     <small>Montant net versé par l'agence chaque mois (survolez pour le détail). Un mois compte comme reçu dès qu'un loyer réel est saisi. Cliquez sur un mois rouge ou orange pour l'enregistrer.</small>
   </div>
   <div class="grid g2">
-    <div class="card"><h3>Bilan ${y}${hasPrev?` <small>(réel + prévu)</small>`:""}</h3>
-      <div class="table-wrap"><table><tbody>
-        ${Object.entries(ins).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="amt pos">+${eur(v)}</td></tr>`).join("")}
-        ${Object.entries(outs).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="amt neg">−${eur(v)}</td></tr>`).join("")}
-        ${!yo.length?`<tr><td class="muted" colspan="2">Aucune opération sur ce bien en ${y}.</td></tr>`:""}
-      </tbody><tfoot><tr><td>Résultat</td><td class="amt ${tin-tout>=0?"pos":"neg"}">${eur(tin-tout)}</td></tr></tfoot></table></div></div>
+    <div class="card" id="bilCard">${bilanCard()}</div>
     <div class="card"><div class="card-head"><h3>Fiche du bien</h3></div>
       ${facts.length?`<dl class="facts">${facts.map(f=>`<dt>${esc(f[0])}</dt><dd>${esc(f[1])}${f[2]?`<br><a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(String(f[2]).replace(/\n/g,", "))}" target="_blank" rel="noopener" style="font-size:.85rem">Voir sur la carte ↗</a>`:""}</dd>`).join("")}</dl>`:`<div class="empty">Ajoutez l'adresse, le locataire, le loyer et les dates du bail.<button class="w" data-a="edit-loc">Compléter la fiche</button></div>`}
     </div>
@@ -2277,11 +2408,13 @@ function vMaisonGuide(){
     <div class="card"><div class="card-head"><h3>Équipements et notices</h3>${S.notices.length?`<button class="ghost sm w" data-a="add-not">+ Ajouter</button>`:""}</div>${S.notices.length>4?`<div class="field" style="max-width:360px;margin-bottom:10px"><label for="nq">Rechercher</label><input id="nq" type="search" data-f="nq" value="${esc(S.ui.nq||"")}" placeholder="Chauffe-eau, garage, box…"></div>`:""}<div id="notZone">${notList()}</div></div>
   </div>`;
 }
-const SORTIE_TYPES=["Restaurant","Bar / café","Plage","Marché","Balade / vélo","Visite","Activité enfants","Commerce","Autre"];
+const SORTIE_TYPES=["Restaurants","Bars, cafés & glaciers","Plages","Marchés","Balades","Visites","Activités sportives et familiales","Fêtes & évènements","Commerce","Autre"];
 const SORTIE_AVIS=["À tester","Coup de cœur","Bien","Bof"];
-const SORTIE_ICO={"Restaurant":"🍽️","Bar / café":"☕","Plage":"🏖️","Marché":"🧺","Balade / vélo":"🚲","Visite":"🏛️","Activité enfants":"🎠","Commerce":"🛒","Autre":"📍"};
+const SORTIE_ICO={"Restaurants":"🍽️","Bars, cafés & glaciers":"🍦","Plages":"🏖️","Marchés":"🧺","Balades":"🚲","Visites":"🏛️","Activités sportives et familiales":"🏄","Fêtes & évènements":"🎉","Commerce":"🛒","Autre":"📍"};
+const SORTIE_OLD={"Restaurant":"Restaurants","Bar / café":"Bars, cafés & glaciers","Plage":"Plages","Marché":"Marchés","Balade / vélo":"Balades","Visite":"Visites","Activité enfants":"Activités sportives et familiales"};
+const stype=x=>SORTIE_OLD[x.type]||x.type||"Autre";
 function sortieForm(x={}){
-  openForm({title:x.id?"Modifier l'adresse":"Nouvelle adresse",values:{type:"Restaurant",avis:"À tester",...x},fields:[
+  openForm({title:x.id?"Modifier l'adresse":"Nouvelle adresse",values:{avis:"À tester",...x,type:x.id?stype(x):"Restaurants"},fields:[
     {id:"nom",label:"Nom",type:"text",required:true,placeholder:"ex. La Cabane à huîtres"},
     {id:"type",label:"Type",type:"select",half:true,options:SORTIE_TYPES},
     {id:"avis",label:"Notre avis",type:"select",half:true,options:SORTIE_AVIS},
@@ -2297,7 +2430,7 @@ function sortieForm(x={}){
   }});
 }
 function vMaisonSorties(){
-  const all=S.sorties||[], f=S.ui.sf||"tout", q=(S.ui.sq||"").toLowerCase();
+  const all=(S.sorties||[]).map(x=>({...x,type:stype(x)})), f=S.ui.sf||"tout", q=(S.ui.sq||"").toLowerCase();
   const types=SORTIE_TYPES.filter(t=>all.some(s=>s.type===t));
   const ord={"Coup de cœur":0,"Bien":1,"À tester":2,"Bof":3};
   const list=all.filter(s=>(f==="tout"||(f==="coeur"&&s.avis==="Coup de cœur")||(f==="tester"&&s.avis==="À tester")||s.type===f)&&(!q||[s.nom,s.type,s.adresse,s.note].join(" ").toLowerCase().includes(q)))
@@ -2383,7 +2516,7 @@ function openSetup(msg){
     if(!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url)) return "L'URL doit être celle de l'application Web Apps Script (script.google.com…/exec).";
     try{ const r=await fetch(url+"?action=ping&key="+encodeURIComponent(key)); const j=await r.json(); if(!j.ok) return j.code==="denied"?"Clé refusée par le script. Vérifiez la propriété KEY.":(j.error||"Le script a répondu une erreur."); }
     catch(e){ return "Impossible de joindre le script. Vérifiez l'URL et que le déploiement est accessible à « Tout le monde »."; }
-    window.GAS.save({url,key,name}); location.reload(); return true;
+    window.GAS.save({url,key,name}); try{ localStorage.setItem("indiv-guide-offer","1"); }catch(e){} location.reload(); return true;
   }});
 }
 function backupData(){
@@ -2410,79 +2543,69 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="bkIn"&&ev.target.fil
 /* ---------- Historique d'activité ---------- */
 const ACT={create:["＋","Ajout"],update:["✎","Modification"],delete:["✕","Suppression"],bulk:["⇄","Mise à jour groupée"],restore:["↺","Restauration"]};
 /* ---------- Version et nouveautés ---------- */
-const APP_VERSION="1.5.2";
+const APP_VERSION="1.0.0";
 const CHANGELOG=[
-  {v:"1.5.2",d:"2026-11-14",t:"Écran d'accueil",items:[
-    "La barre du haut du téléphone prend la couleur du fond de l'écran à code (crème le jour, brun la nuit) au lieu d'un bandeau d'une autre couleur.",
-    "Le message de création d'année précise que les honoraires de l'agence sont calculés automatiquement en plus."]},
-  {v:"1.5.1",d:"2026-11-13",t:"Prévisionnel complet",items:[
-    "Correctif : les mois manquants au milieu d'une année (et pas seulement à la fin) sont maintenant recréés.",
-    "À l'ouverture, toutes les années déjà commencées (2027, 2028…) sont complétées automatiquement, une seule fois.",
-    "Les mois habituels de chaque ligne sont repérés sur les 11 derniers mois réels et les échéances prévues, sans créer de doublon quand une opération a simplement changé de mois."]},
-  {v:"1.5.0",d:"2026-11-13",t:"Création des années du prévisionnel",items:[
-    "L'année 2027 est complétée automatiquement jusqu'en décembre (une seule fois, à l'ouverture).",
-    "Bouton « + Créer l'année 2028 » en haut d'Opérations bancaires (et dans Réglages) : crée toute l'année sur le modèle des années précédentes, puis propose 2029, 2030…",
-    "Aucun mois oublié : chaque ligne reprend tous les mois où elle a eu lieu sur ses 12 derniers mois, au même jour, avec le dernier montant connu et sa revalorisation.",
-    "Passer une ligne en « fixe » ou cocher un mois ne crée plus d'échéances au-delà de la dernière année du prévisionnel."]},
-  {v:"1.4.0",d:"2026-11-13",t:"Montant fixe ou variable",items:[
-    "Chaque opération récurrente peut passer de « Variable » à « Fixe » (et inversement) dans sa fenêtre.",
-    "En fixe, les échéances sont créées dans le prévisionnel jusqu'à la fin de l'horizon, avec revalorisation si besoin.",
-    "Cocher un mois manquant recrée aussi ses échéances jusqu'à la fin de l'horizon."]},
-  {v:"1.3.1",d:"2026-11-13",t:"Ordures ménagères revalorisées",items:[
-    "La revalorisation de la taxe foncière de Béziers s'applique aussi, au même taux, au remboursement des ordures ménagères dans le prévisionnel.",
-    "Au mois de revalorisation, la question « À vérifier » de la taxe foncière demande aussi le montant réel des ordures ménagères.",
-    "Activer une revalorisation part du dernier montant réellement payé, et non plus d'une estimation déjà augmentée."]},
-  {v:"1.3.0",d:"2026-11-13",t:"Taxe foncière et ordures ménagères",items:[
-    "Taxe foncière de Béziers : un champ « Dont ordures ménagères (TEOM) » dans sa fenêtre et dans la modification de l'opération.",
-    "Le montant est reporté automatiquement sur le remboursement des ordures ménagères de janvier suivant, dans le versement de l'agence."]},
-  {v:"1.2.2",d:"2026-11-13",t:"Correctifs dates",items:[
-    "Une opération récurrente déplacée à la main garde sa date, même si on change ensuite le jour de prélèvement de la ligne dans Réglages.",
-    "Changer le jour d'une ligne ne modifie plus les opérations déjà validées.",
-    "Modifier une opération conserve ses informations de revalorisation, de régularisation ou d'appel de fonds."]},
-  {v:"1.2.1",d:"2026-11-13",t:"Avances non remboursées",items:[
-    "Une avance non remboursée à la date prévue (ou dans les 3 mois) compte comme un apport dans l'équilibre entre indivisaires, jusqu'à son remboursement.",
-    "Alerte rouge dans « À surveiller » pour une avance échue ; délai réglable dans Réglages."]},
-  {v:"1.2.0",d:"2026-11-13",t:"Avances d'un indivisaire",items:[
-    "Nouvelles catégories « Avance d'un indivisaire » (entrée) et « Remboursement d'avance » (sortie).",
-    "Elles comptent dans le solde du compte, mais pas dans les entrées et sorties de l'année, les catégories ni l'équilibre des apports.",
-    "À l'enregistrement d'une avance, l'app propose de prévoir son remboursement.",
-    "Alerte « À surveiller » tant qu'une avance n'est pas remboursée."]},
-  {v:"1.1.0",d:"2026-11-13",t:"Modèles d'opérations",items:[
-    "Modèles pour les opérations qui reviennent sans date fixe : « Depuis un modèle » dans « + Opération » remplit tout le formulaire.",
-    "Case « Enregistrer comme modèle » à la création d'une opération, et liste des modèles dans Réglages.",
-    "À la validation d'une opération issue d'un modèle, l'app propose de prévoir la suivante (dans 1, 2, 3, 6, 12 mois ou à une date).",
-    "Correctif : la fenêtre se ferme tout de suite après « Enregistrer », sans attendre la réponse du Google Sheet."]},
-  {v:"1.0.1",d:"2026-11-13",t:"Correctif validation",items:[
-    "Sur téléphone, une opération déjà validée affiche un ✓ vert : le toucher permet de la repasser en prévu (avec confirmation).",
-    "Annulation possible aussi pour le versement de l'agence et pour les opérations importées déjà passées.",
-    "Valider une opération datée dans le futur demande maintenant une confirmation."]},
-  {v:"1.0.0",d:"2026-11-13",t:"Première version",items:[
-    "Trois espaces : Finances (tableau de bord, opérations bancaires, réglages), Béziers et Soullans.",
+  {v:"1.0.0",d:"2026-11-14",t:"Première version",items:[
+    "Trois espaces : Finances (tableau de bord, opérations bancaires, paramètres), Béziers et Soullans.",
     "Données partagées dans Google Sheets, photos dans Google Drive, sauvegarde et import JSON.",
-    "Écran d'accueil à code : un code par couple, prénom mémorisé sur chaque appareil, décor qui change selon l'heure.",
-    "Tableau de bord : solde, prévisionnel avec point haut, simulation du solde à une date, alertes (découvert à 20 jours, apports déséquilibrés, grosses échéances à 30 jours, loyer manquant…).",
-    "Opérations récurrentes : blocs « Versement de l'agence » et « Assurance crédit », réglage de chaque ligne (montant, jour, mois, revalorisation annuelle).",
-    "Revalorisations : montant estimé dans le prévisionnel, puis question au mois prévu pour saisir le montant réel.",
+    "Écran d'accueil à code avec la date du jour : un code par couple, prénom mémorisé sur chaque appareil, décor qui change selon l'heure.",
+    "Rappel à partir du 1er décembre pour créer la nouvelle année du prévisionnel.",
+    "Tableau de bord : solde, prévisionnel avec point haut, simulation du solde à une date et alertes (découvert à 20 jours, apports déséquilibrés, grosses échéances, avances, loyer manquant).",
+    "Statistiques filtrables par année ou depuis le début : dépenses par bien, par catégorie, apports des indivisaires ; bilan de Béziers filtrable de la même façon.",
+    "Opérations bancaires : relevé mois par mois, validation des opérations prévues, raccourcis « Aujourd'hui » et « Haut de page ».",
+    "Opérations récurrentes : blocs « Versement de l'agence » et « Assurance crédit » ; chaque ligne se règle (montant fixe ou variable, jour, mois, revalorisation annuelle) ; création d'une ou plusieurs années suivantes (2025 à 2027 fournies).",
+    "Revalorisations : estimation dans le prévisionnel puis question au mois prévu ; la taxe foncière de Béziers entraîne les ordures ménagères.",
     "Copropriété : régularisation annuelle imputée automatiquement, appels de fonds travaux en une ou plusieurs fois.",
-    "Historique d'activité avec restauration, confirmations avant suppression ou modification.",
+    "Modèles d'opérations et avances d'un indivisaire (avec suivi du remboursement), regroupés dans les opérations récurrentes.",
+    "Historique d'activité avec restauration, confirmations avant suppression ou modification, guide d'utilisation.",
     "Soullans : vue d'ensemble, petits travaux & entretien, guide de la maison, sorties & activités.",
     "Compatible téléphone, tablette et PC."]}
 ];
+/* ---------- Guide d'utilisation ---------- */
+const GUIDE=[
+  ["👋","Bienvenue","Indivision regroupe le compte joint, l'appartement de Béziers et la maison de Soullans. Tout est partagé entre vous quatre, en temps réel, via votre Google Sheet."],
+  ["🔐","Votre code","Chaque couple a son code à 4 chiffres. La première fois, choisissez votre prénom : l'app saura qui fait quoi. Elle se verrouille seule après 5 minutes en arrière-plan."],
+  ["📊","Tableau de bord","Le solde, les chiffres de l'année et les alertes « À surveiller » : découvert à venir, apports déséquilibrés, grosses échéances, avances à rembourser."],
+  ["📈","Statistiques","En bas du tableau de bord : dépenses par bien, par catégorie et apports de chacun. Chaque bloc a son filtre d'année (ou « Depuis le début ») ; il revient à l'année en cours quand vous changez de page."],
+  ["🏦","Opérations bancaires","Le relevé du compte, mois par mois. En italique : ce qui est prévu. Quand une opération passe sur le compte, touchez ✓ pour la valider. Le bouton « Aujourd'hui » vous ramène à la date du jour."],
+  ["➕","Ajouter une opération","Le bouton + sert aux opérations ponctuelles. Pour celles qui reviennent sans date fixe, utilisez un modèle. Une avance d'un couple se rembourse et ne compte pas comme un apport."],
+  ["🔁","Opérations récurrentes","Dans Paramètres, chaque ligne (loyer, crédit, EDF…) se règle en la touchant : montant fixe ou variable, jour, mois, revalorisation annuelle. « Créer une nouvelle année » prépare une ou plusieurs années suivantes."],
+  ["🏠","Béziers et Soullans","Béziers : loyers, versements de l'agence et charges. Soullans : petits travaux, entretiens, guide de la maison et bonnes adresses."],
+  ["⚙️","Paramètres","Opérations récurrentes (avec modèles et avances), indivision, compte joint, historique (avec restauration), code d'accès, sauvegarde, et ce guide dans « Versions & guide d'utilisation »."]];
+function openGuide(i){
+  const r=$("#confirmRoot");
+  r.innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-label="Guide d'utilisation"><div class="modal guide"><button type="button" class="g-arr l" data-g="prev" aria-label="Page précédente">‹</button><button type="button" class="g-arr r" data-g="next" aria-label="Page suivante">›</button><div class="g-track" id="gTrack">${GUIDE.map(([ic,t,x],k)=>`<section class="g-slide" aria-label="${k+1} sur ${GUIDE.length}"><div class="g-ic" aria-hidden="true">${ic}</div><h3>${esc(t)}</h3><p>${esc(x)}</p></section>`).join("")}</div>
+    <div class="g-nav"><button type="button" class="ghost sm" data-g="prev" aria-label="Précédent">‹</button><div class="g-dots">${GUIDE.map((_,k)=>`<i data-gd="${k}"></i>`).join("")}</div><button type="button" class="ghost sm" data-g="next" aria-label="Suivant">›</button></div>
+    <div class="row" style="justify-content:space-between;margin-top:10px"><small class="muted">Faites glisser ou utilisez les flèches</small><button type="button" class="primary sm" data-g="close">Fermer</button></div></div></div>`;
+  const T=$("#gTrack"), go=k=>T.scrollTo({left:k*T.clientWidth,behavior:"smooth"}), cur=()=>Math.round(T.scrollLeft/T.clientWidth);
+  const dots=()=>{ r.querySelectorAll("[data-gd]").forEach((d,k)=>d.classList.toggle("on",k===cur())); const L=r.querySelector(".g-arr.l"), R=r.querySelector(".g-arr.r"); if(L) L.disabled=cur()===0; if(R) R.disabled=cur()===GUIDE.length-1; };
+  T.addEventListener("scroll",()=>requestAnimationFrame(dots),{passive:true}); setTimeout(()=>{ T.scrollLeft=i*T.clientWidth; dots(); },0);
+  r.querySelectorAll("[data-g]").forEach(b=>b.addEventListener("click",()=>{ const g=b.dataset.g; if(g==="close") r.innerHTML=""; else go(Math.max(0,Math.min(GUIDE.length-1,cur()+(g==="next"?1:-1)))); }));
+  r.querySelectorAll("[data-gd]").forEach(d=>d.addEventListener("click",()=>go(+d.dataset.gd)));
+}
+function guideOffer(){
+  let o=""; try{ o=localStorage.getItem("indiv-guide-offer"); }catch(e){} if(o!=="1") return; try{ localStorage.setItem("indiv-guide-offer","0"); }catch(e){}
+  const r=$("#confirmRoot");
+  r.innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-labelledby="goT"><div class="modal"><h3 id="goT">Bienvenue dans Indivision</h3><p>Voulez-vous voir le guide d'utilisation ? Neuf pages courtes pour faire le tour de l'app.</p><p class="muted" style="font-size:.88rem">Vous pourrez le rouvrir à tout moment dans Paramètres › Versions &amp; guide d'utilisation.</p>
+    <div class="row" style="justify-content:flex-end;gap:8px;margin-top:14px"><button type="button" class="ghost" data-go="0">Passer</button><button type="button" class="primary" data-go="1">Oui, voir le guide</button></div></div></div>`;
+  r.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{ r.innerHTML=""; if(b.dataset.go==="1") openGuide(0); }));
+}
 function versionCard(){
   const L=CHANGELOG.map((c,i)=>`<details class="cl" ${i===0?"open":""}><summary><strong>v${esc(c.v)}</strong> <span class="muted">· ${fmtD(c.d)}</span> · ${esc(c.t)}</summary><ul>${c.items.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`).join("");
-  return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Version de l'application</h3><span class="chip good">v${APP_VERSION}</span></div>
+  return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Versions &amp; guide d'utilisation</h3><span class="chip good">v${APP_VERSION}</span></div>
+    <button type="button" class="guide-cta" data-a="guide"><span class="gc-ic" aria-hidden="true">📖</span><span class="gc-t"><strong>Ouvrir le guide d'utilisation</strong><small>9 pages courtes pour faire le tour de l'app</small></span><span class="gc-go" aria-hidden="true">›</span></button>
     <p class="muted" style="margin:0 0 10px">Numérotation majeure.mineure.correctif : le dernier chiffre pour une correction, celui du milieu pour une nouveauté, le premier pour une refonte.</p>${L}</div>`;
 }
 function whatsNew(){
   let seen=""; try{ seen=localStorage.getItem("indiv-ver")||""; localStorage.setItem("indiv-ver",APP_VERSION); }catch(e){ return; }
   if(!seen||seen===APP_VERSION) return;
   const cmp=(a,b)=>{ const x=a.split(".").map(Number), y=b.split(".").map(Number); for(let i=0;i<3;i++){ if((x[i]||0)!==(y[i]||0)) return (x[i]||0)-(y[i]||0); } return 0; };
-  const nv=CHANGELOG.filter(c=>cmp(c.v,seen)>0); if(!nv.length) return;
+  if(cmp(seen,APP_VERSION)>0) return; const nv=CHANGELOG.filter(c=>cmp(c.v,seen)>0); if(!nv.length) return;
   openForm({title:`Nouveautés · v${APP_VERSION}`,intro:nv.map(c=>`<p style="margin:8px 0 4px"><strong>v${esc(c.v)}</strong> · ${esc(c.t)}</p><ul class="cl-ul">${c.items.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`).join(""),fields:[],submitLabel:"J'ai compris",onSubmit:async()=>true});
   const c=$("#modalRoot [data-close]"); if(c) c.remove();
 }
 function journalCard(){
-  const J=[...(S.journal||[])].sort((a,b)=>(b.at||"").localeCompare(a.at||"")), n=S.ui.jn||25, f=S.ui.jf||"tout";
+  const J=[...(S.journal||[])].sort((a,b)=>(b.at||"").localeCompare(a.at||"")), f=S.ui.jf||"tout", jall=!!S.ui.jall, n=jall?(S.ui.jn||60):5;
   const list=J.filter(e=>f==="tout"||(f==="del"&&e.act==="delete"));
   const nDel=J.filter(e=>e.act==="delete"&&!e.restored).length;
   let day="", rows="";
@@ -2492,7 +2615,8 @@ function journalCard(){
       <span class="j-t muted">${new Date(e.at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</span>${e.act==="delete"&&e.before&&!e.restored?`<button type="button" class="sm w" data-a="j-restore" data-id="${esc(e.id)}">Restaurer</button>`:e.restored?`<span class="chip good">restauré</span>`:""}</div>`; }
   return `<div class="card" style="grid-column:1/-1" id="journalCard"><div class="card-head"><h3>Historique d'activité</h3>${nDel?`<span class="chip warn">${nDel} suppression${nDel>1?"s":""} restaurable${nDel>1?"s":""}</span>`:""}</div>
     ${fchips("jf",[["tout","Tout",J.length],["del","Suppressions",J.filter(e=>e.act==="delete").length]])}
-    ${rows?`<div class="j-list">${rows}</div>${list.length>n?`<div class="row" style="justify-content:center;margin-top:8px"><button type="button" class="ghost sm" data-a="j-more">Afficher plus</button></div>`:""}`:`<p class="muted" style="margin:0">Aucune activité enregistrée pour l'instant.</p>`}
+    ${rows?`<div class="j-list${jall?" j-scroll":""}">${rows}${jall&&list.length>n?`<div class="row" style="justify-content:center;margin:8px 0"><button type="button" class="ghost sm" data-a="j-more">Afficher plus ancien</button></div>`:""}</div>
+      <div class="row" style="justify-content:center;margin-top:8px"><button type="button" class="ghost sm" data-a="j-all">${jall?"Réduire":`Voir tout l'historique (${list.length})`}</button></div>`:`<p class="muted" style="margin:0">Aucune activité enregistrée pour l'instant.</p>`}
     <small>Les 300 dernières actions sont conservées. Une opération supprimée peut être restaurée telle qu'elle était.</small></div>`;
 }
 async function journalRestore(id){
@@ -2528,7 +2652,7 @@ function pinScreen(L){
   setThemeColor(sc==="night"?"#3A220F":"#FFF4E0");
   L.innerHTML=`<div class="pin pin-${sc}">${sc==="night"?TOP_SVG.night:""}<div class="pin-c">
     <div class="pin-logo">${sc==="day"?TOP_SVG.day:""}<img src="icon-180.png" alt="Indivision"></div>
-    <p class="pin-hi">${h>=18||h<6?"Bonsoir":"Bonjour"}${n?` ${esc(n)}`:""}</p><p class="pin-sub" id="pinSub">Saisissez votre code</p>
+    <p class="pin-hi">${h>=18||h<6?"Bonsoir":"Bonjour"}${n?` ${esc(n)}`:""}</p><p class="pin-date">${(d=>d.charAt(0).toUpperCase()+d.slice(1))(new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</p><p class="pin-sub" id="pinSub">Saisissez votre code</p>
     <div class="pin-dots" id="pinDots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="pin-pad" role="group" aria-label="Clavier du code">${[1,2,3,4,5,6,7,8,9].map(d=>`<button type="button" data-pin="${d}">${d}</button>`).join("")}<span></span><button type="button" data-pin="0">0</button><button type="button" class="pin-del" data-pin="del" aria-label="Effacer">⌫</button></div>
   </div><div class="pin-sky">${SKY_SVG}</div><div class="pin-ground"></div></div>`;
@@ -2593,7 +2717,7 @@ function lockCard(){
   const rows=couples.map(n=>{ const has=codes.some(x=>x.nom===n);
     return `<div class="pc-row"><span><strong>${esc(n)}</strong> <small class="muted">${couplePrenoms(n).map(esc).join(" · ")}</small>${n===mc?` <span class="muted">· connecté : ${esc(me)}</span>`:""}</span><span class="chip ${has?"good":"warn"}">${has?"code défini":"pas de code"}</span><span class="row" style="gap:4px;margin-left:auto"><button type="button" class="sm ${has?"ghost":"primary"}" data-a="pin-set" data-n="${esc(n)}">${has?"Changer":"Définir"}</button>${has?`<button type="button" class="ghost sm danger" data-a="pin-del" data-n="${esc(n)}" aria-label="Supprimer le code de ${esc(n)}">✕</button>`:""}</span></div>`; }).join("");
   const missing=couples.filter(n=>!codes.some(x=>x.nom===n));
-  return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Codes d'accès</h3><span class="chip ${on?"good":""}">${on?"activé":old?"mot de passe (ancien)":"désactivé"}</span></div>
+  return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Code d'accès</h3><span class="chip ${on?"good":""}">${on?"activé":old?"mot de passe (ancien)":"désactivé"}</span></div>
     <p class="muted" style="margin:0 0 10px">Un code à 4 chiffres par couple, demandé à chaque ouverture de l'app et après 5 minutes en arrière-plan. Le code saisi indique qui fait les modifications dans l'historique.</p>
     ${couples.length?rows:`<p class="muted">Ajoutez d'abord les indivisaires.</p>`}
     ${C.pinHash?`<p class="muted" style="margin:10px 0 0;font-size:.85rem">Code commun provisoire actif${missing.length?` : il reste valable tant que ${missing.map(esc).join(" et ")} n'${missing.length>1?"ont":"a"} pas son code`:""}.</p>`:""}
@@ -2719,39 +2843,49 @@ function regulCard(){
     <p class="card-sub" style="margin-top:0">Saisissez le résultat du décompte annuel du syndic. L'app ajuste automatiquement les prochains prélèvements trimestriels prévus (trop-perçu déduit jusqu'à épuisement, complément ajouté au premier appel) et le solde prévisionnel suit.</p>
     ${rows?`<div class="list">${rows}</div>`:`<p class="muted" style="margin:0">Aucune régularisation en cours.</p>`}</div>`;
 }
+function enhanceSettings(){
+  const open=S.ui.cz||(S.ui.cz={});
+  document.querySelectorAll("#main .card").forEach(c=>{
+    const head=c.querySelector(":scope > .card-head")||c.querySelector(":scope > h3"); if(!head) return;
+    const t=(head.querySelector("h3")||head).textContent.trim(); c.classList.add("cz"); c.dataset.cz=t; head.classList.add("cz-h");
+    if(!head.hasAttribute("tabindex")){ head.tabIndex=0; head.setAttribute("role","button"); }
+    head.setAttribute("aria-expanded",!!open[t]); c.classList.toggle("cz-open",!!open[t]); });
+}
+document.addEventListener("click",ev=>{ const h=ev.target.closest&&ev.target.closest(".cz-h"); if(!h||ev.target.closest("button,a,input,select,label,.chip button")) return; const c=h.closest(".cz"); const t=c.dataset.cz; S.ui.cz[t]=!S.ui.cz[t]; c.classList.toggle("cz-open",S.ui.cz[t]); h.setAttribute("aria-expanded",S.ui.cz[t]); });
+document.addEventListener("keydown",ev=>{ if((ev.key==="Enter"||ev.key===" ")&&ev.target.classList&&ev.target.classList.contains("cz-h")){ ev.preventDefault(); ev.target.click(); } });
 function vParametres(){
   const c=cfg(), tot=c.indivisaires.reduce((a,i)=>a+(+i.quotePart||0),0);
-  return `<div class="view-head"><div><h2>Paramètres</h2><p>Indivisaires, compte joint, noms des biens et dates des opérations.</p></div></div>
+  return `<div class="view-head"><div><h2>Paramètres</h2><p>Opérations récurrentes, indivision, compte joint, accès et sauvegardes. Touchez un bloc pour l'ouvrir.</p></div></div>
   ${calendrierCard()}
   <form class="grid g2" id="paramForm" novalidate>
-    <div class="card"><h3>L'indivision</h3>
+    <div class="card" style="grid-column:1/-1"><h3>L'indivision</h3>
       <div class="field"><label for="p_nom">Nom affiché</label><input id="p_nom" value="${esc(c.nom)}"></div>
       <div class="field"><label>Indivisaires et quotes-parts</label>
         <div id="indivList" style="display:flex;flex-direction:column;gap:8px">${(c.indivisaires.length?c.indivisaires:[{},{}]).map(indivRow).join("")}</div>
         <div class="row" style="justify-content:space-between"><button type="button" class="sm w" data-a="add-indiv">+ Ajouter un indivisaire</button><small id="qpTot">Total : ${tot.toLocaleString("fr-FR")} %</small></div>
       </div>
+      <div class="field"><label style="font-weight:600">Noms des biens</label></div>
+      <div class="form-grid">
+        <div class="field half"><label for="p_loc">Bien locatif</label><input id="p_loc" value="${esc(c.biens.locatif.nom)}"></div>
+        <div class="field half"><label for="p_sec">Maison secondaire</label><input id="p_sec" value="${esc(c.biens.secondaire.nom)}"></div>
+      </div>
+      <div class="row" style="justify-content:flex-end;margin-top:12px"><button type="submit" class="primary sm w">Enregistrer</button></div>
     </div>
-    <div class="card"><h3>Compte joint</h3>
+    <div class="card" style="grid-column:1/-1"><h3>Compte joint</h3>
       <div class="form-grid">
         <div class="field half"><label for="p_solde">Solde de départ (€)</label><input id="p_solde" inputmode="decimal" value="${esc(c.soldeInitial??0)}"></div>
         <div class="field half"><label for="p_date">À la date du</label><input id="p_date" type="date" value="${esc(c.dateSoldeInitial||"")}"></div>
         <div class="field"><small>Le solde affiché = solde de départ + toutes les opérations datées de ce jour ou après. Reprenez le solde d'un relevé bancaire.</small></div>
       </div>
-      <h3>Noms des biens</h3>
-      <div class="form-grid">
-        <div class="field half"><label for="p_loc">Bien locatif</label><input id="p_loc" value="${esc(c.biens.locatif.nom)}"></div>
-        <div class="field half"><label for="p_sec">Maison secondaire</label><input id="p_sec" value="${esc(c.biens.secondaire.nom)}"></div>
-      </div>
+      <div class="row" style="justify-content:flex-end;margin-top:12px"><button type="submit" class="primary sm w">Enregistrer</button></div>
     </div>
+    ${journalCard()}
+    ${lockCard()}
     <div id="importZone" style="grid-column:1/-1;display:none"></div>
-    <div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Base Google Sheets et sauvegardes</h3><span class="chip good">${esc((window.GAS?.conf?.url||"").replace(/^https:\/\/script\.google\.com\/macros\/s\/(.{6}).*$/,"script …$1"))}</span></div>
+    <div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Base Google Sheets &amp; sauvegardes</h3><span class="chip good">${esc((window.GAS?.conf?.url||"").replace(/^https:\/\/script\.google\.com\/macros\/s\/(.{6}).*$/,"script …$1"))}</span></div>
       <p style="margin:0 0 10px" class="muted">Les données sont enregistrées dans votre Google Sheet. Pour reprendre les données de la version claude.ai, exportez-y une sauvegarde (.json) puis chargez-la ici.</p>
       <div class="row w"><button type="button" class="primary" data-a="bk-pick">Charger une sauvegarde (.json)</button><input type="file" id="bkIn" accept="application/json,.json" hidden><button type="button" data-a="export-json">Exporter une sauvegarde</button><button type="button" class="ghost" data-a="gas-setup">Changer la connexion</button></div>
       <small id="bkMsg"></small></div>
-    ${lockCard()}
-    ${modelesCard()}
-    <div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Avances d'un indivisaire</h3><button type="button" class="sm ghost w" data-a="av-delai">Modifier</button></div><p class="muted" style="margin:0">Une avance doit être remboursée à la date du remboursement prévu, ou sinon dans les <strong>${avDelai()} mois</strong>. Passé ce délai, la somme non remboursée compte comme un apport dans l'équilibre entre indivisaires, jusqu'à son remboursement.</p></div>
-    ${journalCard()}
     ${versionCard()}
     <div class="card" style="grid-column:1/-1"><div class="row" style="justify-content:space-between">
       <small style="max-width:70ch">Les données sont partagées entre toutes les personnes qui ont accès à cette page. Pour que vos co-indivisaires puissent saisir, partagez-la avec eux au niveau Contributeur. N'y mettez ni identifiants bancaires ni codes d'accès.</small>
@@ -2784,7 +2918,7 @@ function fitMiniOps(){
 window.addEventListener("resize",()=>{ clearTimeout(fitMiniOps._t); fitMiniOps._t=setTimeout(fitMiniOps,120); });
 function render(force){
   checkLock();
-  if(!S._wn&&S.config&&!document.body.classList.contains("locked")){ S._wn=true; setTimeout(whatsNew,800); setTimeout(migrProj,1500); }
+  if(!S._wn&&S.config&&!document.body.classList.contains("locked")){ S._wn=true; setTimeout(()=>{ let o=""; try{ o=localStorage.getItem("indiv-guide-offer"); }catch(e){} if(o==="1") guideOffer(); else whatsNew(); },800); setTimeout(migrProj,1500); setTimeout(yearReminder,3200); }
   const r=route(), c=cfg();
   // Ne pas écraser un formulaire de paramètres en cours d'édition
   if(r==="parametres" && lastRoute==="parametres" && !force && document.activeElement && ($("#paramForm")?.contains(document.activeElement)||$("#calCard")?.contains(document.activeElement))) return;
@@ -2798,17 +2932,20 @@ function render(force){
     :[["tableau","Tableau de bord"],["tresorerie","Opérations bancaires"],["parametres","Paramètres"]];
   const nDue=S.ops&&S.ops.length?revalDue().length:0;
   $("#tabs").innerHTML=tabs.map(([h,l])=>`<a href="#${h}">${esc(l)}${h==="tableau"&&nDue?` <span class="nbadge" title="${nDue} revalorisation(s) à vérifier">${nDue}</span>`:""}</a>`).join("");
-  const short={tableau:"Accueil",tresorerie:"Opérations bancaires",locatif:c.biens.locatif.nom,parametres:"Réglages",maison:"Accueil","maison-taches":"Travaux & entretien","maison-guide":"Guide","maison-sorties":"Sorties"};
+  const short={tableau:"Accueil",tresorerie:"Opérations bancaires",locatif:c.biens.locatif.nom,parametres:"Paramètres",maison:"Accueil","maison-taches":"Travaux & entretien","maison-guide":"Guide","maison-sorties":"Sorties"};
   $("#bnav").innerHTML=tabs.map(([h])=>`<a href="#${h}" ${h===r?'aria-current="page"':""}>${ICONS[h]||""}<span>${esc(short[h])}</span></a>`).join("");
   document.title=c.nom&&c.nom!==DEFAULT_CONFIG.nom?c.nom:"Suivi de l'indivision";
   document.querySelectorAll("#tabs a").forEach(a=>{ if(a.getAttribute("href")==="#"+r) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   const scroll=window.scrollY;
+  if(lastRoute!==r){ S.ui.stBien=S.ui.stCat=S.ui.stAp=S.ui.bilYear=""; S.ui.locYear=CUR_Y(); }
   $("#main").innerHTML=VIEWS[r]();
   if(r==="tableau") requestAnimationFrame(fitMiniOps);
   if(r==="parametres") showImportCard();
-  if(lastRoute!==r) S.ui.didScroll=false;
+  if(lastRoute!==r){ S.ui.didScroll=false; }
   if(lastRoute===r) window.scrollTo(0,scroll); else window.scrollTo(0,0);
   if(r==="tresorerie" && !S.ui.didScroll && S.ready && document.getElementById("todayRow")){ S.ui.didScroll=true; setTimeout(scrollToToday,80); }
+  if(r==="parametres") enhanceSettings();
+  setTimeout(todayBtnUpd,400);
   lastRoute=r;
 }
 window.addEventListener("hashchange",()=>render(true));
@@ -2851,6 +2988,10 @@ function applyStyle(){}
 
 function setHdr(){ const h=document.querySelector("header.top"); if(h) document.documentElement.style.setProperty("--hdr",h.offsetHeight+"px"); }
 window.addEventListener("resize",setHdr); setTimeout(setHdr,0);
+function goToday(){ const y=todayStr().slice(0,4); if(S.ui.year&&S.ui.year!==y){ S.ui.year=y; const fy=$("#fy"); if(fy) fy.value=y; $("#opsZone").innerHTML=opsZone(); } setTimeout(scrollToToday,40); }
+function todayBtnUpd(){ const tp=$("#goTop"); if(tp) tp.classList.toggle("on",window.scrollY>500&&!document.body.classList.contains("locked")); const b=$("#goToday"); if(!b) return; const el=document.getElementById("todayRow"); let show=true;
+  if(el){ const r=el.getBoundingClientRect(); show=r.bottom<90||r.top>window.innerHeight-60; } b.classList.toggle("on",show&&location.hash.replace("#","")==="tresorerie"&&!document.body.classList.contains("locked")); }
+window.addEventListener("scroll",()=>{ if(!todayBtnUpd._t) todayBtnUpd._t=requestAnimationFrame(()=>{ todayBtnUpd._t=0; todayBtnUpd(); }); },{passive:true});
 function scrollToToday(){ const el=document.getElementById("todayRow"); if(!el) return; const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector("header.top")?.offsetHeight||0)-140; window.scrollTo({top:Math.max(0,top),behavior:"smooth"}); }
 let rq=0; function scheduleRender(){ if(S.importing) return; if(rq) return; rq=requestAnimationFrame(()=>{ rq=0; render(); }); }
 
@@ -2868,7 +3009,7 @@ document.addEventListener("click",async ev=>{
     case "add-op-sec": return opForm({}, {bien:"secondaire",categorie:"Travaux & entretien"});
     case "edit-op": return opForm(byId("ops",id));
     case "dup-op": { const {id:_,createdAt,updatedAt,...rest}=byId("ops",id)||{}; return opForm({}, {...rest,date:todayStr(),pointe:false}); }
-    case "del-op": { const o=byId("ops",id); return openConfirm(`Supprimer « ${esc(o?.libelle)} » (${eur(+o?.montant)}) du ${fmtD(o?.date)} ?<br><br>${IMPACT}<br><small class="muted">Une suppression peut être annulée depuis Réglages › Historique.</small>`,"Supprimer",async()=>{ await remove("operations",id); if(o&&o.bien==="locatif"&&!isHono(o)) setTimeout(()=>majHonoraires([(o.date||"").slice(0,7)]),400); }); }
+    case "del-op": { const o=byId("ops",id); return openConfirm(`Supprimer « ${esc(o?.libelle)} » (${eur(+o?.montant)}) du ${fmtD(o?.date)} ?<br><br>${IMPACT}<br><small class="muted">Une suppression peut être annulée depuis Paramètres › Historique.</small>`,"Supprimer",async()=>{ await remove("operations",id); if(o&&o.bien==="locatif"&&!isHono(o)) setTimeout(()=>majHonoraires([(o.date||"").slice(0,7)]),400); }); }
     case "pointe": { await patch("operations",id,{pointe:el.checked}); return; }
     case "toggle-grp": { const k=el.dataset.k; S.ui.open=S.ui.open||new Set(); S.ui.open.has(k)?S.ui.open.delete(k):S.ui.open.add(k); const z=$("#opsZone"); if(z) z.innerHTML=opsZone(); else render(true); return; }
     case "valider": { const o=byId("ops",id); if(!o) return; await validerOps([o]); return; }
@@ -2929,7 +3070,11 @@ document.addEventListener("click",async ev=>{
     case "grp-toggle": ev.stopPropagation(); S.ui.gOpen={...(S.ui.gOpen||{}),[el.dataset.g]:!(S.ui.gOpen||{})[el.dataset.g]}; return render(true);
     case "line-set": return lineSet(el.dataset.key);
     case "grp-set": return grpSet(el.dataset.g);
-    case "gen-year": return genYear();
+    case "j-all": S.ui.jall=!S.ui.jall; S.ui.jn=60; return render(true);
+    case "go-today": return goToday();
+    case "go-top": return window.scrollTo({top:0,behavior:"smooth"});
+    case "guide": return openGuide(0);
+    case "gen-year": return genYearsDialog();
     case "av-delai": return openForm({title:"Délai de remboursement des avances",values:{d:avDelai()},fields:[{id:"d",label:"Délai par défaut (mois)",type:"number",required:true,hint:"Utilisé quand aucun remboursement n'est prévu"}],submitLabel:"Enregistrer",onSubmit:async x=>{ const d=Math.round(+x.d); if(!(d>=1&&d<=36)) return "Entre 1 et 36 mois."; const ok=await saveConfig({avanceDelaiMois:d}); if(ok) render(true); return ok; }});
     case "md-edit": return modeleForm(el.dataset.id?modeles().find(m=>m.id===el.dataset.id)||{}:{});
     case "md-del": { const m=modeles().find(z=>z.id===el.dataset.id); if(!m) return; return openConfirm(`Supprimer le modèle « ${m.nom} » ? Les opérations déjà saisies ne changent pas.`,"Supprimer",()=>saveConfig({modeles:modeles().filter(z=>z.id!==m.id)})); }
@@ -2977,9 +3122,13 @@ document.addEventListener("input",ev=>{
 document.addEventListener("change",ev=>{
   const f=ev.target.dataset.f; if(!f||f==="q"||f==="nq"||f==="sq") return;
   if(f==="simDate"){ S.ui.simDate=ev.target.value; const z=$("#simZone"); if(z) z.innerHTML=simHTML(); requestAnimationFrame(fitMiniOps); return; }
-  if(f==="locYear"){ S.ui.locYear=+ev.target.value; return render(true); }
+  if(f==="locYear"){ S.ui.locYear=+ev.target.value; S.ui.bilYear=""; return render(true); }
+  if(f==="bilYear"){ S.ui.bilYear=ev.target.value; const z=$("#bilCard"); if(z) z.innerHTML=bilanCard(); return; }
+  if(/^st(Bien|Cat|Ap)$/.test(f)){ S.ui[f]=ev.target.value; const z=$("#"+f+"Card"); if(z){ z.innerHTML=f==="stBien"?cardBiens():f==="stCat"?cardCats():cardApports(); } return; }
   if(f==="simDate"){ S.ui.simDate=ev.target.value; const z=$("#simZone"); if(z) z.innerHTML=simHTML(); requestAnimationFrame(fitMiniOps); return; }
   S.ui[f]=ev.target.value; $("#opsZone").innerHTML=opsZone();
+  if(f==="year"&&ev.target.value===todayStr().slice(0,4)) setTimeout(scrollToToday,60);
+  todayBtnUpd();
 });
 function annuelCand(a,gdate){
   const [y,m]=gdate.split("-").map(Number), idx=y*12+m;
