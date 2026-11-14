@@ -11,7 +11,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Indivision">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#F6E7C8">
+<meta name="theme-color" content="#FFF4E0">
+<script>(function(){ try{ var h=new Date().getHours(), n=!(h>=6&&h<20), c=n?"#3A220F":"#FFF4E0"; document.querySelector('meta[name="theme-color"]').setAttribute("content",c); document.documentElement.style.background=c; }catch(e){} })();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Outfit:wght@400;600;700;800&family=Shrikhand&display=swap" rel="stylesheet">
@@ -877,7 +878,7 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 </head>
 <body>
 <div id="lockRoot" hidden></div>
-<script>try{ if(JSON.parse(localStorage.getItem("indiv-gas")||"null")) document.body.classList.add("locked"); }catch(e){}</script>
+<script>try{ if(JSON.parse(localStorage.getItem("indiv-gas")||"null")){ document.body.classList.add("locked"); document.body.style.background=document.documentElement.style.background; } }catch(e){}</script>
 <header class="top">
   <div class="top-inner">
     <div class="brand">
@@ -922,6 +923,7 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
   const COLN={operations:"Opération",travaux:"Petits travaux",entretiens:"Entretien",notices:"Notice",sorties:"Adresse",config:"Paramètres"};
   function journalFor(ops){
     let cw=""; try{ cw=sessionStorage.getItem("indiv-who")||""; }catch(e){} const who=cw||conf.name||"", at=new Date().toISOString(), out=[]; const rnd=()=>Math.random().toString(36).slice(2,6);
+    if(window.GAS&&window.GAS.quiet) return [];
     const real=ops.filter(o=>o.col!=="journal"&&!o.nolog);
     const del=real.filter(o=>o.op==="delete"), oth=real.filter(o=>o.op!=="delete");
     if(del.length>6) out.push({act:"bulk",col:"operations",label:`${del.length} suppressions groupées (échéances prévues)`});
@@ -992,7 +994,8 @@ const ENT_MODELES = [
   ["Nettoyage des gouttières",12],["Contrôle du chauffe-eau / groupe de sécurité",12],["Nettoyage VMC et bouches d'aération",6],
   ["Vidange / contrôle de la fosse septique",48],["Hivernage : purge des robinets extérieurs",12],["Contrôle de la toiture",24],["Débroussaillage du terrain",12]
 ];
-const DEFAULT_CONFIG = {nom:"Indivision Forveille-Perrier",indivisaires:[],soldeInitial:0,dateSoldeInitial:"",
+const BANQUE_DEF={nom:"Crédit Agricole Taverny",adresse:"21 avenue de la Gare\n95150 Taverny",tel:"01 34 18 72 40"};
+const DEFAULT_CONFIG = {nom:"Indivision Forveille-Perrier",banque:BANQUE_DEF,indivisaires:[],soldeInitial:0,dateSoldeInitial:"",
   biens:{locatif:{nom:"Bien locatif"},secondaire:{nom:"Maison secondaire"}}};
 
 /* ---------- État ---------- */
@@ -1756,11 +1759,16 @@ async function genYear(target,silent){
 const PROJ_MAX=2027, NOM_DEF="Indivision Forveille-Perrier";
 async function migrProj(){
   if(S._mig||!S.config||!S.canWrite||cfg().migrV1||!S.ops.length) return; S._mig=true;
+  if(window.GAS) window.GAS.quiet=true;
   let n=0; try{ n=await genYear(PROJ_MAX,true)||0; }catch(e){}
   const del=S.ops.filter(o=>o.prevision&&(o.date||"")>=(PROJ_MAX+1)+"-01-01");
   if(del.length) await Promise.all(del.map(o=>S.db.collection("operations").doc(o.id).delete()));
   const c=cfg(), nom=(!c.nom||/^(Indivision succession|Notre indivision)$/i.test(c.nom))?NOM_DEF:c.nom;
-  await optimistic(S.db.doc("config/main").set({...cfg(),nom,migrV1:true,migrProj2:true,updatedAt:new Date().toISOString()}));
+  await optimistic(S.db.doc("config/main").set({...cfg(),nom,banque:cfg().banque&&cfg().banque.nom?cfg().banque:BANQUE_DEF,migrV1:true,migrProj2:true,updatedAt:new Date().toISOString()}));
+  /* Historique remis à zéro pour le démarrage de la V1 */
+  await new Promise(r=>setTimeout(r,2500));
+  const J=(S.journal||[]).map(e=>e.id); if(J.length) await Promise.all(J.map(id=>S.db.collection("journal").doc(id).delete().catch(()=>{})));
+  setTimeout(()=>{ if(window.GAS) window.GAS.quiet=false; },1500);
   if(n||del.length) toast(`Prévisionnel ajusté : ${PROJ_MAX} complet${del.length?`, années suivantes à créer depuis Paramètres`:""}`);
   render(true);
 }
@@ -2646,7 +2654,8 @@ const TOP_SVG={day:`<svg class="pin-ray" viewBox="-130 -130 260 260" aria-hidden
   night:`<svg class="pin-stars" viewBox="0 0 300 400" preserveAspectRatio="xMidYMin slice" aria-hidden="true"><g fill="#F2B53A" opacity=".55"><circle cx="40" cy="60" r="1.6"/><circle cx="250" cy="44" r="1.4"/><circle cx="268" cy="150" r="1.2"/><circle cx="24" cy="190" r="1.3"/><circle cx="60" cy="300" r="1"/><circle cx="276" cy="330" r="1.2"/><circle cx="210" cy="96" r="1"/><circle cx="90" cy="28" r="1.1"/><circle cx="160" cy="18" r="1"/></g><circle cx="236" cy="64" r="16" fill="#F2B53A" opacity=".9"/><circle cx="244" cy="58" r="14" fill="#3A220F"/></svg>`,eve:""};
 /* Couleur de la barre d'état (téléphone) alignée sur le fond de l'écran affiché */
 const THEME_APP="#F6E7C8";
-function setThemeColor(c){ const m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content",c||THEME_APP); document.documentElement.style.background=c||""; }
+function setThemeColor(c){ const v=c||THEME_APP; document.querySelectorAll('meta[name="theme-color"]').forEach(m=>m.remove()); const m=document.createElement("meta"); m.name="theme-color"; m.content=v; document.head.appendChild(m);
+  document.documentElement.style.background=c||""; document.body.style.background=c||""; const L=document.getElementById("lockRoot"); if(L) L.style.background=c||""; }
 function pinScreen(L){
   const sc=pinScene(), n=(meStored()||(window.GAS&&window.GAS.conf&&window.GAS.conf.name)||"").trim(), h=new Date().getHours();
   setThemeColor(sc==="night"?"#3A220F":"#FFF4E0");
@@ -2877,6 +2886,12 @@ function vParametres(){
         <div class="field half"><label for="p_date">À la date du</label><input id="p_date" type="date" value="${esc(c.dateSoldeInitial||"")}"></div>
         <div class="field"><small>Le solde affiché = solde de départ + toutes les opérations datées de ce jour ou après. Reprenez le solde d'un relevé bancaire.</small></div>
       </div>
+      <div class="field" style="margin-top:6px"><label style="font-weight:600">Agence bancaire</label></div>
+      <div class="form-grid">
+        <div class="field half"><label for="p_bq">Banque et agence</label><input id="p_bq" value="${esc((c.banque||BANQUE_DEF).nom||"")}" placeholder="ex. Crédit Agricole Taverny"></div>
+        <div class="field half"><label for="p_bqt">Téléphone</label><input id="p_bqt" type="tel" value="${esc((c.banque||BANQUE_DEF).tel||"")}" placeholder="01 23 45 67 89">${(c.banque||BANQUE_DEF).tel?`<small><a href="tel:${esc(String((c.banque||BANQUE_DEF).tel).replace(/[^\d+]/g,""))}">Appeler l'agence</a></small>`:""}</div>
+        <div class="field"><label for="p_bqa">Adresse</label><textarea id="p_bqa" rows="2">${esc((c.banque||BANQUE_DEF).adresse||"")}</textarea></div>
+      </div>
       <div class="row" style="justify-content:flex-end;margin-top:12px"><button type="submit" class="primary sm w">Enregistrer</button></div>
     </div>
     ${journalCard()}
@@ -2918,6 +2933,7 @@ function fitMiniOps(){
 window.addEventListener("resize",()=>{ clearTimeout(fitMiniOps._t); fitMiniOps._t=setTimeout(fitMiniOps,120); });
 function render(force){
   checkLock();
+  if(!document.body.classList.contains("locked")&&!S._tc){ S._tc=1; setThemeColor(); }
   if(!S._wn&&S.config&&!document.body.classList.contains("locked")){ S._wn=true; setTimeout(()=>{ let o=""; try{ o=localStorage.getItem("indiv-guide-offer"); }catch(e){} if(o==="1") guideOffer(); else whatsNew(); },800); setTimeout(migrProj,1500); setTimeout(yearReminder,3200); }
   const r=route(), c=cfg();
   // Ne pas écraser un formulaire de paramètres en cours d'édition
@@ -3166,7 +3182,7 @@ document.addEventListener("submit",async ev=>{
   const names=rows.map(r=>r.nom.toLowerCase()); if(new Set(names).size!==names.length){ err.textContent="Deux indivisaires portent le même nom."; return; }
   const tot=rows.reduce((a,i)=>a+i.quotePart,0); if(rows.length && Math.abs(tot-100)>0.01){ err.textContent=`Les quotes-parts totalisent ${tot.toLocaleString("fr-FR")} % au lieu de 100 %.`; return; }
   const c=cfg();
-  const ok=await saveConfig({nom:$("#p_nom").value.trim()||DEFAULT_CONFIG.nom,indivisaires:rows,soldeInitial:parseNum($("#p_solde").value)||0,dateSoldeInitial:$("#p_date").value,
+  const ok=await saveConfig({nom:$("#p_nom").value.trim()||DEFAULT_CONFIG.nom,indivisaires:rows,soldeInitial:parseNum($("#p_solde").value)||0,dateSoldeInitial:$("#p_date").value,banque:{nom:$("#p_bq").value.trim(),adresse:$("#p_bqa").value.trim(),tel:$("#p_bqt").value.trim()},
     biens:{locatif:{...c.biens.locatif,nom:$("#p_loc").value.trim()||"Bien locatif"},secondaire:{...c.biens.secondaire,nom:$("#p_sec").value.trim()||"Maison secondaire"}}});
   if(ok){ document.activeElement?.blur(); render(true); }
 });
