@@ -874,6 +874,10 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 .card-head:has(> .st-sel){flex-wrap:nowrap} .card-head:has(> .st-sel) h3{margin:0;min-width:0}
 .bil-sub td{font-size:.86rem;color:var(--muted);padding-top:2px!important;padding-bottom:6px!important}
 .bil-sub td:first-child{padding-left:22px!important}
+.pin-link{display:block;margin:2.2vh auto 0;background:none!important;border:none!important;box-shadow:none!important;color:inherit;text-decoration:underline;text-underline-offset:3px;font:600 .9rem/1.3 var(--font-body,inherit);opacity:.85;cursor:pointer;padding:6px 10px!important;width:auto!important}
+.pin-cta{display:flex!important;align-items:center;justify-content:center;gap:10px;margin:2.4vh auto 0!important;padding:12px 20px!important;width:auto!important;border-radius:999px!important;background:#E8672C!important;color:#fff!important;border:2px solid #4A2A12!important;box-shadow:0 3px 0 #4A2A12!important;font:700 .95rem/1.2 var(--font-body,inherit)!important;cursor:pointer;white-space:nowrap}
+.pin-cta:active{transform:translateY(2px);box-shadow:0 1px 0 #4A2A12!important}
+.pin-cta .pc-plus{width:22px;height:22px;border-radius:50%;background:#fff;color:#E8672C;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem;line-height:1;font-weight:800}
 </style>
 </head>
 <body>
@@ -996,7 +1000,7 @@ const ENT_MODELES = [
 ];
 const BANQUE_DEF={nom:"Crédit Agricole Taverny",adresse:"21 avenue de la Gare\n95150 Taverny",tel:"01 34 18 72 40"};
 const DEFAULT_CONFIG = {nom:"Indivision Forveille-Perrier",banque:BANQUE_DEF,indivisaires:[],soldeInitial:0,dateSoldeInitial:"",
-  biens:{locatif:{nom:"Bien locatif"},secondaire:{nom:"Maison secondaire"}}};
+  biens:{locatif:{nom:"Béziers"},secondaire:{nom:"Soullans"}}};
 
 /* ---------- État ---------- */
 const S = {db:null, config:null, ops:[], travaux:[], entretiens:[], notices:[], sorties:[], canWrite:true, ready:false,
@@ -2664,16 +2668,18 @@ function pinScreen(L){
     <p class="pin-hi">${h>=18||h<6?"Bonsoir":"Bonjour"}${n?` ${esc(n)}`:""}</p><p class="pin-date">${(d=>d.charAt(0).toUpperCase()+d.slice(1))(new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</p><p class="pin-sub" id="pinSub">Saisissez votre code</p>
     <div class="pin-dots" id="pinDots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="pin-pad" role="group" aria-label="Clavier du code">${[1,2,3,4,5,6,7,8,9].map(d=>`<button type="button" data-pin="${d}">${d}</button>`).join("")}<span></span><button type="button" data-pin="0">0</button><button type="button" class="pin-del" data-pin="del" aria-label="Effacer">⌫</button></div>
+    ${pinMissing().length?`<button type="button" class="pin-cta" data-a="pin-create"><span class="pc-plus" aria-hidden="true">+</span>Nouveau couple ? Créer notre code</button>`:""}
   </div><div class="pin-sky">${SKY_SVG}</div><div class="pin-ground"></div></div>`;
   S.pin="";
 }
-function meStored(){ try{ return localStorage.getItem("indiv-me")||""; }catch(e){ return ""; } }
+function meStored(){ let m=""; try{ m=localStorage.getItem("indiv-me")||""; }catch(e){} return m||((window.GAS&&window.GAS.conf&&window.GAS.conf.name)||"").trim(); }
+function meIn(P){ const m=meStored().toLowerCase(); return P.find(x=>x.toLowerCase()===m)||""; }
 function couplePrenoms(nom){ const c=pinCodes().find(x=>x.nom===nom); const P=c&&Array.isArray(c.prenoms)?c.prenoms.filter(Boolean):[]; return P.length?P:String(nom||"").split(/\s*(?:&|\bet\b|\/|,)\s*/i).map(x=>x.trim()).filter(Boolean); }
 function pinChoose(hh,nom,P){
   const c=$("#lockRoot .pin-c"); if(!c) return;
   c.querySelector(".pin-hi").textContent="Qui êtes-vous ?";
   $("#pinSub").textContent=`Code de ${nom}. L'appareil s'en souviendra.`; $("#pinSub").classList.remove("neg");
-  $("#pinDots").remove(); const pad=c.querySelector(".pin-pad");
+  $("#pinDots").remove(); c.querySelectorAll(".pin-link,.pin-cta").forEach(e=>e.remove()); const pad=c.querySelector(".pin-pad");
   pad.outerHTML=`<div class="pin-who">${P.map(n=>`<button type="button" data-who="${esc(n)}">${esc(n)}</button>`).join("")}</div>`;
   c.querySelectorAll("[data-who]").forEach(b=>b.addEventListener("click",()=>{ try{ localStorage.setItem("indiv-me",b.dataset.who); }catch(e){} pinFinish(hh,nom,b.dataset.who); }));
 }
@@ -2682,18 +2688,60 @@ function pinFinish(hh,nom,prenom){
   const L=$("#lockRoot"); const pn=L.querySelector(".pin"); if(pn) pn.classList.add("pin-ok"); if(prenom) setTimeout(()=>toast(`Bienvenue ${prenom}`),300);
   setTimeout(()=>{ S.pinBusy=false; setThemeColor(); document.body.classList.remove("locked"); L.hidden=true; L.innerHTML=""; L.dataset.s=""; render(true); },260);
 }
+const pinCouples=()=>(cfg().indivisaires||[]).map(i=>i.nom).filter(Boolean);
+const pinMissing=()=>pinCouples().filter(n=>!pinCodes().some(x=>x.nom===n));
+/* Création du code d'un couple depuis l'écran d'accueil (première connexion ou code réinitialisé) */
+function pinCreate(nom){
+  const L=$("#lockRoot"), M=pinMissing(); if(!L) return;
+  if(L.dataset.s!=="pin"&&L.dataset.s!=="create"){ L.dataset.s="create"; pinScreen(L); }
+  L.dataset.s="create";
+  const c=L.querySelector(".pin-c"); if(!c) return;
+  c.querySelector(".pin-hi").textContent="Créez le code de votre couple";
+  const sub=$("#pinSub"); sub.classList.remove("neg");
+  const back=pinOn()?`<button type="button" class="pin-link" data-pc="back">J'ai déjà un code</button>`:"";
+  c.querySelectorAll(".pin-who,.pin-link,.pin-cta,.pin-pad,#pinDots").forEach(e=>e.remove());
+  if(!nom&&M.length>1){ S.pinMode=null; sub.textContent="Quel est votre couple ?";
+    c.insertAdjacentHTML("beforeend",`<div class="pin-who">${M.map(n=>`<button type="button" data-pc="${esc(n)}">${esc(n)}</button>`).join("")}</div>${back}`);
+    c.querySelectorAll("[data-pc]").forEach(b=>b.addEventListener("click",()=>b.dataset.pc==="back"?pinBack():pinCreate(b.dataset.pc))); return; }
+  nom=nom||M[0]; S.pinMode={nom,step:1,first:""}; S.pin="";
+  sub.textContent=`${nom} · choisissez 4 chiffres`;
+  c.insertAdjacentHTML("beforeend",`<div class="pin-dots" id="pinDots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="pin-pad" role="group" aria-label="Clavier du code">${[1,2,3,4,5,6,7,8,9].map(d=>`<button type="button" data-pin="${d}">${d}</button>`).join("")}<span></span><button type="button" data-pin="0">0</button><button type="button" class="pin-del" data-pin="del" aria-label="Effacer">⌫</button></div>${back}`);
+  const bk=c.querySelector('[data-pc="back"]'); if(bk) bk.addEventListener("click",pinBack);
+}
+function pinBack(){ S.pinMode=null; const L=$("#lockRoot"); L.dataset.s="pin"; pinScreen(L); }
+async function pinCreateStep(){
+  const m=S.pinMode, sub=$("#pinSub"), D=$("#pinDots");
+  const err=t=>{ D.classList.add("pin-shake"); sub.textContent=t; sub.classList.add("neg"); setTimeout(()=>{ D.classList.remove("pin-shake"); S.pin=""; pinPaint(); S.pinBusy=false; },450); };
+  S.pinBusy=true;
+  if(m.step===1){ const h=await pinHash(S.pin); if(pinCodes().some(x=>x.hash===h)||(cfg().pinHash&&cfg().pinHash===h)){ m.first=""; return err("Code déjà utilisé, choisissez-en un autre"); }
+    m.first=S.pin; m.step=2; S.pin=""; pinPaint(); sub.classList.remove("neg"); sub.textContent=`${m.nom} · confirmez le code`; S.pinBusy=false; return; }
+  if(S.pin!==m.first){ m.step=1; m.first=""; return err("Les deux codes ne correspondent pas. Recommencez"); }
+  try{ if(window.GAS&&window.GAS.refresh) await window.GAS.refresh(); }catch(e){}
+  if(pinCodes().some(x=>x.nom===m.nom)){ S.pinMode=null; S.pinBusy=false; pinBack(); const sb=$("#pinSub"); if(sb){ sb.textContent="Votre couple a déjà un code : demandez-le à votre conjoint."; sb.classList.add("neg"); } return; }
+  const h=await pinHash(S.pin), P=couplePrenoms(m.nom);
+  const Lc=pinCodes().filter(x=>x.nom!==m.nom).concat([{nom:m.nom,hash:h,prenoms:P}]);
+  const Pp={pinCodes:Lc,lockHash:""}; if(pinCouples().every(n=>Lc.some(x=>x.nom===n))) Pp.pinHash="";
+  const ok=await saveConfig(Pp); if(!ok){ m.step=1; m.first=""; return err("Enregistrement impossible, réessayez"); }
+  S.pinMode=null; toast(`Code de ${m.nom} créé`);
+  const me=meIn(P); if(P.length>1&&!me){ S.pinBusy=false; return pinChoose(h,m.nom,P); }
+  if(me){ try{ localStorage.setItem("indiv-me",me); }catch(e){} }
+  pinFinish(h,m.nom,me||P[0]||m.nom);
+}
 function pinPaint(){ document.querySelectorAll("#pinDots i").forEach((d,i)=>d.classList.toggle("f",i<S.pin.length)); }
 async function pinPress(k){
   if(!$("#pinDots")||S.pinBusy) return;
   if(k==="del"){ S.pin=S.pin.slice(0,-1); pinPaint(); return; }
   if(S.pin.length>=4) return; S.pin+=k; pinPaint();
   if(S.pin.length<4) return;
+  if(S.pinMode) return pinCreateStep();
   S.pinBusy=true; const hh=await pinHash(S.pin);
   const who=pinMatch(hh);
   if(who!==null){
-    const P=who?couplePrenoms(who):[], me=meStored();
-    if(who&&P.length>1&&!P.includes(me)){ S.pinBusy=false; return pinChoose(hh,who,P); }
-    pinFinish(hh,who,who?(P.includes(me)?me:P[0]||who):""); }
+    const P=who?couplePrenoms(who):[], me=meIn(P);
+    if(who&&P.length>1&&!me){ S.pinBusy=false; return pinChoose(hh,who,P); }
+    if(me){ try{ localStorage.setItem("indiv-me",me); }catch(e){} }
+    pinFinish(hh,who,who?(me||P[0]||who):""); }
   else { const D=$("#pinDots"); D.classList.add("pin-shake"); $("#pinSub").textContent="Code incorrect"; $("#pinSub").classList.add("neg"); if(navigator.vibrate) navigator.vibrate(120);
     setTimeout(()=>{ D.classList.remove("pin-shake"); S.pin=""; pinPaint(); S.pinBusy=false; },450); }
 }
@@ -2707,7 +2755,8 @@ function checkLock(){
   if(!document.body.classList.contains("locked")) return;
   const L=$("#lockRoot"); L.hidden=false;
   if(!S.config){ if(!L.dataset.s){ L.dataset.s="wait"; L.innerHTML=`<div class="lock"><div class="lock-box"><div class="lock-logo"><img src="icon-180.png" alt=""></div><h1>Indivision</h1><p class="muted">Chargement…</p><button type="button" class="ghost sm" data-a="gas-setup" style="width:auto">Paramètres de connexion</button></div></div>`; } return; }
-  if(pinOn()){ if(pinUnlocked()){ if(L.dataset.s) setThemeColor(); document.body.classList.remove("locked"); L.hidden=true; L.innerHTML=""; L.dataset.s=""; return; } if(L.dataset.s!=="pin"){ L.dataset.s="pin"; pinScreen(L); } return; }
+  if(!pinOn()&&!cfg().lockHash&&pinCouples().length&&S.canWrite){ if(L.dataset.s!=="create"){ L.dataset.s=""; pinCreate(); } return; }
+  if(pinOn()){ if(pinUnlocked()){ if(L.dataset.s) setThemeColor(); document.body.classList.remove("locked"); L.hidden=true; L.innerHTML=""; L.dataset.s=""; return; } if(L.dataset.s!=="pin"&&L.dataset.s!=="create"){ L.dataset.s="pin"; pinScreen(L); } return; }
   const h=cfg().lockHash;
   if(!h||unlockedFor(h)){ document.body.classList.remove("locked"); L.hidden=true; L.innerHTML=""; return; }
   if(L.dataset.s==="form") return; L.dataset.s="form";
@@ -2723,30 +2772,35 @@ function checkLock(){
 function lockCard(){
   const C=cfg(), couples=(C.indivisaires||[]).map(i=>i.nom).filter(Boolean), codes=pinCodes(), on=pinOn(), old=!on&&!!C.lockHash;
   let me="",mc=""; try{ me=sessionStorage.getItem("indiv-who")||""; mc=sessionStorage.getItem("indiv-couple")||""; }catch(e){}
-  const rows=couples.map(n=>{ const has=codes.some(x=>x.nom===n);
-    return `<div class="pc-row"><span><strong>${esc(n)}</strong> <small class="muted">${couplePrenoms(n).map(esc).join(" · ")}</small>${n===mc?` <span class="muted">· connecté : ${esc(me)}</span>`:""}</span><span class="chip ${has?"good":"warn"}">${has?"code défini":"pas de code"}</span><span class="row" style="gap:4px;margin-left:auto"><button type="button" class="sm ${has?"ghost":"primary"}" data-a="pin-set" data-n="${esc(n)}">${has?"Changer":"Définir"}</button>${has?`<button type="button" class="ghost sm danger" data-a="pin-del" data-n="${esc(n)}" aria-label="Supprimer le code de ${esc(n)}">✕</button>`:""}</span></div>`; }).join("");
+  const rows=couples.map(n=>{ const has=codes.some(x=>x.nom===n), mine=n===mc;
+    const btn=!on?`<button type="button" class="sm primary" data-a="pin-set" data-n="${esc(n)}">Définir</button>`
+      :mine?`<button type="button" class="sm ghost" data-a="pin-set" data-n="${esc(n)}">Changer</button>`
+      :has?`<button type="button" class="sm ghost" data-a="pin-reset" data-n="${esc(n)}">Réinitialiser</button>`:`<small class="muted">à créer à sa prochaine ouverture</small>`;
+    return `<div class="pc-row"><span><strong>${esc(n)}</strong> <small class="muted">${couplePrenoms(n).map(esc).join(" · ")}</small>${mine?` <span class="muted">· connecté : ${esc(me)}</span>`:""}</span><span class="chip ${has?"good":"warn"}">${has?"code défini":"pas de code"}</span><span class="row" style="gap:4px;margin-left:auto">${btn}</span></div>`; }).join("");
   const missing=couples.filter(n=>!codes.some(x=>x.nom===n));
   return `<div class="card" style="grid-column:1/-1"><div class="card-head"><h3>Code d'accès</h3><span class="chip ${on?"good":""}">${on?"activé":old?"mot de passe (ancien)":"désactivé"}</span></div>
-    <p class="muted" style="margin:0 0 10px">Un code à 4 chiffres par couple, demandé à chaque ouverture de l'app et après 5 minutes en arrière-plan. Le code saisi indique qui fait les modifications dans l'historique.</p>
+    <p class="muted" style="margin:0 0 10px">Un code à 4 chiffres par couple, demandé à chaque ouverture de l'app et après 5 minutes en arrière-plan. Chaque couple ne peut changer que son propre code, en saisissant le code actuel. En cas d'oubli, l'autre couple peut le réinitialiser : le couple concerné en crée un nouveau à sa prochaine ouverture.</p>
     ${couples.length?rows:`<p class="muted">Ajoutez d'abord les indivisaires.</p>`}
     ${C.pinHash?`<p class="muted" style="margin:10px 0 0;font-size:.85rem">Code commun provisoire actif${missing.length?` : il reste valable tant que ${missing.map(esc).join(" et ")} n'${missing.length>1?"ont":"a"} pas son code`:""}.</p>`:""}
-    ${on?`<div class="row w" style="margin-top:12px"><button type="button" class="ghost" data-a="lock-now">Verrouiller maintenant</button>${mc?`<button type="button" class="ghost" data-a="pin-switch">Changer de personne</button>`:""}<button type="button" class="ghost" data-a="lock-off">Désactiver les codes</button></div>`:old?`<div class="row w" style="margin-top:12px"><button type="button" class="ghost" data-a="lock-off">Supprimer l'ancien mot de passe</button></div>`:""}</div>`;
+    ${on?`<div class="row w" style="margin-top:12px"><button type="button" class="ghost" data-a="lock-now">Verrouiller maintenant</button>${mc?`<button type="button" class="ghost" data-a="pin-switch">Changer de personne</button>`:""}</div>`:old?`<div class="row w" style="margin-top:12px"><button type="button" class="ghost" data-a="lock-off">Supprimer l'ancien mot de passe</button></div>`:""}</div>`;
 }
 function pinSetForm(nom){
   const has=pinCodes().some(x=>x.nom===nom), P=couplePrenoms(nom);
-  openForm({title:`Accès de ${nom}`,intro:has?"Laissez le code vide pour garder l'actuel.":"4 chiffres, différent du code de l'autre couple. Il remplace l'ancien mot de passe.",
+  openForm({title:`Accès de ${nom}`,intro:has?"Saisissez votre code actuel. Laissez le nouveau code vide pour ne modifier que les prénoms.":"4 chiffres, différent du code de l'autre couple.",
     values:{p1:P[0]||"",p2:P[1]||""},fields:[
+    ...(has?[{id:"po",label:"Code actuel",type:"password",required:true,placeholder:"••••"}]:[]),
     {id:"p1",label:"Prénom 1",type:"text",required:true,half:true},{id:"p2",label:"Prénom 2",type:"text",half:true},
     {id:"pw",label:has?"Nouveau code (facultatif)":"Code",type:"password",required:!has,half:true,placeholder:"••••"},{id:"pw2",label:"Confirmer",type:"password",required:!has,half:true,placeholder:"••••"}],submitLabel:"Enregistrer",
     onSubmit:async v=>{ const prenoms=[v.p1,v.p2].map(x=>(x||"").trim()).filter(Boolean); if(!prenoms.length) return "Indiquez au moins un prénom.";
       let h=(pinCodes().find(x=>x.nom===nom)||{}).hash;
+      if(has&&await pinHash(v.po||"")!==h) return "Le code actuel est incorrect.";
       if(v.pw||!has){ if(!/^\d{4}$/.test(v.pw||"")) return "Le code doit faire exactement 4 chiffres."; if(v.pw!==v.pw2) return "Les deux saisies ne correspondent pas.";
         h=await pinHash(v.pw); if(pinCodes().some(x=>x.nom!==nom&&x.hash===h)) return "Ce code est déjà utilisé par l'autre couple. Choisissez-en un autre."; }
       const L=pinCodes().filter(x=>x.nom!==nom).concat([{nom,hash:h,prenoms}]);
       const couples=(cfg().indivisaires||[]).map(i=>i.nom).filter(Boolean), all=couples.every(n=>L.some(x=>x.nom===n));
       const Pp={pinCodes:L,lockHash:""}; if(all) Pp.pinHash="";
       const ok=await saveConfig(Pp); if(ok){ let mc=""; try{ mc=sessionStorage.getItem("indiv-couple")||""; }catch(e){} if(!mc||mc===nom){ try{ sessionStorage.setItem("indiv-pin",h); sessionStorage.setItem("indiv-couple",nom); if(!prenoms.includes(sessionStorage.getItem("indiv-who"))) sessionStorage.setItem("indiv-who",prenoms.includes(meStored())?meStored():prenoms[0]); }catch(e){} } toast(`Accès de ${nom} enregistré`); render(true); } return ok; }});
-  ["#f_pw","#f_pw2"].forEach(q=>{ const i=$(q); if(i){ i.inputMode="numeric"; i.maxLength=4; i.autocomplete="off"; } });
+  ["#f_po","#f_pw","#f_pw2"].forEach(q=>{ const i=$(q); if(i){ i.inputMode="numeric"; i.maxLength=4; i.autocomplete="off"; } });
 }
 /* ---------- Revalorisation annuelle des prévisions ---------- */
 const REVAL_OK=r=>!/cr[ée]dit|apport|injection|honoraires|impay|r[ée]gul|tenue de compte|frais (bancaires|administratifs|carte)|option web|archivage|aide/i.test(r.label)&&/loyer|charges|taxe|copro|assurance|pno|lectricit|edf|gaz|eau|saur|internet|free|box|gmf|ordures|abonnement/i.test(r.label);
@@ -3105,6 +3159,8 @@ document.addEventListener("click",async ev=>{
     case "lock-set": case "pin-set": return pinSetForm(el.dataset.n||((cfg().indivisaires||[])[0]||{}).nom||"Indivision");
     case "pin-del": { const n=el.dataset.n; return openConfirm(`Supprimer le code de ${n} ? Ce couple ne pourra plus ouvrir l'app tant qu'un nouveau code n'est pas défini.`,"Supprimer",()=>saveConfig({pinCodes:pinCodes().filter(x=>x.nom!==n)})); }
     case "lock-off": return openConfirm("Désactiver le code d'accès ? L'app s'ouvrira directement sur tous les appareils.","Désactiver",()=>saveConfig({lockHash:"",pinHash:"",pinCodes:[]}));
+    case "pin-create": return pinCreate();
+    case "pin-reset": { const n=el.dataset.n; return openConfirm(`Réinitialiser le code de ${n} ? Ce couple créera un nouveau code à sa prochaine ouverture de l'app.`,"Réinitialiser",()=>saveConfig({pinCodes:pinCodes().filter(x=>x.nom!==n)}).then(ok=>{ if(ok) toast(`Code de ${n} réinitialisé`); return ok; })); }
     case "pin-switch": try{ localStorage.removeItem("indiv-me"); }catch(e){} /* falls through */
     case "lock-now": try{ sessionStorage.removeItem("indiv-unlock"); sessionStorage.removeItem("indiv-pin"); sessionStorage.removeItem("indiv-who"); sessionStorage.removeItem("indiv-couple"); localStorage.removeItem("indiv-unlock"); }catch(e){} document.body.classList.add("locked"); $("#lockRoot").dataset.s=""; return checkLock();
     case "j-more": S.ui.jn=(S.ui.jn||25)+50; return render(true);
@@ -3183,7 +3239,7 @@ document.addEventListener("submit",async ev=>{
   const tot=rows.reduce((a,i)=>a+i.quotePart,0); if(rows.length && Math.abs(tot-100)>0.01){ err.textContent=`Les quotes-parts totalisent ${tot.toLocaleString("fr-FR")} % au lieu de 100 %.`; return; }
   const c=cfg();
   const ok=await saveConfig({nom:$("#p_nom").value.trim()||DEFAULT_CONFIG.nom,indivisaires:rows,soldeInitial:parseNum($("#p_solde").value)||0,dateSoldeInitial:$("#p_date").value,banque:{nom:$("#p_bq").value.trim(),adresse:$("#p_bqa").value.trim(),tel:$("#p_bqt").value.trim()},
-    biens:{locatif:{...c.biens.locatif,nom:$("#p_loc").value.trim()||"Bien locatif"},secondaire:{...c.biens.secondaire,nom:$("#p_sec").value.trim()||"Maison secondaire"}}});
+    biens:{locatif:{...c.biens.locatif,nom:$("#p_loc").value.trim()||"Béziers"},secondaire:{...c.biens.secondaire,nom:$("#p_sec").value.trim()||"Soullans"}}});
   if(ok){ document.activeElement?.blur(); render(true); }
 });
 /* ---------- Import du tableur (fichier livré avec la page) ---------- */
