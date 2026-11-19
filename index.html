@@ -881,12 +881,10 @@ html.sk.sk-retro{--bg:#F6E7C8;--surface:#FFF8EA;--surface-2:#F3E2C0;--ink:#4A2A1
 .pop-f{margin:10px -12px -10px;padding:10px 12px;border-top:1px solid var(--line);position:sticky;bottom:-10px;background:var(--surface-solid,var(--surface))}
 .pop-f .primary{width:100%;justify-content:center}
 @media (min-width:641px){ .pop-f{position:static;margin:10px 0 0;padding:10px 0 0} .pop-f .primary{width:auto;float:right} .pop-f::after{content:"";display:block;clear:both} }
-/* Barre d'état iPhone (app installée) : le fond remonte sous l'heure, voile assorti au décor */
-:root{--sat:env(safe-area-inset-top,0px);--veil:#E8672C}
+/* Barre d'état iPhone (app installée) : le fond de chaque écran remonte sous l'heure, même couleur */
+:root{--sat:env(safe-area-inset-top,0px)}
 header.top{padding-top:var(--sat)}
 .pin{padding-top:var(--sat)}
-.sb-veil{position:fixed;top:0;left:0;right:0;height:calc(var(--sat) * 1.25);z-index:260;pointer-events:none;background:linear-gradient(180deg,var(--veil) 0,var(--veil) 72%,transparent 100%);transition:background .3s}
-html.v-day{--veil:#D4892A} html.v-eve{--veil:#E0582A} html.v-night{--veil:#2A170A}
 </style>
 </head>
 <body>
@@ -904,7 +902,6 @@ html.v-day{--veil:#D4892A} html.v-eve{--veil:#E0582A} html.v-night{--veil:#2A170
 <main id="main"></main>
 <nav class="bnav" id="bnav" aria-label="Sections"></nav>
 <div id="modalRoot"></div><div id="confirmRoot"></div>
-<div class="sb-veil" aria-hidden="true"></div>
 <div id="toastRoot"></div>
 <div class="float-nav" id="floatNav"><button type="button" class="today-btn" id="goToday" data-a="go-today" aria-label="Revenir à aujourd'hui"><span class="tdot" aria-hidden="true"></span>Aujourd'hui</button><button type="button" class="top-btn" id="goTop" data-a="go-top" aria-label="Remonter en haut de la page" title="Haut de page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
 
