@@ -1991,15 +1991,18 @@ function simHTML(){
   const t=todayStr(); let d=S.ui.simDate;
   if(!d){ const n=new Date(); d=ds(new Date(n.getFullYear(),n.getMonth()+1,1)); S.ui.simDate=d; }
   if(d<t) return `<p class="muted" style="margin:0">Choisissez une date à venir.</p>`;
-  const now=soldeActuel(), list=S.ops.filter(o=>o.prevision&&o.date&&o.date<=d).sort((a,b)=>a.date.localeCompare(b.date));
+  const now=soldeActuel(), raw=S.ops.filter(o=>o.prevision&&o.date&&o.date<=d).sort((a,b)=>a.date.localeCompare(b.date));
+  /* Comme dans la liste des opérations : un versement groupé (agence…) compte pour une seule opération, à son montant net */
+  const list=groupRows(raw).map(r=>{ if(r.o) return r.o; const net=r.g.items.reduce((a,o)=>a+sg(o),0);
+    return {libelle:gName(r.g.name),date:r.g.items[0].date,sens:net>=0?"in":"out",montant:Math.round(Math.abs(net)*100)/100,_late:r.g.items.some(o=>o.date<t&&!regulCovered(o))}; });
   const tin=sum(list.filter(o=>o.sens==="in")), tout=sum(list.filter(o=>o.sens==="out")), fin=now+tin-tout;
-  const late=list.filter(o=>o.date<t&&!regulCovered(o)).length;
-  const big=[...list].filter(o=>o.sens==="out").sort((a,b)=>b.montant-a.montant).slice(0,4);
+  const late=list.filter(o=>o._late!=null?o._late:(o.date<t&&!regulCovered(o))).length;
+  const big=[...list].filter(o=>o.sens==="out"&&+o.montant>0).sort((a,b)=>b.montant-a.montant).slice(0,4);
   return `<div class="grid g3 sim">
     <div class="tile ${now<0?"t-neg":"t-pos"}"><span class="k">Solde aujourd'hui</span><span class="v"><span class="sgn">${now<0?"−":"+"}</span>${eur(Math.abs(now))}</span><span class="s">${now<0?"⚠ à découvert":"réel, opérations validées"}</span></div>
-    <div class="tile"><span class="k">Prévu d'ici le ${fmtD(d).slice(0,5)}</span><span class="v io"><span>▲ +${eur0(tin)}</span><span>▼ −${eur0(tout)}</span></span><span class="s">${list.length} opération${list.length>1?"s":""}${late?` · ${late} en retard`:""}</span></div>
+    <div class="tile"><span class="k">Prévu d'ici le ${fmtD(d).slice(0,5)}</span><span class="v io">${tin>0.004?`<span>▲ +${eur(tin)}</span>`:""}${tout>0.004?`<span>▼ −${eur(tout)}</span>`:""}${tin<=0.004&&tout<=0.004?"<span>—</span>":""}</span><span class="s">${list.length} opération${list.length>1?"s":""}${late?` · ${late} en retard`:""}</span></div>
     <div class="tile ${fin<0?"t-neg":"t-pos"}"><span class="k">Solde au ${fmtD(d)}</span><span class="v"><span class="sgn">${fin<0?"−":"+"}</span>${eur(Math.abs(fin))}</span><span class="s">${fin<0?"⚠ Découvert : prévoir un apport":"✓ après les opérations prévues"}</span></div>
-  </div>${big.length?`<small class="sim-big">Plus grosses sorties : ${big.slice(0,3).map(o=>`${esc(shortLib(o.libelle))} ${eur0(o.montant)}`).join(" · ")}</small>`:""}`;
+  </div>${big.length?`<small class="sim-big">Plus grosses sorties : ${big.slice(0,3).map(o=>`${esc(shortLib(o.libelle))} ${eur(+o.montant)}`).join(" · ")}</small>`:""}`;
 }
 
 /* ---------- Filtres d'année des statistiques ---------- */
